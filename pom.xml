@@ -10,10 +10,11 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>3-domain</module>
         <module>4-abstractioncode</module>
+        <module>3-domain</module>
         <module>2-application</module>
-        <module>1-plugins</module>
+        <module>1-adapters</module>
+        <module>0-plugins</module>
     </modules>
 
 </project>
