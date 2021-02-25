@@ -22,14 +22,26 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     private String name;
     @NonNull
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
-    @NonNull
-    private final CoordinatesVO vaccination;
+    private CoordinatesVO vaccination;
     @NonNull
     private final PlanVO plan;
-
     private int velocity;
-
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
+
+    public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {
+        if (containsCoordinate(coordinatesOfVaccination)) {
+            if (obstacles.contains(coordinatesOfVaccination)) {
+                log.warn("Vaccination couldn't be set. Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesOfVaccination.getX(),
+                        coordinatesOfVaccination.getY());
+                return false;
+            }
+            this.vaccination = coordinatesOfVaccination;
+            return true;
+        }
+        throw new IllegalArgumentException(
+                "Coordinates for vaccination aren't part of board " + getName() + ". x: " + coordinatesOfVaccination.getX() + " and y: "
+                        + coordinatesOfVaccination.getY());
+    }
 
     public boolean addColleague(ColleagueAggregate colleague) {
         if (colleagues.contains(colleague)) {
@@ -52,49 +64,52 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     public boolean containsCoordinate(CoordinatesVO coordinate) {
-        if(coordinate.getX() < plan.getWidth() && coordinate.getY() < plan.getLength()){
+        if (coordinate.getX() < plan.getWidth() && coordinate.getY() < plan.getLength()) {
             return true;
         }
-        log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(), plan.getWidth());
+        log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
+                plan.getWidth());
         return false;
     }
 
-    public boolean addObstacle(CoordinatesVO coordinate){
+    public boolean addObstacle(CoordinatesVO coordinate) {
         if (this.containsCoordinate(coordinate)) {
-            if(obstacles.contains(coordinate)){
+            if (obstacles.contains(coordinate)) {
                 log.warn("obstacle at x:{}, y:{} already exists", coordinate.getX(), coordinate.getY());
                 return false;
             }
             return true;
         }
 
-        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(), plan.getWidth());
+        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
+                plan.getWidth());
         return false;
     }
 
-    public boolean removeObstacle(CoordinatesVO coordinate){
+    public boolean removeObstacle(CoordinatesVO coordinate) {
         if (this.containsCoordinate(coordinate)) {
-            if(obstacles.remove(coordinate)){
+            if (obstacles.remove(coordinate)) {
                 log.debug("obstacle at x:{}, y:{} has been removed", coordinate.getX(), coordinate.getY());
                 return false;
             }
             return true;
         }
 
-        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(), plan.getWidth());
+        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
+                plan.getWidth());
         return false;
     }
 
-    public void setName(String name){
-        if(name != null){
+    public void setName(String name) {
+        if (name != null) {
             this.name = name;
             return;
         }
         throw new IllegalArgumentException("The name of a board mustn't be empty.");
     }
 
-    public void setVelocity(int velocity){
-        if(velocity >= 1){
+    public void setVelocity(int velocity) {
+        if (velocity >= 1) {
             this.velocity = velocity;
             return;
         }
