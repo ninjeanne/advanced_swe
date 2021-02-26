@@ -1,31 +1,52 @@
 package de.dhbw.domainservice;
 
 import de.dhbw.aggregates.BoardAggregate;
-import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.RankingVO;
 
-import java.util.Date;
 import java.util.List;
 
-public interface GameDomainService {
-    boolean initialize(PlayerEntity player);
-    boolean initialize(BoardAggregate board);
-    boolean initialize(Date currentDate);
+public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse sein? Dürfen Entity Annotations in Domain Entitäten angebracht werden?
+    void initialize(PlayerEntity player);
+
+    void initialize(BoardAggregate board);
+
+    void initializeDate();
+
+    void initialize(RankingVO rankingVO);
+
     boolean isInitialized();
 
-    boolean vaccinatePlayer();
-    boolean infectPlayer();
-    int getRankingPointsForPlayer();
-    void increaseRankingPointsForPlayer();
+    boolean isRunning();
+
+    void vaccinatePlayer();
+
+    void infectPlayer();
+
+    int getLastRankingPointsForPlayer();
+
+    int getLifePointsForPlayer();
+
+    void startCountingRankingPointsForPlayer();
+
+    void stopCountingRankingPointsForPlayer();
+
     boolean movePlayer(CoordinatesVO newCoordinates);
-    RankingVO getRankingForPlayer();
+
+    RankingVO getLastRankingForPlayer();
+
+    BoardAggregate getCurrentBoard();
 
     void start();
-    void end();
+
+    void stop();
+
     void addRandomVaccinationToBoard();
-    void addVaccinationToBoard(CoordinatesVO coordinatesVO);
-    void addColleagueToBoard(ColleagueAggregate colleagueAggregate);
+
+    void startMovingColleagues();
+
+    void stopMovingColleagues();
+
     List<RankingVO> getTotalRankingForBoard();
 }

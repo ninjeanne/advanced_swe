@@ -4,13 +4,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Builder
 @Getter
 @AllArgsConstructor
+@Entity
 public final class UserDetailsVO {
 
+    @Id
     private final String name;
 
     @Override

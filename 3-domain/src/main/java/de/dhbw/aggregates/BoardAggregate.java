@@ -2,6 +2,7 @@ package de.dhbw.aggregates;
 
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
+import de.dhbw.valueobjects.RankingVO;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -37,6 +38,8 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     private int velocity;
     @OneToMany
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
+    @OneToMany
+    private List<RankingVO> topRankings;
 
     public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {
         if (containsCoordinate(coordinatesOfVaccination)) {
@@ -80,6 +83,10 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
                 plan.getWidth());
         return false;
+    }
+
+    public boolean isCoordinateBlocked(CoordinatesVO coordinate) {
+        return obstacles.contains(coordinate);
     }
 
     public boolean addObstacle(CoordinatesVO coordinate) {
