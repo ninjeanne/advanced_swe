@@ -1,10 +1,10 @@
-package domainservice;
+package de.dhbw.domainservice;
 
-import aggregates.BoardAggregate;
-import aggregates.ColleagueAggregate;
-import entities.PlayerEntity;
-import valueobjects.CoordinatesVO;
-import valueobjects.RankingVO;
+import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.aggregates.ColleagueAggregate;
+import de.dhbw.entities.PlayerEntity;
+import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.RankingVO;
 
 import java.util.Date;
 import java.util.List;

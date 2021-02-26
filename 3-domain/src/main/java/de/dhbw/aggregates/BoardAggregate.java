@@ -1,31 +1,41 @@
-package aggregates;
+package de.dhbw.aggregates;
 
-import lombok.AllArgsConstructor;
+import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.PlanVO;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import valueobjects.CoordinatesVO;
-import valueobjects.PlanVO;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 @Slf4j
+@Entity
 public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
 
     @NonNull
-    private final String uuid;
+    @Id
+    private String uuid;
     @NonNull
     private String name;
     @NonNull
+    @OneToMany
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
+    @OneToOne
     private CoordinatesVO vaccination;
     @NonNull
-    private final PlanVO plan;
+    @OneToOne
+    private PlanVO plan;
     private int velocity;
+    @OneToMany
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
 
     public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {

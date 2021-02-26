@@ -1,15 +1,15 @@
-package services;
+package de.dhbw.services;
 
-import aggregates.BoardAggregate;
-import aggregates.ColleagueAggregate;
-import domainservice.GameDomainService;
-import entities.PlayerEntity;
+import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.aggregates.ColleagueAggregate;
+import de.dhbw.domainservice.GameDomainService;
+import de.dhbw.entities.PlayerEntity;
+import de.dhbw.repositories.BoardRepository;
+import de.dhbw.repositories.ColleagueRepository;
+import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.RankingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repositories.BoardRepository;
-import repositories.ColleagueRepository;
-import valueobjects.CoordinatesVO;
-import valueobjects.RankingVO;
 
 import java.util.Date;
 import java.util.List;

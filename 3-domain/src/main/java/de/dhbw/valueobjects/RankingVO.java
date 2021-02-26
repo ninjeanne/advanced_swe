@@ -1,4 +1,4 @@
-package valueobjects;
+package de.dhbw.valueobjects;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

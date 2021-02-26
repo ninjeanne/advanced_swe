@@ -1,6 +1,6 @@
-package repositories;
+package de.dhbw.repositories;
 
-import aggregates.ColleagueAggregate;
+import de.dhbw.aggregates.ColleagueAggregate;
 
 public interface ColleagueRepository { //todo Vorgabe der Methoden für spätere JPA
     void save(ColleagueAggregate colleagueAggregate);

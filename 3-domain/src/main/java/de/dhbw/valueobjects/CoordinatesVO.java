@@ -1,13 +1,21 @@
-package valueobjects;
+package de.dhbw.valueobjects;
 
 import lombok.Getter;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Getter
-public final class CoordinatesVO {
+@IdClass(CoordinatesVO.class)
+@Entity
+public final class CoordinatesVO implements Serializable {
 
+    @Id
     private final int x;
+    @Id
     private final int y;
 
     public CoordinatesVO(int x, int y) {

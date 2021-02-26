@@ -1,9 +1,9 @@
-package entities;
+package de.dhbw.entities;
 
+import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.UserDetailsVO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
-import valueobjects.CoordinatesVO;
-import valueobjects.UserDetailsVO;
 
 import java.util.Objects;
 

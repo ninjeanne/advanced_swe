@@ -1,7 +1,7 @@
-package entities;
+package de.dhbw.entities;
 
+import de.dhbw.valueobjects.RankingVO;
 import lombok.*;
-import valueobjects.RankingVO;
 
 import java.util.Comparator;
 import java.util.Objects;

@@ -1,11 +1,11 @@
-package services;
+package de.dhbw.services;
 
-import aggregates.BoardAggregate;
-import domainservice.RankingDomainService;
+import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.domainservice.RankingDomainService;
+import de.dhbw.repositories.BoardRepository;
+import de.dhbw.valueobjects.RankingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import repositories.BoardRepository;
-import valueobjects.RankingVO;
 
 @Service
 public class RankingService implements RankingDomainService {

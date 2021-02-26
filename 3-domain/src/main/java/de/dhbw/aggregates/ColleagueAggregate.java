@@ -1,22 +1,29 @@
-package aggregates;
+package de.dhbw.aggregates;
 
+import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.*;
-import valueobjects.CoordinatesVO;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 public class ColleagueAggregate {
 
     @NonNull
+    @Id
     private String name; //name as entity id
     private int position = 0;
     boolean moveForward = true;
-    private ArrayList<CoordinatesVO> path = new ArrayList<>();
+    @OneToMany
+    private List<CoordinatesVO> path = new ArrayList<>();
 
     public CoordinatesVO getPosition() {
         return path.get(position);

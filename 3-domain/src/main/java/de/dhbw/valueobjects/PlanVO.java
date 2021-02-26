@@ -1,19 +1,23 @@
-package valueobjects;
+package de.dhbw.valueobjects;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 
-import java.util.List;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Builder
 @Getter
-@AllArgsConstructor
-public final class PlanVO {
+@Entity
+@IdClass(PlanVO.class)
+public final class PlanVO implements Serializable {
 
+    @Id
     private final int length;
+    @Id
     private final int width;
 
     @Override
