@@ -7,15 +7,15 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component
-public class RankingMapper implements Function<RankingDTO, RankingVO> {
+public class RankingMapper implements Function<RankingVO, RankingDTO> {
 
-    private RankingVO map(RankingDTO rankingDTO) {
+    private RankingDTO map(RankingVO rankingVO) {
         //todo implement me
         return null;
     }
 
     @Override
-    public RankingVO apply(RankingDTO rankingDTO) {
-        return map(rankingDTO);
+    public RankingDTO apply(RankingVO rankingVO) {
+        return map(rankingVO);
     }
 }

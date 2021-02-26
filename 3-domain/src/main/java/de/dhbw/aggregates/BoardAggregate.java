@@ -133,6 +133,37 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         throw new IllegalArgumentException("The velocity of the board has to be positive.");
     }
 
+    private RankingVO getLastTopRating() {
+        return topRankings.get(topRankings.size() - 1);
+    }
+
+    public boolean addNewTopRanking(RankingVO rankingVO) {
+        if (rankingVO.equals(getLastTopRating())) {
+            return false;
+        }
+
+        if (topRankings.isEmpty() || topRankings.size() < 10) {
+            return true;
+        }
+        if (getLastTopRating().getEarned_points() < rankingVO.getEarned_points()) {
+            topRankings.remove(getLastTopRating());
+            topRankings.add(rankingVO);
+            return true;
+        }
+        return false;
+    }
+
+    public boolean isNewTopRanking(RankingVO rankingVO) {
+        if (rankingVO.equals(getLastTopRating())) {
+            return false;
+        }
+
+        if (topRankings.isEmpty() || topRankings.size() < 10) {
+            return true;
+        }
+        return getLastTopRating().getEarned_points() < rankingVO.getEarned_points();
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof BoardAggregate) {
