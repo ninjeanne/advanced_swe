@@ -10,7 +10,7 @@ communication of both takes place via REST as well as via websockets (RSocket).
 
 ## Run the project
 
-```
+```bash
 mvn clean package spring-boot:run -DskipTests=true
 ```
 
@@ -22,18 +22,26 @@ here: https://github.com/benwilcock/spring-rsocket-demo/blob/master/rsocket-serv
 
 ### download the CLI here
 
-```
+```bash
 wget -O rsc.jar https://github.com/making/rsc/releases/download/0.4.2/rsc-0.4.2.jar
 ```
 
 ### start the CLI
 
-```
+```bash
 java -jar rsc.jar --help
 ```
 
 ### run an example request
 
-```
+#### Request Response
+
+```bash
 java -jar rsc.jar --debug --request --data "{\"origin\":\"Client\",\"interaction\":\"Request\"}" --route request-response tcp://localhost:7000
+```
+
+#### Stream
+
+```bash
+java -jar rsc.jar --debug --stream --data "{\"origin\":\"Client\",\"interaction\":\"Request\"}" --route stream tcp://localhost:7000
 ```
