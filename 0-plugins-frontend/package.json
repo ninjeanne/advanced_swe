@@ -10,10 +10,11 @@
     "build": "node build/build.js"
   },
   "dependencies": {
-    "socket.io-client": "^3.1.2",
+    "rsocket-core": "0.0.23",
+    "rsocket-flowable": "0.0.23",
+    "rsocket-websocket-client": "0.0.23",
     "vue": "^2.5.2",
-    "vue-router": "^3.0.1",
-    "vue-socket.io": "^3.0.10"
+    "vue-router": "^3.0.1"
   },
   "devDependencies": {
     "autoprefixer": "^7.1.2",

@@ -69,5 +69,10 @@ public class RSocketController {
                 // create a Flux of new Messages using the indexed Flux
                 .map(index -> new Message(SERVER, STREAM, index));
     }
+
+    @MessageMapping("hello")
+    public Mono<Message> helloServer(Message message) {
+        return Mono.just(message).map(msg -> new Message("a", " | Server says hello!"));
+    }
 }
 
