@@ -2,29 +2,16 @@
   <div class="home">
     <p>Welcome in the RSocket JavaScript tester</p>
     <p>RSocket is connected: {{ isConnected }}</p>
-
-    <div class="responses">
-      <hr />
-      <RequestStream :socket="socket" />
-      <hr />
-      <RequestResponse :socket="socket" />
-    </div>
   </div>
 </template>
 
 <script>
-import {JsonSerializers, RSocketClient} from "rsocket-core";
+import {IdentitySerializer, JsonSerializer, RSocketClient} from "rsocket-core";
 import RSocketWebSocketClient from "rsocket-websocket-client";
 // @ is an alias to /src
-import RequestStream from "../src/components/RequestStream";
-import RequestResponse from "../src/components/RequestResponse";
-
 export default {
   name: "home",
-  components: {
-    RequestResponse,
-    RequestStream
-  },
+  components: {},
   data() {
     return {
       socket: null
@@ -33,29 +20,51 @@ export default {
   methods: {
     connect() {
       console.log("connecting with RSocket...");
-      const transport = new RSocketWebSocketClient({
-        url: "ws://localhost:7000"
-      });
-      const client = new RSocketClient({
-        // send/receive JSON objects instead of strings/buffers
-        serializers: JsonSerializers,
+      // Create an instance of a client
+      var client = new RSocketClient({
+        serializers: {
+          data: JsonSerializer,
+          metadata: IdentitySerializer
+        },
         setup: {
           // ms btw sending keepalive to server
           keepAlive: 60000, // ms timeout if no keepalive response
           lifetime: 180000, // format of `data`
-          dataMimeType: "application/json", // format of `metadata`
-          metadataMimeType: "application/json"
+          dataMimeType: "application/json",
+          metadataMimeType: "message/x.rsocket.routing.v0"
+
         },
-        transport
+        transport: new RSocketWebSocketClient({
+          url: "ws://localhost:7000"
+        })
       });
-      console.log("initialized");
+
+      // Open the connection
       client.connect().subscribe({
         onComplete: socket => {
-          this.socket = socket;
+          // socket provides the rsocket interactions fire/forget, request/response,
+          // request/stream, etc as well as methods to close the socket.
+          socket.requestStream({
+            data: {
+              "origin": "Client",
+              "interaction": "Request"
+            },
+            metadata: String.fromCharCode("tweets.by.author".length) + "tweets.by.author"
+          }).subscribe({
+            onComplete: () => console.log("complete"),
+            onError: error => {
+              console.log(error);
+            },
+            onNext: payload => {
+              console.log(payload.data);
+            },
+            onSubscribe: subscription => {
+              subscription.request(2147483642);
+            }
+          });
         },
         onError: error => {
-          console.log("got connection error");
-          console.error(error);
+          console.log(error);
         },
         onSubscribe: cancel => {
           /* call cancel() to abort */
