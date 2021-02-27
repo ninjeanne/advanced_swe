@@ -11,7 +11,6 @@ import java.time.Instant;
 @NoArgsConstructor
 public class Message {
     private String origin;
-    private String interaction;
     private long index;
     private long created = Instant.now().getEpochSecond();
     private String message;
@@ -20,15 +19,9 @@ public class Message {
         this.message = message;
     }
 
-    public Message(String origin, String interaction) {
+    public Message(String origin, String message, long index) {
         this.origin = origin;
-        this.interaction = interaction;
-        this.index = 0;
-    }
-
-    public Message(String origin, String interaction, long index) {
-        this.origin = origin;
-        this.interaction = interaction;
+        this.message = message;
         this.index = index;
     }
 }

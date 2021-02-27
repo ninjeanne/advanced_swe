@@ -20,7 +20,6 @@ export default {
   },
   methods: {
     connect() {
-      console.log("connecting with RSocket...");
       // Create an instance of a client
       this.socket = new RSocketClient({
         serializers: {
@@ -48,9 +47,9 @@ export default {
           socket.requestStream({
             data: {
               "origin": "Client",
-              "interaction": "Request"
+              "message": "Test message from frontend"
             },
-            metadata: String.fromCharCode("tweets.by.author".length) + "tweets.by.author"
+            metadata: String.fromCharCode("testSocketMessageMapping".length) + "testSocketMessageMapping"
           }).subscribe({
             onComplete: () => console.log("complete"),
             onError: error => {
