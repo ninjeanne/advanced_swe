@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <p>Welcome in the RSocket JavaScript tester</p>
-    <p>RSocket is connected: {{ isConnected }}</p>
+    <p>connection to backend established: {{ isConnected }}</p>
+    <p>Message: {{ message }}</p>
   </div>
 </template>
 
@@ -14,14 +14,15 @@ export default {
   components: {},
   data() {
     return {
-      socket: null
+      socket: null,
+      payload: null
     };
   },
   methods: {
     connect() {
       console.log("connecting with RSocket...");
       // Create an instance of a client
-      var client = new RSocketClient({
+      this.socket = new RSocketClient({
         serializers: {
           data: JsonSerializer,
           metadata: IdentitySerializer
@@ -40,7 +41,7 @@ export default {
       });
 
       // Open the connection
-      client.connect().subscribe({
+      this.socket.connect().subscribe({
         onComplete: socket => {
           // socket provides the rsocket interactions fire/forget, request/response,
           // request/stream, etc as well as methods to close the socket.
@@ -56,7 +57,8 @@ export default {
               console.log(error);
             },
             onNext: payload => {
-              console.log(payload.data);
+              // console.log(payload.data);
+              this.payload = payload.data;
             },
             onSubscribe: subscription => {
               subscription.request(2147483642);
@@ -75,6 +77,9 @@ export default {
   computed: {
     isConnected() {
       return this.socket ? true : false;
+    },
+    message() {
+      return this.payload;
     }
   },
   mounted() {
