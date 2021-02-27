@@ -1,6 +1,5 @@
 package de.dhbw;
 
-import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.repositories.BoardRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -24,7 +23,7 @@ public class Application {
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
         return (args) -> {
-            repository.save(new BoardAggregate()); //todo
+           // repository.save(new BoardAggregate()); //todo
         };
     }
 }

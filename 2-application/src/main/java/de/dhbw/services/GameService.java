@@ -5,7 +5,6 @@ import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.domainservice.GameDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.repositories.BoardRepository;
-import de.dhbw.repositories.ColleagueRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import de.dhbw.valueobjects.RankingVO;
@@ -21,7 +20,6 @@ import java.util.TimerTask;
 public class GameService implements GameDomainService {
 
     private final BoardRepository boardRepository;
-    private final ColleagueRepository colleagueRepository;
 
     private PlayerEntity player;
     private RankingVO rankingVO;
@@ -33,9 +31,8 @@ public class GameService implements GameDomainService {
     private Timer colleagueMovementTimer;
 
     @Autowired
-    public GameService(BoardRepository boardRepository, ColleagueRepository colleagueRepository) {
+    public GameService(BoardRepository boardRepository) {
         this.boardRepository = boardRepository;
-        this.colleagueRepository = colleagueRepository;
     }
 
     public void initializeGame(PlayerEntity player, String boardName) {
@@ -185,6 +182,17 @@ public class GameService implements GameDomainService {
     @Override
     public BoardAggregate getCurrentBoard() {
         return board;
+    }
+
+    public void initDefaultBoard() {
+        if (player != null) {
+            initializeDate();
+            initialize(new RankingVO(player.getUserDetails(), 0, date));
+            initialize(boardRepository.getBoardByName("default"));
+            return;
+        }
+
+        throw new RuntimeException("The initialization of the default board needs a player.");
     }
 
     @Override

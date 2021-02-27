@@ -6,13 +6,16 @@ import lombok.Getter;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.IdClass;
+import java.io.Serializable;
 import java.util.Objects;
 
 @Builder
 @Getter
 @AllArgsConstructor
 @Entity
-public final class UserDetailsVO {
+@IdClass(UserDetailsVO.class)
+public final class UserDetailsVO implements Serializable {
 
     @Id
     private final String name;
