@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>0-plugins</artifactId>
+    <artifactId>0-plugins-api</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
@@ -21,9 +21,9 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.8.1</version>
+                <version>3.7.0</version>
                 <configuration>
-                    <debug>true</debug>
+                    <encoding>UTF-8</encoding>
                     <source>1.8</source>
                     <target>1.8</target>
                 </configuration>

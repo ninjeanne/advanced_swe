@@ -23,7 +23,7 @@ public class Application {
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
         return (args) -> {
-           // repository.save(new BoardAggregate()); //todo
+            // repository.save(new BoardAggregate()); //todo
         };
     }
 }
