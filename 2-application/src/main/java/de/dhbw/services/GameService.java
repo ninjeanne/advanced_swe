@@ -8,6 +8,7 @@ import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import de.dhbw.valueobjects.RankingVO;
+import de.dhbw.valueobjects.UserDetailsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,11 +36,11 @@ public class GameService implements GameDomainService {
         this.boardRepository = boardRepository;
     }
 
-    public void initializeGame(PlayerEntity player, String boardName) {
+    public void initializeGame(String playerName, String boardName) {
         if (!running) {
             BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
             initialize(boardAggregate);
-            initialize(player);
+            initialize(PlayerEntity.builder().userDetails(UserDetailsVO.builder().name(playerName).build()).build());
             initializeDate();
             initialize(new RankingVO(this.player.getUserDetails(), 0, date));
             return;
@@ -59,6 +60,7 @@ public class GameService implements GameDomainService {
         if (!running) {
             this.player = player;
             initializeLifePointsForPlayer();
+            this.player.setPosition(new CoordinatesVO(0, 0));//todo init better/random position
             return;
         }
 
@@ -166,7 +168,8 @@ public class GameService implements GameDomainService {
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (board.containsCoordinate(newCoordinates) && !board.getObstacles().contains(newCoordinates)) {
-            return player.setPosition(newCoordinates);
+            player.setPosition(newCoordinates);
+            return true;
         }
         return false;
     }

@@ -3,9 +3,7 @@ package de.dhbw.aggregates;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import de.dhbw.valueobjects.RankingVO;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.NonNull;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Entity;
@@ -18,6 +16,8 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
+@Builder
 @Slf4j
 @Entity
 public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben

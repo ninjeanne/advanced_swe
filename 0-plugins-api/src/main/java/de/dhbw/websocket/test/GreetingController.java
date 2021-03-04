@@ -1,4 +1,4 @@
-package de.dhbw.websocket;
+package de.dhbw.websocket.test;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -24,7 +24,7 @@ public class GreetingController {
 
     @Scheduled(fixedRate = 5000)
     public void autoBackendAnswer() {
-        this.template.convertAndSend("/backend/start", new Greeting("Hello from Backend #" + index++));
+        this.template.convertAndSend("/backend/greeting", new Greeting("Hello from Backend #" + index++));
     }
 
 }

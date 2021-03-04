@@ -1,6 +1,8 @@
 package de.dhbw;
 
+import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.repositories.BoardRepository;
+import de.dhbw.valueobjects.PlanVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -9,6 +11,8 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+
+import java.util.UUID;
 
 @SpringBootApplication
 @EntityScan("de.dhbw.*")
@@ -23,7 +27,8 @@ public class Application {
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
         return (args) -> {
-            // repository.save(new BoardAggregate()); //todo
+            repository.save(BoardAggregate.builder().name("default").uuid(UUID.randomUUID().toString()).plan(PlanVO.builder().length(50).width(50).build())
+                    .build());
         };
     }
 }

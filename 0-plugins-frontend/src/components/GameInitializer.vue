@@ -31,12 +31,12 @@
         <div class="col-md-6">
           <form class="form-inline">
             <div class="form-group">
-              <label for="name">What is your name?</label>
+              <label for="player">What is your name?</label>
               <input
                 type="text"
-                id="name"
+                id="player"
                 class="form-control"
-                v-model="send_message"
+                v-model="player_name"
                 placeholder="Your name here..."
               >
             </div>
@@ -45,7 +45,7 @@
               class="btn btn-default"
               type="submit"
               @click.prevent="send"
-            >Send
+            >start game
             </button>
           </form>
         </div>
@@ -58,7 +58,7 @@
           >
             <thead>
             <tr>
-              <th>Greetings</th>
+              <th>Game Details</th>
             </tr>
             </thead>
             <tbody>
@@ -85,17 +85,14 @@ export default {
   data() {
     return {
       received_messages: [],
-      send_message: null,
+      player_name: null,
       connected: false
     };
   },
   methods: {
     send() {
-      console.log("Send message:" + this.send_message);
       if (this.stompClient && this.stompClient.connected) {
-        const msg = {name: this.send_message};
-        console.log(JSON.stringify(msg));
-        this.stompClient.send("/frontend/greeting", JSON.stringify(msg), {});
+        this.stompClient.send("/frontend/initialize", this.player_name, {});
       }
     },
     connect() {
@@ -106,7 +103,7 @@ export default {
         console.log(frame);
         this.stompClient.subscribe("/backend/start", tick => {
           console.log(tick);
-          this.received_messages.push(JSON.parse(tick.body).content);
+          this.received_messages.push(JSON.parse(tick.body));
         });
       }, error => {
         console.log(error);

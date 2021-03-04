@@ -2,6 +2,7 @@ package de.dhbw.mapper;
 
 import de.dhbw.dtos.PlayerDTO;
 import de.dhbw.entities.PlayerEntity;
+import de.dhbw.valueobjects.UserDetailsVO;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -10,8 +11,7 @@ import java.util.function.Function;
 public class PlayerMapper implements Function<PlayerDTO, PlayerEntity> {
 
     private PlayerEntity map(PlayerDTO playerDTO) {
-        //todo implement me
-        return null;
+        return PlayerEntity.builder().userDetails(UserDetailsVO.builder().name(playerDTO.getName()).build()).build();
     }
 
     @Override

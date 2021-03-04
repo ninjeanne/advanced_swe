@@ -1,17 +1,17 @@
 <template>
   <div class="home">
-    <websocket-greetings></websocket-greetings>
+    <game-initializer></game-initializer>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
-import WebsocketGreetings from "@/components/WebsocketGreetings.vue";
+import GameInitializer from "@/components/GameInitializer.vue";
 
 export default {
   name: "home",
   components: {
-    WebsocketGreetings
+    GameInitializer
   }
 };
 </script>

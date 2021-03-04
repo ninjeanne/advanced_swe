@@ -25,7 +25,10 @@ public class PlayerEntity {
      * @param newPosition the new coordinates
      * @return true if the new position has been valid, otherwise false
      */
-    public boolean setPosition(CoordinatesVO newPosition) {
+    public boolean isNewPosition(CoordinatesVO newPosition) {
+        if (position == null) {
+            return true;
+        }
         if (position.equals(newPosition)) {
             return true;
         }
@@ -35,6 +38,12 @@ public class PlayerEntity {
             return position.getY() == (newPosition.getY() + 1) || position.getY() == (newPosition.getY() - 1);
         }
         return false;
+    }
+
+    public void setPosition(CoordinatesVO newPosition) {
+        if (isNewPosition(newPosition)) {
+            this.position = newPosition;
+        }
     }
 
     public void decreaseLifePoints() {

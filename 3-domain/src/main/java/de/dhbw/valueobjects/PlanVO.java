@@ -1,5 +1,6 @@
 package de.dhbw.valueobjects;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,6 +13,7 @@ import java.util.Objects;
 @Builder
 @Getter
 @Entity
+@AllArgsConstructor
 @IdClass(PlanVO.class)
 public final class PlanVO implements Serializable {
 
