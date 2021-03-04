@@ -8,8 +8,8 @@ import org.springframework.web.util.HtmlUtils;
 @Controller
 public class GreetingController {
 
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
+    @MessageMapping("/hello") //beginnt mit frontend -> siehe websocketconfig! Frontend schickt dort hin
+    @SendTo("/backend/greetings") //für die subscription -> von dort werden nachrichten abgeholt.
     public Greeting greeting(HelloMessage message) throws Exception {
         Thread.sleep(1000); // simulated delay
         return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");

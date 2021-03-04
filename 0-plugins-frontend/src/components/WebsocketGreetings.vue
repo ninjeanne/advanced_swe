@@ -95,16 +95,16 @@ export default {
       if (this.stompClient && this.stompClient.connected) {
         const msg = {name: this.send_message};
         console.log(JSON.stringify(msg));
-        this.stompClient.send("/app/hello", JSON.stringify(msg), {});
+        this.stompClient.send("/frontend/hello", JSON.stringify(msg), {});
       }
     },
     connect() {
-      this.socket = new SockJS("http://localhost:8080/gs-guide-websocket");
+      this.socket = new SockJS("http://localhost:8080/socket");
       this.stompClient = Stomp.over(this.socket);
       this.stompClient.connect({}, frame => {
         this.connected = true;
         console.log(frame);
-        this.stompClient.subscribe("/topic/greetings", tick => {
+        this.stompClient.subscribe("/backend/greetings", tick => {
           console.log(tick);
           this.received_messages.push(JSON.parse(tick.body).content);
         });
