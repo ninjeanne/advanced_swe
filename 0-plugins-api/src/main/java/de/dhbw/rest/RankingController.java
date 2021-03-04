@@ -1,4 +1,4 @@
-package de.dhbw.controller;
+package de.dhbw.rest;
 
 import de.dhbw.dtos.RankingDTO;
 import de.dhbw.mapper.RankingMapper;
