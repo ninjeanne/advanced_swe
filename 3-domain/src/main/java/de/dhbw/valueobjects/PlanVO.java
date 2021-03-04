@@ -1,26 +1,29 @@
 package de.dhbw.valueobjects;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import java.io.Serializable;
 import java.util.Objects;
 
 @Builder
 @Getter
-@Entity
-@AllArgsConstructor
-@IdClass(PlanVO.class)
-public final class PlanVO implements Serializable {
+public final class PlanVO {
 
-    @Id
     private final int length;
-    @Id
     private final int width;
+
+    public PlanVO(int length, int width) {
+        if (isValid(length) && isValid(width)) {
+            this.length = length;
+            this.width = width;
+        } else {
+            throw new IllegalArgumentException("Plan is invalid for length " + length + " and width " + width);
+        }
+    }
+
+    private boolean isValid(int value) {
+        return value >= 0;
+    }
 
     @Override
     public boolean equals(Object obj) {

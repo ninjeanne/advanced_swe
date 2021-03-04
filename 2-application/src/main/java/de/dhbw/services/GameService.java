@@ -4,18 +4,14 @@ import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.domainservice.GameDomainService;
 import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
-import de.dhbw.valueobjects.RankingVO;
-import de.dhbw.valueobjects.UserDetailsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 @Service
 public class GameService implements GameDomainService {
@@ -23,7 +19,7 @@ public class GameService implements GameDomainService {
     private final BoardRepository boardRepository;
 
     private PlayerEntity player;
-    private RankingVO rankingVO;
+    private RankingEntity rankingEntity;
     private BoardAggregate board;
     private Date date;
     private boolean running = false;
@@ -40,9 +36,9 @@ public class GameService implements GameDomainService {
         if (!running) {
             BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
             initialize(boardAggregate);
-            initialize(PlayerEntity.builder().userDetails(UserDetailsVO.builder().name(playerName).build()).build());
+            initialize(PlayerEntity.builder().name(playerName).build());
             initializeDate();
-            initialize(new RankingVO(this.player.getUserDetails(), 0, date));
+            initialize(new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, date));
             return;
         }
 
@@ -83,13 +79,13 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public void initialize(RankingVO rankingVO) {
-        this.rankingVO = rankingVO;
+    public void initialize(RankingEntity rankingEntity) {
+        this.rankingEntity = rankingEntity;
     }
 
     @Override
     public boolean isInitialized() {
-        return date != null && board != null && player != null && rankingVO != null;
+        return date != null && board != null && player != null && rankingEntity != null;
     }
 
     @Override
@@ -129,8 +125,8 @@ public class GameService implements GameDomainService {
 
     @Override
     public int getLastRankingPointsForPlayer() {
-        if (rankingVO != null) {
-            return rankingVO.getEarned_points();
+        if (rankingEntity != null) {
+            return rankingEntity.getEarned_points();
         }
 
         throw new RuntimeException("There is no saved ranking for this game and user");
@@ -149,8 +145,9 @@ public class GameService implements GameDomainService {
         if (isRunning() && rankingPointTimer == null) {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
-                    rankingVO = new RankingVO(player.getUserDetails(), rankingVO.getEarned_points() + 20, rankingVO.getDate());
-                    System.out.println("Rankingpoints are " + rankingVO.getEarned_points());
+                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 20,
+                            rankingEntity.getDate());
+                    System.out.println("Rankingpoints are " + rankingEntity.getEarned_points());
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");
@@ -175,9 +172,9 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public RankingVO getLastRankingForPlayer() {
-        if (rankingVO != null) {
-            return rankingVO;
+    public RankingEntity getLastRankingForPlayer() {
+        if (rankingEntity != null) {
+            return rankingEntity;
         }
         throw new RuntimeException("There is no last ranking for this game instance.");
     }
@@ -190,7 +187,7 @@ public class GameService implements GameDomainService {
     public void initDefaultBoard() {
         if (player != null) {
             initializeDate();
-            initialize(new RankingVO(player.getUserDetails(), 0, date));
+            initialize(new RankingEntity(UUID.randomUUID().toString(), player.getName(), 0, date));
             initialize(boardRepository.getBoardByName("default"));
             return;
         }
@@ -255,7 +252,7 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public List<RankingVO> getTotalRankingForBoard() {
+    public List<RankingEntity> getTotalRankingForBoard() {
         return boardRepository.getTopRankingsByBoardName(board.getName());
     }
 }

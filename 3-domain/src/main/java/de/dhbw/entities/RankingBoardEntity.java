@@ -1,6 +1,5 @@
 package de.dhbw.entities;
 
-import de.dhbw.valueobjects.RankingVO;
 import lombok.*;
 
 import java.util.Comparator;
@@ -15,10 +14,10 @@ import java.util.TreeSet;
 public class RankingBoardEntity {
 
     @NonNull
-    private String uuid;
-    private final SortedSet<RankingVO> rankingBoard = new TreeSet<>(Comparator.comparing(RankingVO::getEarned_points));
+    private String uuid;//entity id
+    private final SortedSet<RankingEntity> rankingBoard = new TreeSet<>(Comparator.comparing(RankingEntity::getEarned_points));
 
-    public boolean addRanking(RankingVO ranking) {
+    public boolean addRanking(RankingEntity ranking) {
         if (rankingBoard.size() <= 10) {
             rankingBoard.add(ranking);
             return true;

@@ -2,8 +2,8 @@ package de.dhbw.domainservice;
 
 import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.RankingVO;
 
 import java.util.List;
 
@@ -14,7 +14,7 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     void initializeDate();
 
-    void initialize(RankingVO rankingVO);
+    void initialize(RankingEntity rankingEntity);
 
     boolean isInitialized();
 
@@ -34,7 +34,7 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     boolean movePlayer(CoordinatesVO newCoordinates);
 
-    RankingVO getLastRankingForPlayer();
+    RankingEntity getLastRankingForPlayer();
 
     BoardAggregate getCurrentBoard();
 
@@ -48,5 +48,5 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     void stopMovingColleagues();
 
-    List<RankingVO> getTotalRankingForBoard();
+    List<RankingEntity> getTotalRankingForBoard();
 }

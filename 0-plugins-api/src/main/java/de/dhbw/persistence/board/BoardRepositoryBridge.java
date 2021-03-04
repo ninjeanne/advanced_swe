@@ -1,8 +1,8 @@
 package de.dhbw.persistence.board;
 
 import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
-import de.dhbw.valueobjects.RankingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -34,7 +34,7 @@ public class BoardRepositoryBridge implements BoardRepository {
     }
 
     @Override
-    public List<RankingVO> getTopRankingsByBoardName(String name) {
+    public List<RankingEntity> getTopRankingsByBoardName(String name) {
         return springDataBoardRepository.getBoardAggregateByName(name).getTopRankings();
     }
 }

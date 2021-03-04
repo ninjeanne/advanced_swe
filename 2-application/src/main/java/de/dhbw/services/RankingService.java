@@ -2,8 +2,8 @@ package de.dhbw.services;
 
 import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.domainservice.RankingDomainService;
+import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
-import de.dhbw.valueobjects.RankingVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,19 +20,19 @@ public class RankingService implements RankingDomainService {
     }
 
     @Override
-    public boolean saveNewRankingForBoard(RankingVO ranking, String boardName) {
+    public boolean saveNewRankingForBoard(RankingEntity ranking, String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
         return boardAggregate.addNewTopRanking(ranking);
     }
 
     @Override
-    public boolean isTopRankingInBoard(RankingVO ranking, String boardName) {
+    public boolean isTopRankingInBoard(RankingEntity ranking, String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
         return boardAggregate.isNewTopRanking(ranking);
     }
 
     @Override
-    public List<RankingVO> getTopRankingsForBoard(String boardName) {
+    public List<RankingEntity> getTopRankingsForBoard(String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
         return boardAggregate.getTopRankings();
     }

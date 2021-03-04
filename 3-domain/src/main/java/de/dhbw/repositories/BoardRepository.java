@@ -1,7 +1,7 @@
 package de.dhbw.repositories;
 
 import de.dhbw.aggregates.BoardAggregate;
-import de.dhbw.valueobjects.RankingVO;
+import de.dhbw.entities.RankingEntity;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public interface BoardRepository { //todo Vorgabe der Methoden für spätere JPA
 
     void delete(BoardAggregate boardAggregate);
 
-    List<RankingVO> getTopRankingsByBoardName(String name);
+    List<RankingEntity> getTopRankingsByBoardName(String name);
 }

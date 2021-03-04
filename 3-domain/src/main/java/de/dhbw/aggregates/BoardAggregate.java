@@ -1,15 +1,11 @@
 package de.dhbw.aggregates;
 
+import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
-import de.dhbw.valueobjects.RankingVO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,27 +15,20 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Slf4j
-@Entity
 public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
 
     @NonNull
-    @Id
     private String uuid;
     @NonNull
     private String name;
     @NonNull
-    @OneToMany
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
-    @OneToOne
     private CoordinatesVO vaccination;
     @NonNull
-    @OneToOne
     private PlanVO plan;
     private int velocity;
-    @OneToMany
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
-    @OneToMany
-    private List<RankingVO> topRankings;
+    private List<RankingEntity> topRankings;
 
     public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {
         if (containsCoordinate(coordinatesOfVaccination)) {
@@ -133,35 +122,35 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         throw new IllegalArgumentException("The velocity of the board has to be positive.");
     }
 
-    private RankingVO getLastTopRating() {
+    private RankingEntity getLastTopRating() {
         return topRankings.get(topRankings.size() - 1);
     }
 
-    public boolean addNewTopRanking(RankingVO rankingVO) {
-        if (rankingVO.equals(getLastTopRating())) {
+    public boolean addNewTopRanking(RankingEntity rankingEntity) {
+        if (rankingEntity.equals(getLastTopRating())) {
             return false;
         }
 
         if (topRankings.isEmpty() || topRankings.size() < 10) {
             return true;
         }
-        if (getLastTopRating().getEarned_points() < rankingVO.getEarned_points()) {
+        if (getLastTopRating().getEarned_points() < rankingEntity.getEarned_points()) {
             topRankings.remove(getLastTopRating());
-            topRankings.add(rankingVO);
+            topRankings.add(rankingEntity);
             return true;
         }
         return false;
     }
 
-    public boolean isNewTopRanking(RankingVO rankingVO) {
-        if (rankingVO.equals(getLastTopRating())) {
+    public boolean isNewTopRanking(RankingEntity rankingEntity) {
+        if (rankingEntity.equals(getLastTopRating())) {
             return false;
         }
 
         if (topRankings.isEmpty() || topRankings.size() < 10) {
             return true;
         }
-        return getLastTopRating().getEarned_points() < rankingVO.getEarned_points();
+        return getLastTopRating().getEarned_points() < rankingEntity.getEarned_points();
     }
 
     @Override

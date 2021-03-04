@@ -1,7 +1,6 @@
 package de.dhbw.entities;
 
 import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.UserDetailsVO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +14,7 @@ import java.util.Objects;
 public class PlayerEntity {
 
     @NonNull
-    private UserDetailsVO userDetails; //userDetails as entity id
+    private String name; //userDetails as entity id
     private CoordinatesVO position;
     private int lifePoints = 0;
 
@@ -49,9 +48,9 @@ public class PlayerEntity {
     public void decreaseLifePoints() {
         if (lifePoints > 0) {
             lifePoints--;
-            log.debug("Life points have been decreased for {}. Left: {}", userDetails.getName(), lifePoints);
+            log.debug("Life points have been decreased for {}. Left: {}", getName(), lifePoints);
         } else {
-            throw new IllegalArgumentException("Player " + userDetails.getName() + " is already dead.");
+            throw new IllegalArgumentException("Player " + getName() + " is already dead.");
         }
     }
 
@@ -67,13 +66,13 @@ public class PlayerEntity {
     public boolean equals(Object obj) {
         if (obj instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) obj;
-            return this.userDetails.equals(player.userDetails);
+            return this.getName().equals(player.getName());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(userDetails);
+        return Objects.hash(name);
     }
 }
