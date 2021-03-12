@@ -3,13 +3,18 @@ package de.dhbw.valueobjects;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Builder
 @Getter
+@Embeddable
 public final class PlanVO {
 
+    @Column
     private final int length;
+    @Column
     private final int width;
 
     public PlanVO(int length, int width) {
@@ -19,6 +24,11 @@ public final class PlanVO {
         } else {
             throw new IllegalArgumentException("Plan is invalid for length " + length + " and width " + width);
         }
+    }
+
+    public PlanVO() {
+        this.width = 0;
+        this.length = 0;
     }
 
     private boolean isValid(int value) {

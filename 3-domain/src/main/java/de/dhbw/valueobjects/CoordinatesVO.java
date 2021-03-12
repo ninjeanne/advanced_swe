@@ -3,16 +3,34 @@ package de.dhbw.valueobjects;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
 import java.util.Objects;
 
 @Getter
 @Builder
+@Entity
 public final class CoordinatesVO {
 
+    @Id
+    @GeneratedValue
+    private long id;
+
+    @Column
     private final int x;
+    @Column
     private final int y;
 
-    public CoordinatesVO(int x, int y) {
+    @SuppressWarnings("unused")
+    public CoordinatesVO() {
+        this.x = 0;
+        this.y = 0;
+    }
+
+    public CoordinatesVO(long id, int x, int y) {
+        this.id = id;
         if (isValid(x) && isValid(y)) {
             this.x = x;
             this.y = y;

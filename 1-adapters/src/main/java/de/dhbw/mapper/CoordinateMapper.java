@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class CoordinateMapper implements Function<CoordinateDTO, CoordinatesVO> {
 
     private CoordinatesVO map(CoordinateDTO coordinateDTO) {
-        return new CoordinatesVO(coordinateDTO.getX(), coordinateDTO.getY());
+        return new CoordinatesVO(0, coordinateDTO.getX(), coordinateDTO.getY());
     }
 
     @Override

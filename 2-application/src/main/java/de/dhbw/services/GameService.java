@@ -56,7 +56,7 @@ public class GameService implements GameDomainService {
         if (!running) {
             this.player = player;
             initializeLifePointsForPlayer();
-            this.player.setPosition(new CoordinatesVO(0, 0));//todo init better/random position
+            this.player.setPosition(new CoordinatesVO(0, 0, 0));//todo init better/random position
             return;
         }
 
@@ -226,7 +226,7 @@ public class GameService implements GameDomainService {
         do {
             int x = (int) (Math.random() * plan.getWidth());
             int y = (int) (Math.random() * plan.getLength());
-            coordinatesVO = new CoordinatesVO(x, y);
+            coordinatesVO = new CoordinatesVO(0, x, y);
         } while (board.addNewVaccination(coordinatesVO));
     }
 

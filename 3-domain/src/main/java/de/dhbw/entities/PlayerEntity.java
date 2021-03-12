@@ -4,6 +4,10 @@ import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import java.util.Objects;
 
 @Getter
@@ -11,11 +15,15 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Slf4j
+@Entity
 public class PlayerEntity {
 
     @NonNull
-    private String name; //userDetails as entity id
+    @Id
+    private String name;
+    @OneToOne
     private CoordinatesVO position;
+    @Column
     private int lifePoints = 0;
 
     /**

@@ -3,6 +3,10 @@ package de.dhbw.aggregates;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.*;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -11,12 +15,17 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Entity
 public class ColleagueAggregate {
 
     @NonNull
+    @Id
     private String name; //name as entity id
+    @Column
     private int position = 0;
+    @Column
     boolean moveForward = true;
+    @OneToMany
     private List<CoordinatesVO> path = new ArrayList<>();
 
     public CoordinatesVO getPosition() {

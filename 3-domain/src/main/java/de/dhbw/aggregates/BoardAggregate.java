@@ -6,6 +6,7 @@ import de.dhbw.valueobjects.PlanVO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -15,20 +16,45 @@ import java.util.Objects;
 @AllArgsConstructor
 @Builder
 @Slf4j
+@Entity
 public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
 
     @NonNull
+    @Id
     private String uuid;
     @NonNull
+    @Column
     private String name;
     @NonNull
+    @OneToMany
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
+    @OneToOne
     private CoordinatesVO vaccination;
     @NonNull
+    @Embedded
     private PlanVO plan;
+    @Column
     private int velocity;
+    @OneToMany
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
-    private List<RankingEntity> topRankings;
+    @OrderBy
+    @OneToMany
+    private List<RankingEntity> topRankings = new ArrayList<>();
+
+    public boolean addRanking(RankingEntity ranking) {
+        if (topRankings.size() <= 10) {
+            topRankings.add(ranking);
+            return true;
+        }
+
+        if (getLastTopRating().getEarned_points() < ranking.getEarned_points()) {
+            topRankings.remove(getLastTopRating());
+            topRankings.add(ranking);
+            return true;
+        }
+
+        return false;
+    }
 
     public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {
         if (containsCoordinate(coordinatesOfVaccination)) {
