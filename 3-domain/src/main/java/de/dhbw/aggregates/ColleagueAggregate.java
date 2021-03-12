@@ -2,6 +2,8 @@ package de.dhbw.aggregates;
 
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.*;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -26,6 +28,7 @@ public class ColleagueAggregate {
     @Column
     boolean moveForward = true;
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private List<CoordinatesVO> path = new ArrayList<>();
 
     public CoordinatesVO getPosition() {

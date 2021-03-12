@@ -64,7 +64,6 @@
             <tbody>
             <tr
               v-for="item in received_messages"
-              :key="item"
             >
               <td>{{ item }}</td>
             </tr>
@@ -100,13 +99,12 @@ export default {
       this.stompClient = Stomp.over(this.socket);
       this.stompClient.connect({}, frame => {
         this.connected = true;
-        console.log(frame);
+        //console.log(frame);
         this.stompClient.subscribe("/backend/start", tick => {
-          console.log(tick);
           this.received_messages.push(JSON.parse(tick.body));
         });
       }, error => {
-        console.log(error);
+        //console.log(error);
         this.connected = false;
       });
     },

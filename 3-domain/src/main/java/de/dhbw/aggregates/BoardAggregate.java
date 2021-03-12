@@ -5,6 +5,8 @@ import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -27,6 +29,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     private String name;
     @NonNull
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
     @OneToOne
     private CoordinatesVO vaccination;
@@ -36,10 +39,12 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @Column
     private int velocity;
     @OneToMany
+    @LazyCollection(LazyCollectionOption.FALSE)
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
     @OrderBy
     @OneToMany
-    private List<RankingEntity> topRankings = new ArrayList<>();
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private final List<RankingEntity> topRankings = new ArrayList<>();
 
     public boolean addRanking(RankingEntity ranking) {
         if (topRankings.size() <= 10) {
