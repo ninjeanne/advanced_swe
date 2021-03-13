@@ -100,7 +100,7 @@ public class GameService implements GameDomainService {
                 player.increaseLifePoints();
                 return;
             }
-            stop();
+            stopGame();
             return;
         }
 
@@ -116,7 +116,7 @@ public class GameService implements GameDomainService {
                     return;
                 }
             }
-            stop();
+            stopGame();
             return;
         }
 
@@ -151,8 +151,7 @@ public class GameService implements GameDomainService {
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");
-            long delay = 1000L;
-            rankingPointTimer.schedule(rankingPointTask, delay);
+            rankingPointTimer.scheduleAtFixedRate(rankingPointTask, 0, 1000);
         }
     }
 
@@ -184,27 +183,17 @@ public class GameService implements GameDomainService {
         return board;
     }
 
-    public void initDefaultBoard() {
-        if (player != null) {
-            initializeDate();
-            initialize(new RankingEntity(UUID.randomUUID().toString(), player.getName(), 0, date));
-            initialize(boardRepository.getBoardByName("default"));
-            return;
-        }
-
-        throw new RuntimeException("The initialization of the default board needs a player.");
-    }
-
     @Override
-    public void start() {
+    public void startGame() {
         if (isInitialized()) {
             running = true;
             startCountingRankingPointsForPlayer();
+            startMovingColleagues();
         }
     }
 
     @Override
-    public void stop() {
+    public void stopGame() {
         if (isRunning()) {
             stopCountingRankingPointsForPlayer();
             stopMovingColleagues();
@@ -246,8 +235,7 @@ public class GameService implements GameDomainService {
                 }
             };
             colleagueMovementTimer = new Timer("Colleague Movement Timer");
-            long delay = 10000L;
-            colleagueMovementTimer.schedule(rankingPointTask, delay);
+            colleagueMovementTimer.scheduleAtFixedRate(rankingPointTask, 0, 1000);
         }
     }
 

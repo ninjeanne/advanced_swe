@@ -77,7 +77,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     public boolean addColleague(ColleagueAggregate colleague) {
-        if (colleagues.contains(colleague)) {
+        if (!colleagues.contains(colleague)) {
             colleagues.add(colleague);
             log.debug("colleague {} has been added", colleague.getName());
             return true;

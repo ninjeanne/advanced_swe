@@ -55,6 +55,7 @@ public class ColleagueAggregate {
     private void setPosition(int position) {
         if (position >= 0 && position < path.size()) {
             this.position = position;
+            return;
         }
 
         throw new IllegalArgumentException(
@@ -68,7 +69,7 @@ public class ColleagueAggregate {
                 moveForward = false;
                 return nextPosition();
             } else {
-                setPosition(position++);
+                setPosition(++position);
                 return path.get(position);
             }
         } else {
@@ -76,7 +77,7 @@ public class ColleagueAggregate {
                 moveForward = true;
                 return nextPosition();
             } else {
-                setPosition(position--);
+                setPosition(--position);
                 return path.get(position);
             }
         }

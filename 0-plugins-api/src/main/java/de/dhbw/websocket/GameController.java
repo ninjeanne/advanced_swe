@@ -3,6 +3,7 @@ package de.dhbw.websocket;
 import de.dhbw.mapper.BoardMapper;
 import de.dhbw.mapper.PlayerMapper;
 import de.dhbw.services.GameService;
+import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -36,9 +37,19 @@ public class GameController {
         gameService.initializeGame(playerName, boardName);
     }
 
+    @MessageMapping("/move")
+    public void movePlayer(CoordinatesVO coordinatesVO) {
+        if (gameService.isRunning()) {
+            gameService.movePlayer(coordinatesVO);
+        }
+    }
+
     @Scheduled(fixedRate = 5000)
     public void autoBackendAnswer() {
         if (gameService.isInitialized()) {
+            if (!gameService.isRunning()) {
+                gameService.startGame();
+            }
             this.template.convertAndSend("/backend/start", gameService.getCurrentBoard());
         }
     }

@@ -38,9 +38,9 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     BoardAggregate getCurrentBoard();
 
-    void start();
+    void startGame();
 
-    void stop();
+    void stopGame();
 
     void addRandomVaccinationToBoard();
 
