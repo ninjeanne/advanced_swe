@@ -97,11 +97,10 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     public boolean containsCoordinate(CoordinatesVO coordinate) {
-        if (coordinate.getX() < plan.getWidth() && coordinate.getY() < plan.getLength()) {
+        if (coordinate.getX() < plan.getWidth() && coordinate.getY() < plan.getHeight()) {
             return true;
         }
-        log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
-                plan.getWidth());
+        log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(), plan.getWidth());
         return false;
     }
 
@@ -115,10 +114,11 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
                 log.warn("obstacle at x:{}, y:{} already exists", coordinate.getX(), coordinate.getY());
                 return false;
             }
+            obstacles.add(coordinate);
             return true;
         }
 
-        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
+        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(),
                 plan.getWidth());
         return false;
     }
@@ -132,7 +132,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
             return true;
         }
 
-        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getLength(),
+        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(),
                 plan.getWidth());
         return false;
     }

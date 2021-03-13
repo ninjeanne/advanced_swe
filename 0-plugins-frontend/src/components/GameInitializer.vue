@@ -8,29 +8,6 @@
         <div class="col-md-6">
           <form class="form-inline">
             <div class="form-group">
-              <label for="connect">WebSocket connection:</label>
-              <button
-                id="connect"
-                class="btn btn-default"
-                type="submit"
-                :disabled="connected == true"
-                @click.prevent="connect"
-              >Connect
-              </button>
-              <button
-                id="disconnect"
-                class="btn btn-default"
-                type="submit"
-                :disabled="connected == false"
-                @click.prevent="disconnect"
-              >Disconnect
-              </button>
-            </div>
-          </form>
-        </div>
-        <div class="col-md-6">
-          <form class="form-inline">
-            <div class="form-group">
               <label for="player">What is your name?</label>
               <input
                 type="text"
@@ -50,27 +27,9 @@
           </form>
         </div>
       </div>
-      <div class="row">
-        <div class="col-md-12">
-          <table
-            id="conversation"
-            class="table table-striped"
-          >
-            <thead>
-            <tr>
-              <th>Game Details</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr
-              v-for="item in received_messages"
-            >
-              <td>{{ item }}</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+    </div>
+    <div>
+      <canvas id="c"></canvas>
     </div>
   </div>
 </template>
@@ -85,7 +44,12 @@ export default {
     return {
       received_messages: [],
       player_name: null,
-      connected: false
+      vueCanvas: null,
+      connected: false,
+      plan: null,
+      colleagues: null,
+      obstacles: null,
+      vaccination: null
     };
   },
   methods: {
@@ -101,7 +65,23 @@ export default {
         this.connected = true;
         //console.log(frame);
         this.stompClient.subscribe("/backend/start", tick => {
-          this.received_messages.push(JSON.parse(tick.body));
+          var response = JSON.parse(tick.body);
+          console.log(response);
+          this.received_messages.push(response);
+          if (this.plan == null) {
+            this.plan = response.plan;
+          }
+          if (this.colleagues == null) {
+            this.colleagues = response.colleagues; //todo colleagues bewegen sich
+          }
+          if (this.obstacles == null) {
+            this.obstacles = response.obstacles;
+          }
+          if (this.vaccination == null) {
+            this.vaccination = response.vaccination;
+          }
+          this.drawMap();
+          this.drawObstacles();
         });
       }, error => {
         //console.log(error);
@@ -114,12 +94,34 @@ export default {
       }
       this.connected = false;
     },
-    tickleConnection() {
-      this.connected ? this.disconnect() : this.connect();
+    addCanvas() {
+      var c = document.getElementById("c");
+      c.width = 5000;
+      c.height = 5000;
+      this.vueCanvas = c.getContext("2d");
+    },
+    drawMap() {
+      this.vueCanvas.clearRect(0, 0, 5000, 5000);
+      this.vueCanvas.beginPath();
+      this.vueCanvas.rect(0, 0, this.plan.width, this.plan.height);
+      this.vueCanvas.fillStyle = "grey";
+      this.vueCanvas.fill();
+      this.vueCanvas.stroke();
+    },
+    drawObstacles() {
+      console.log(this.obstacles);
+      for (var i = 0; i < this.obstacles.length; i++) {
+        this.vueCanvas.beginPath();
+        this.vueCanvas.rect(this.obstacles[i].x, this.obstacles[i].y, 2, 2);
+        this.vueCanvas.fillStyle = "black";
+        this.vueCanvas.fill();
+      }
+      this.vueCanvas.stroke();
     }
   },
   mounted() {
-    // this.connect();
+    this.connect();
+    this.addCanvas();
   }
 };
 </script>

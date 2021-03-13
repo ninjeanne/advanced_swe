@@ -13,22 +13,22 @@ import java.util.Objects;
 public final class PlanVO {
 
     @Column
-    private final int length;
+    private final int height;
     @Column
     private final int width;
 
-    public PlanVO(int length, int width) {
-        if (isValid(length) && isValid(width)) {
-            this.length = length;
+    public PlanVO(int height, int width) {
+        if (isValid(height) && isValid(width)) {
+            this.height = height;
             this.width = width;
         } else {
-            throw new IllegalArgumentException("Plan is invalid for length " + length + " and width " + width);
+            throw new IllegalArgumentException("Plan is invalid for height " + height + " and width " + width);
         }
     }
 
     public PlanVO() {
         this.width = 0;
-        this.length = 0;
+        this.height = 0;
     }
 
     private boolean isValid(int value) {
@@ -39,13 +39,13 @@ public final class PlanVO {
     public boolean equals(Object obj) {
         if (obj instanceof PlanVO) {
             PlanVO plan = (PlanVO) obj;
-            return this.length == plan.length && this.width == plan.width;
+            return this.height == plan.height && this.width == plan.width;
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(length, width);
+        return Objects.hash(height, width);
     }
 }

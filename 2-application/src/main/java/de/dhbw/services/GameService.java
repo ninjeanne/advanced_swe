@@ -214,7 +214,7 @@ public class GameService implements GameDomainService {
         CoordinatesVO coordinatesVO;
         do {
             int x = (int) (Math.random() * plan.getWidth());
-            int y = (int) (Math.random() * plan.getLength());
+            int y = (int) (Math.random() * plan.getHeight());
             coordinatesVO = new CoordinatesVO(0, x, y);
         } while (board.addNewVaccination(coordinatesVO));
     }

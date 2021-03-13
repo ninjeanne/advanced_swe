@@ -30,7 +30,7 @@ public class Application {
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
         BoardAggregate board = BoardAggregate.builder().name("default").uuid(UUID.randomUUID().toString())
-                .vaccination(CoordinatesVO.builder().id(0).x(10).y(5).build()).plan(PlanVO.builder().length(50).width(50).build()).velocity(1).build();
+                .vaccination(CoordinatesVO.builder().id(0).x(10).y(5).build()).plan(PlanVO.builder().height(500).width(1000).build()).velocity(1).build();
         board.addObstacle(CoordinatesVO.builder().x(3).y(2).build());
         board.addColleague(ColleagueAggregate.builder().name("Fred").moveForward(true).path(Arrays
                 .asList(CoordinatesVO.builder().x(12).y(12).build(), CoordinatesVO.builder().x(12).y(13).build(), CoordinatesVO.builder().x(12).y(14).build(),
