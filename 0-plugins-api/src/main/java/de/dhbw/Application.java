@@ -29,12 +29,10 @@ public class Application {
 
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
-        BoardAggregate board = BoardAggregate.builder().name("default").uuid(UUID.randomUUID().toString())
-                .vaccination(CoordinatesVO.builder().id(0).x(10).y(5).build()).plan(PlanVO.builder().height(500).width(1000).build()).velocity(1).build();
-        board.addObstacle(CoordinatesVO.builder().x(3).y(2).build());
-        board.addColleague(ColleagueAggregate.builder().name("Fred").moveForward(true).path(Arrays
-                .asList(CoordinatesVO.builder().x(12).y(12).build(), CoordinatesVO.builder().x(12).y(13).build(), CoordinatesVO.builder().x(12).y(14).build(),
-                        CoordinatesVO.builder().x(13).y(14).build())).build());
+        BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", new CoordinatesVO(10, 5), new PlanVO(500, 1000), 1);
+        board.addObstacle(new CoordinatesVO(3, 2));
+        board.addColleague(new ColleagueAggregate("Fred", 0, true,
+                Arrays.asList(new CoordinatesVO(12, 12), new CoordinatesVO(12, 13), new CoordinatesVO(12, 14), new CoordinatesVO(13, 14))));
         return (args) -> {
             repository.save(board);
         };

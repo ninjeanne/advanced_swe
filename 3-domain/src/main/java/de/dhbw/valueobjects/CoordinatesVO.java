@@ -1,6 +1,5 @@
 package de.dhbw.valueobjects;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.Column;
@@ -10,7 +9,6 @@ import javax.persistence.Id;
 import java.util.Objects;
 
 @Getter
-@Builder
 @Entity
 public final class CoordinatesVO {
 
@@ -29,14 +27,18 @@ public final class CoordinatesVO {
         this.y = 0;
     }
 
-    public CoordinatesVO(long id, int x, int y) {
-        this.id = id;
+    public CoordinatesVO(int x, int y) {
         if (isValid(x) && isValid(y)) {
             this.x = x;
             this.y = y;
         } else {
             throw new IllegalArgumentException("Coordinates are invalid for x " + x + " and y " + y);
         }
+    }
+
+    public CoordinatesVO(long id, int x, int y) {
+        this(x, y);
+        this.id = id;
     }
 
     private boolean isValid(int value) {

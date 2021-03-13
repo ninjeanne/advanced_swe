@@ -1,13 +1,11 @@
 package de.dhbw.valueobjects;
 
-import lombok.Builder;
 import lombok.Getter;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
-@Builder
 @Getter
 @Embeddable
 public final class PlanVO {

@@ -1,6 +1,9 @@
 package de.dhbw.entities;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -11,9 +14,8 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder //TODO selbst implementieren. Der Builder nutzt keine Setter. Alternativ Konstruktoren verwenden
 @Entity
-public final class RankingEntity {
+public class RankingEntity {
 
     @NonNull
     @Id

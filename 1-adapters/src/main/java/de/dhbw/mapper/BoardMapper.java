@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class BoardMapper implements Function<BoardDTO, BoardAggregate> {
 
     private BoardAggregate map(BoardDTO boardDTO) {
-        return BoardAggregate.builder().name(boardDTO.getName()).name(boardDTO.getName()).build();
+        return new BoardAggregate(boardDTO.getId(), boardDTO.getName(), boardDTO.getCoordinates(), boardDTO.getPlan(), boardDTO.getVelocity());
     }
 
     @Override

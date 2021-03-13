@@ -1,7 +1,10 @@
 package de.dhbw.entities;
 
 import de.dhbw.valueobjects.CoordinatesVO;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.Column;
@@ -13,7 +16,6 @@ import java.util.Objects;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @Slf4j
 @Entity
 public class PlayerEntity {

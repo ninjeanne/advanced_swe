@@ -10,7 +10,7 @@ import java.util.function.Function;
 public class PlayerMapper implements Function<PlayerDTO, PlayerEntity> {
 
     private PlayerEntity map(PlayerDTO playerDTO) {
-        return PlayerEntity.builder().name(playerDTO.getName()).build();
+        return new PlayerEntity(playerDTO.getName(), playerDTO.getCoordinates(), playerDTO.getLifePoints());
     }
 
     @Override

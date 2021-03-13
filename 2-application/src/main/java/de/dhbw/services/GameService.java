@@ -36,7 +36,7 @@ public class GameService implements GameDomainService {
         if (!running) {
             BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
             initialize(boardAggregate);
-            initialize(PlayerEntity.builder().name(playerName).build());
+            initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0, 0), 3));
             initializeDate();
             initialize(new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, date));
             return;
