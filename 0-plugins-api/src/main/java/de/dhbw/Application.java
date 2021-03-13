@@ -14,7 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @SpringBootApplication
@@ -29,10 +30,37 @@ public class Application {
 
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
-        BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", new CoordinatesVO(10, 5), new PlanVO(500, 1000), 1);
-        board.addObstacle(new CoordinatesVO(3, 2));
-        board.addColleague(new ColleagueAggregate("Fred", 0, true,
-                Arrays.asList(new CoordinatesVO(12, 12), new CoordinatesVO(12, 13), new CoordinatesVO(12, 14), new CoordinatesVO(13, 14))));
+        CoordinatesVO vaccination = new CoordinatesVO(20, 5);
+        PlanVO plan = new PlanVO(50, 80);
+        BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", vaccination, plan, 1);
+        for (int y = 1; y < 5; y++) {
+            for (int i = 0; i <= 12; i++) {
+                for (int j = i * 5; j < (i * 5) + 10 && i % 4 == 0; j++) {
+                    board.addObstacle(new CoordinatesVO(j, 10 * y));
+                }
+            }
+        }
+
+        for (int y = 0; y < 4; y++) {
+            for (int x = 0; x < 4; x++) {
+                for (int r = 0; r < 2; r++) {
+                    for (int s = 0; s < 2; s++) {
+                        board.addObstacle(new CoordinatesVO(12 + r + x * 20, 15 + s + y * 10));
+                    }
+                }
+            }
+        }
+
+        List<CoordinatesVO> pathOfColleague = new ArrayList<>();
+
+        for (int x = 0; x < 10; x++) {
+            pathOfColleague.add(new CoordinatesVO(11 + x, 11));
+        }
+        for (int y = 0; y < 5; y++) {
+            pathOfColleague.add(new CoordinatesVO(21, 11 + y));
+        }
+
+        board.addColleague(new ColleagueAggregate("Fred", 0, true, pathOfColleague));
         return (args) -> {
             repository.save(board);
         };

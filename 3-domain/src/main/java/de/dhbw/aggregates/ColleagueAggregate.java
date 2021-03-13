@@ -1,5 +1,6 @@
 package de.dhbw.aggregates;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -30,6 +31,7 @@ public class ColleagueAggregate {
     @LazyCollection(LazyCollectionOption.FALSE)
     private List<CoordinatesVO> path = new ArrayList<>();
 
+    @JsonGetter("position")
     public CoordinatesVO getPosition() {
         return path.get(position);
     }

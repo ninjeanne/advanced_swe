@@ -80,6 +80,12 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     public boolean addColleague(ColleagueAggregate colleague) {
         if (!colleagues.contains(colleague)) {
+            for (CoordinatesVO coordinatesVO : colleague.getPath()) {
+                if (obstacles.contains(coordinatesVO)) {
+                    log.debug("there is an obstacle at x {} and y {} of colleague {}", coordinatesVO.getX(), coordinatesVO.getY(), colleague.getName());
+                    return false;
+                }
+            }
             colleagues.add(colleague);
             log.debug("colleague {} has been added", colleague.getName());
             return true;
@@ -102,7 +108,8 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         if (coordinate.getX() < plan.getWidth() && coordinate.getY() < plan.getHeight()) {
             return true;
         }
-        log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(), plan.getWidth());
+        log.warn("coordinate (x:{}, y:{}) not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(),
+                plan.getWidth());
         return false;
     }
 
@@ -112,7 +119,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     public boolean addObstacle(CoordinatesVO coordinate) {
         if (this.containsCoordinate(coordinate)) {
-            if (obstacles.contains(coordinate)) {
+            if (obstacles.contains(coordinate) || vaccination.equals(coordinate)) {
                 log.warn("obstacle at x:{}, y:{} already exists", coordinate.getX(), coordinate.getY());
                 return false;
             }

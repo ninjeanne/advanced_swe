@@ -42,14 +42,14 @@ export default {
   name: "websocketdemo",
   data() {
     return {
-      received_messages: [],
       player_name: null,
       vueCanvas: null,
       connected: false,
       plan: null,
       colleagues: null,
       obstacles: null,
-      vaccination: null
+      vaccination: null,
+      multiplier: 10
     };
   },
   methods: {
@@ -67,21 +67,19 @@ export default {
         this.stompClient.subscribe("/backend/start", tick => {
           var response = JSON.parse(tick.body);
           console.log(response);
-          this.received_messages.push(response);
+          console.log(response.colleagues);
+          this.colleagues = response.colleagues;
+          this.vaccination = response.vaccination;
           if (this.plan == null) {
             this.plan = response.plan;
-          }
-          if (this.colleagues == null) {
-            this.colleagues = response.colleagues; //todo colleagues bewegen sich
           }
           if (this.obstacles == null) {
             this.obstacles = response.obstacles;
           }
-          if (this.vaccination == null) {
-            this.vaccination = response.vaccination;
-          }
           this.drawMap();
           this.drawObstacles();
+          this.drawVaccination();
+          this.drawColleagues();
         });
       }, error => {
         //console.log(error);
@@ -96,27 +94,44 @@ export default {
     },
     addCanvas() {
       var c = document.getElementById("c");
-      c.width = 5000;
-      c.height = 5000;
+      c.width = 2000;
+      c.height = 2000;
       this.vueCanvas = c.getContext("2d");
     },
     drawMap() {
-      this.vueCanvas.clearRect(0, 0, 5000, 5000);
+      this.vueCanvas.clearRect(0, 0, 2000, 2000);
       this.vueCanvas.beginPath();
-      this.vueCanvas.rect(0, 0, this.plan.width, this.plan.height);
-      this.vueCanvas.fillStyle = "grey";
+      this.vueCanvas.rect(0, 0, this.plan.width * this.multiplier, this.plan.height * this.multiplier);
+      this.vueCanvas.fillStyle = "white";
       this.vueCanvas.fill();
       this.vueCanvas.stroke();
     },
+    drawColleagues() {
+      for (var i = 0; i < this.colleagues.length; i++) {
+        this.vueCanvas.beginPath();
+        this.vueCanvas.rect(this.colleagues[i].position.x * this.multiplier, this.colleagues[i].position.y * this.multiplier, this.multiplier, this.multiplier);
+        this.vueCanvas.fillStyle = "red";
+        this.vueCanvas.fill();
+        this.vueCanvas.stroke();
+      }
+    },
     drawObstacles() {
-      console.log(this.obstacles);
       for (var i = 0; i < this.obstacles.length; i++) {
         this.vueCanvas.beginPath();
-        this.vueCanvas.rect(this.obstacles[i].x, this.obstacles[i].y, 2, 2);
+        this.vueCanvas.rect(this.obstacles[i].x * this.multiplier, this.obstacles[i].y * this.multiplier, this.multiplier, this.multiplier);
         this.vueCanvas.fillStyle = "black";
         this.vueCanvas.fill();
+        this.vueCanvas.stroke();
       }
-      this.vueCanvas.stroke();
+    },
+    drawVaccination() {
+      if (this.vaccination != null) {
+        this.vueCanvas.beginPath();
+        this.vueCanvas.rect(this.vaccination.x * this.multiplier, this.vaccination.y * this.multiplier, this.multiplier, this.multiplier);
+        this.vueCanvas.fillStyle = "green";
+        this.vueCanvas.fill();
+        this.vueCanvas.stroke();
+      }
     }
   },
   mounted() {
