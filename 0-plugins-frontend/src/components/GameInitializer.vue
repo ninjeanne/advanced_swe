@@ -6,25 +6,31 @@
     >
       <div class="row">
         <div class="col-md-6">
-          <form class="form-inline">
-            <div class="form-group">
-              <label for="player">What is your name?</label>
-              <input
-                type="text"
-                id="player"
-                class="form-control"
-                v-model="player_name"
-                placeholder="Your name here..."
-              >
-            </div>
-            <button
-              id="send"
-              class="btn btn-default"
-              type="submit"
-              @click.prevent="send"
-            >start game
-            </button>
-          </form>
+          <div class="form-group">
+            <label for="player">What is your name?</label>
+            <input
+              type="text"
+              id="player"
+              class="form-control"
+              v-model="player_name"
+              :disabled="started"
+              placeholder="Your name here..."
+            >
+          </div>
+          <button
+            id="start"
+            class="btn btn-default"
+            :disabled="started"
+            @click.prevent="start"
+          >start
+          </button>
+          <button
+            id="stop"
+            class="btn btn-default"
+            :disabled="!started"
+            @click.prevent="disconnect"
+          >stop
+          </button>
         </div>
       </div>
     </div>
@@ -42,9 +48,10 @@ export default {
   name: "websocketdemo",
   data() {
     return {
-      player_name: null,
+      player_name: "Default Spielername",
       vueCanvas: null,
       connected: false,
+      started: false,
       plan: null,
       colleagues: null,
       obstacles: null,
@@ -53,21 +60,15 @@ export default {
     };
   },
   methods: {
-    send() {
-      if (this.stompClient && this.stompClient.connected) {
-        this.stompClient.send("/frontend/initialize", this.player_name, {});
+    async start() {
+      if (!this.connected) {
+        await this.connect();
       }
-    },
-    connect() {
-      this.socket = new SockJS("http://localhost:8080/socket");
-      this.stompClient = Stomp.over(this.socket);
-      this.stompClient.connect({}, frame => {
-        this.connected = true;
-        //console.log(frame);
+      if (this.stompClient != null && this.connected) {
+        this.started = true;
+        this.stompClient.send("/frontend/initialize", this.player_name, {});
         this.stompClient.subscribe("/backend/start", tick => {
-          var response = JSON.parse(tick.body);
-          console.log(response);
-          console.log(response.colleagues);
+          let response = JSON.parse(tick.body);
           this.colleagues = response.colleagues;
           this.vaccination = response.vaccination;
           if (this.plan == null) {
@@ -81,25 +82,50 @@ export default {
           this.drawVaccination();
           this.drawColleagues();
         });
+      }
+    },
+    async connect() {
+      if (this.stompClient != null || this.socket != null || this.connected) {
+        await this.disconnect();
+      }
+      this.socket = new SockJS("http://localhost:8080/socket");
+      this.stompClient = Stomp.over(this.socket);
+      this.stompClient.debug = () => {
+      };
+      await this.stompClient.connect({}, frame => {
+        this.connected = true;
       }, error => {
-        //console.log(error);
-        this.connected = false;
+        this.disconnect();
       });
     },
-    disconnect() {
+    async disconnect() {
       if (this.stompClient) {
-        this.stompClient.disconnect();
+        await this.stompClient.disconnect();
+        await this.socket.close();
       }
+      this.socket = null;
+      this.stompClient = null;
       this.connected = false;
+      this.started = false;
+      this.removeCanvas();
+    },
+    removeCanvas() {
+      if (this.vueCanvas != null) {
+        this.vueCanvas.clearRect(0, 0, this.plan.width * this.multiplier, this.plan.height * this.multiplier);
+      }
+      this.vueCanvas = null;
     },
     addCanvas() {
       var c = document.getElementById("c");
-      c.width = 2000;
-      c.height = 2000;
+      c.width = 800;
+      c.height = 1000;
       this.vueCanvas = c.getContext("2d");
     },
     drawMap() {
-      this.vueCanvas.clearRect(0, 0, 2000, 2000);
+      if (this.vueCanvas === null) {
+        this.addCanvas();
+      }
+      this.vueCanvas.clearRect(0, 0, this.plan.width * this.multiplier, this.plan.height * this.multiplier);
       this.vueCanvas.beginPath();
       this.vueCanvas.rect(0, 0, this.plan.width * this.multiplier, this.plan.height * this.multiplier);
       this.vueCanvas.fillStyle = "white";
@@ -109,9 +135,10 @@ export default {
     drawColleagues() {
       for (var i = 0; i < this.colleagues.length; i++) {
         this.vueCanvas.beginPath();
-        this.vueCanvas.rect(this.colleagues[i].position.x * this.multiplier, this.colleagues[i].position.y * this.multiplier, this.multiplier, this.multiplier);
-        this.vueCanvas.fillStyle = "red";
-        this.vueCanvas.fill();
+        const img = new Image();
+        img.src = "static/colleague.png";
+        this.vueCanvas.drawImage(img, this.colleagues[i].position.x * this.multiplier, this.colleagues[i].position.y * this.multiplier, this.multiplier,
+          this.multiplier);
         this.vueCanvas.stroke();
       }
     },
@@ -127,16 +154,15 @@ export default {
     drawVaccination() {
       if (this.vaccination != null) {
         this.vueCanvas.beginPath();
-        this.vueCanvas.rect(this.vaccination.x * this.multiplier, this.vaccination.y * this.multiplier, this.multiplier, this.multiplier);
-        this.vueCanvas.fillStyle = "green";
-        this.vueCanvas.fill();
+        const img = new Image();
+        img.src = "static/vaccination.png";
+        this.vueCanvas.drawImage(img, this.vaccination.x * this.multiplier, this.vaccination.y * this.multiplier, this.multiplier * 3, this.multiplier * 3);
         this.vueCanvas.stroke();
       }
     }
   },
   mounted() {
     this.connect();
-    this.addCanvas();
   }
 };
 </script>
