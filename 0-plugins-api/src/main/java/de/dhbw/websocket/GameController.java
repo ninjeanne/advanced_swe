@@ -1,5 +1,6 @@
 package de.dhbw.websocket;
 
+import de.dhbw.entities.PlayerEntity;
 import de.dhbw.mapper.BoardMapper;
 import de.dhbw.mapper.PlayerMapper;
 import de.dhbw.services.GameService;
@@ -7,6 +8,7 @@ import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
+import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -38,10 +40,15 @@ public class GameController {
     }
 
     @MessageMapping("/move")
-    public void movePlayer(CoordinatesVO coordinatesVO) {
+    @SendTo("/backend/player")
+    public PlayerEntity movePlayer(CoordinatesVO coordinatesVO) {
         if (gameService.isRunning()) {
-            gameService.movePlayer(coordinatesVO);
+            if (gameService.movePlayer(coordinatesVO)) {
+                return gameService.getPlayer();
+            }
+            return null;
         }
+        return null;
     }
 
     @Scheduled(fixedRate = 1000)

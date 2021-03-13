@@ -34,6 +34,13 @@
         </div>
       </div>
     </div>
+    <button
+      id="move"
+      class="btn btn-default"
+      :disabled="!started"
+      @click.prevent="move"
+    >move
+    </button>
     <div>
       <canvas id="c"></canvas>
     </div>
@@ -49,6 +56,7 @@ export default {
   data() {
     return {
       player_name: "Default Spielername",
+      player: null,
       vueCanvas: null,
       connected: false,
       started: false,
@@ -81,8 +89,23 @@ export default {
           this.drawObstacles();
           this.drawVaccination();
           this.drawColleagues();
+          this.drawPlayer();
         });
+        this.stompClient.subscribe("/backend/player", tick => {
+          this.player = JSON.parse(tick.body);
+          this.drawPlayer();
+        });
+        this.player = {
+          name: this.player_name,
+          position: {
+            x: 0,
+            y: 0
+          }
+        };
       }
+    },
+    move() {
+      this.stompClient.send("/frontend/move", JSON.stringify(this.player), {});
     },
     async connect() {
       if (this.stompClient != null || this.socket != null || this.connected) {
@@ -118,7 +141,7 @@ export default {
     addCanvas() {
       var c = document.getElementById("c");
       c.width = 800;
-      c.height = 1000;
+      c.height = 500;
       this.vueCanvas = c.getContext("2d");
     },
     drawMap() {
@@ -135,11 +158,15 @@ export default {
     drawColleagues() {
       for (var i = 0; i < this.colleagues.length; i++) {
         this.vueCanvas.beginPath();
+        this.vueCanvas.arc(this.colleagues[i].position.x * this.multiplier + this.multiplier / 2,
+          this.colleagues[i].position.y * this.multiplier + this.multiplier / 2, this.multiplier * 2, 0, 2 * Math.PI);
+        this.vueCanvas.fillStyle = "yellow";
+        this.vueCanvas.fill();
         const img = new Image();
         img.src = "static/colleague.png";
         this.vueCanvas.drawImage(img, this.colleagues[i].position.x * this.multiplier, this.colleagues[i].position.y * this.multiplier, this.multiplier,
           this.multiplier);
-        this.vueCanvas.stroke();
+        // this.vueCanvas.stroke();
       }
     },
     drawObstacles() {
@@ -157,6 +184,16 @@ export default {
         const img = new Image();
         img.src = "static/vaccination.png";
         this.vueCanvas.drawImage(img, this.vaccination.x * this.multiplier, this.vaccination.y * this.multiplier, this.multiplier * 3, this.multiplier * 3);
+        this.vueCanvas.stroke();
+      }
+    },
+    drawPlayer() {
+      if (this.player != null) {
+        this.vueCanvas.beginPath();
+        const img = new Image();
+        img.src = "static/pacman.png";
+        this.vueCanvas.drawImage(img, this.player.position.x * this.multiplier, this.player.position.y * this.multiplier, this.multiplier * 3,
+          this.multiplier * 3);
         this.vueCanvas.stroke();
       }
     }

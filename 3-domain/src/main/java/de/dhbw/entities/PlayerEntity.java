@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -24,6 +26,7 @@ public class PlayerEntity {
     @Id
     private String name;
     @OneToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
     private CoordinatesVO position;
     @Column
     private int lifePoints = 0;

@@ -170,6 +170,13 @@ public class GameService implements GameDomainService {
         return false;
     }
 
+    public PlayerEntity getPlayer() {
+        if (isRunning()) {
+            return player;
+        }
+        return null;
+    }
+
     @Override
     public RankingEntity getLastRankingForPlayer() {
         if (rankingEntity != null) {
