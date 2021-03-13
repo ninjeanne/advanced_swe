@@ -11,7 +11,7 @@ import java.util.Objects;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder //TODO selbst implementieren. Der Builder nutzt keine Setter. Alternativ Konstruktoren verwenden
 @Entity
 public final class RankingEntity {
 

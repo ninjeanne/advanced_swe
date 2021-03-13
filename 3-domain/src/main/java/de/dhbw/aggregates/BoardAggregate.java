@@ -28,21 +28,21 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @Column
     private String name;
     @NonNull
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private CoordinatesVO vaccination;
     @NonNull
     @Embedded
     private PlanVO plan;
     @Column
     private int velocity;
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
     @OrderBy
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<RankingEntity> topRankings = new ArrayList<>();
 

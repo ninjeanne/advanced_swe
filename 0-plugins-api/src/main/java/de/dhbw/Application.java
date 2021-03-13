@@ -2,6 +2,7 @@ package de.dhbw;
 
 import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.repositories.BoardRepository;
+import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -26,9 +27,11 @@ public class Application {
 
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
+        BoardAggregate board = BoardAggregate.builder().name("default").uuid(UUID.randomUUID().toString())
+                .vaccination(CoordinatesVO.builder().id(0).x(10).y(5).build()).plan(PlanVO.builder().length(50).width(50).build()).velocity(1).build();
+        board.addObstacle(CoordinatesVO.builder().x(3).y(2).build());
         return (args) -> {
-            repository.save(BoardAggregate.builder().name("default").uuid(UUID.randomUUID().toString()).plan(PlanVO.builder().length(50).width(50).build())
-                    .build());
+            repository.save(board);
         };
     }
 }
