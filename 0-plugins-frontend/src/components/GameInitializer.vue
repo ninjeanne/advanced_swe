@@ -28,7 +28,7 @@
             id="stop"
             class="btn btn-default"
             :disabled="!started"
-            @click.prevent="disconnect"
+            @click.prevent="stop"
           >stop
           </button>
         </div>
@@ -62,6 +62,10 @@ export default {
     };
   },
   methods: {
+    stop() {
+      this.stompClient.send("/frontend/stop", this.player_name, {});
+      this.disconnect();
+    },
     async start() {
       if (!this.connected) {
         await this.connect();

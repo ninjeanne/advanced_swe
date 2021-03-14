@@ -35,8 +35,16 @@ public class GameController {
     @MessageMapping("/initialize")
     public void initPlayer(String playerName) {
         String boardName = "default";
-        log.info("New game {} initialized for player {}", boardName, playerName);
         gameService.initializeGame(playerName, boardName);
+        log.info("New game {} initialized for player {}", boardName, playerName);
+    }
+
+    @MessageMapping("/stop")
+    public void stopGame() {
+        String playerName = gameService.getPlayer().getName();
+        String boardName = gameService.getCurrentBoard().getName();
+        gameService.stopGame();
+        log.info("Game {} stopped for player {}", boardName, playerName);
     }
 
     @MessageMapping("/move")
