@@ -50,6 +50,7 @@ export default {
     return {
       player_name: "Default Spielername",
       player: null,
+      reset_player: null,
       vueCanvas: null,
       connected: false,
       started: false,
@@ -78,16 +79,11 @@ export default {
           if (this.obstacles == null) {
             this.obstacles = response.obstacles;
           }
-          this.drawMap();
-          this.drawObstacles();
-          this.drawVaccination();
-          this.drawColleagues();
-          this.drawPlayer();
+          this.redraw();
         });
         this.stompClient.subscribe("/backend/player", tick => {
-          //console.log(tick.body);
-          //this.player = JSON.parse(tick.body);
-          //this.drawPlayer();
+          this.player = JSON.parse(tick.body);
+          this.redraw();
         });
         this.player = {
           name: this.player_name,
@@ -99,6 +95,13 @@ export default {
         this.move();
       }
     },
+    redraw() {
+      this.drawMap();
+      this.drawObstacles();
+      this.drawVaccination();
+      this.drawColleagues();
+      this.drawPlayer();
+    },
     move() {
       document.addEventListener("keydown", function(event) {
         let validUp = ["ArrowUp", "W", "w"];
@@ -106,20 +109,23 @@ export default {
         let validLeft = ["ArrowLeft", "a", "A"];
         let validRight = ["ArrowRight", "d", "D"];
         let valid = validUp.concat(validDown, validLeft, validRight);
-
+        let position = {
+          x: this.player.position.x,
+          y: this.player.position.y
+        };
         if (validUp.includes(event.key)) {
-          this.player.position.y = this.player.position.y - 1;
+          position.y = this.player.position.y - 1;
         } else if (validDown.includes(event.key)) {
-          this.player.position.y = this.player.position.y + 1;
+          position.y = this.player.position.y + 1;
         } else if (validLeft.includes(event.key)) {
-          this.player.position.x = this.player.position.x - 1;
+          position.x = this.player.position.x - 1;
         } else if (validRight.includes(event.key)) {
-          this.player.position.x = this.player.position.x + 1;
+          position.x = this.player.position.x + 1;
         }
-        console.log(this.player.position.x + "  " + this.player.position.y);
+        console.log(position.x);
         if (valid.includes(event.key)) {
           event.preventDefault(); // prevent it from doing default behavior, like downarrow moving page downward
-          this.stompClient.send("/frontend/move", JSON.stringify(this.player.position), {});
+          this.stompClient.send("/frontend/move", JSON.stringify(position), {});
         }
       }.bind(this));
     },

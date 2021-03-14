@@ -42,10 +42,17 @@ public class GameController {
     @MessageMapping("/move")
     @SendTo("/backend/player")
     public PlayerEntity movePlayer(CoordinatesVO coordinatesVO) {
+        try {
+            CoordinatesVO coordinates = new CoordinatesVO(coordinatesVO.getX(),
+                    coordinatesVO.getY()); //TODO hier ein coordinates DTO einführen und richtig parsen
+        } catch (Exception e) {
+            return null;
+        }
         if (gameService.isRunning()) {
             if (gameService.movePlayer(coordinatesVO)) {
                 return gameService.getPlayer();
             }
+            System.out.println("Nicht erlaubter Zug!");
             return null;
         }
         return null;

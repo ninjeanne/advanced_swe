@@ -163,6 +163,11 @@ public class GameService implements GameDomainService {
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (board.containsCoordinate(newCoordinates) && !board.getObstacles().contains(newCoordinates)) {
+            for (ColleagueAggregate colleague : board.getColleagues()) {
+                if (colleague.getPosition().equals(newCoordinates)) {
+                    return false;
+                }
+            }
             player.setPosition(newCoordinates);
             return true;
         }
