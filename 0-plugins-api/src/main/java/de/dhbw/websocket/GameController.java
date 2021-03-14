@@ -51,7 +51,7 @@ public class GameController {
         return null;
     }
 
-    @Scheduled(fixedRate = 1000)
+    @Scheduled(fixedRate = 500)
     public void autoBackendAnswer() {
         if (gameService.isInitialized()) {
             if (!gameService.isRunning()) {

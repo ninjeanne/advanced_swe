@@ -34,13 +34,6 @@
         </div>
       </div>
     </div>
-    <button
-      id="move"
-      class="btn btn-default"
-      :disabled="!started"
-      @click.prevent="move"
-    >move
-    </button>
     <div>
       <canvas id="c"></canvas>
     </div>
@@ -92,8 +85,9 @@ export default {
           this.drawPlayer();
         });
         this.stompClient.subscribe("/backend/player", tick => {
-          this.player = JSON.parse(tick.body);
-          this.drawPlayer();
+          //console.log(tick.body);
+          //this.player = JSON.parse(tick.body);
+          //this.drawPlayer();
         });
         this.player = {
           name: this.player_name,
@@ -102,10 +96,32 @@ export default {
             y: 0
           }
         };
+        this.move();
       }
     },
     move() {
-      this.stompClient.send("/frontend/move", JSON.stringify(this.player), {});
+      document.addEventListener("keydown", function(event) {
+        let validUp = ["ArrowUp", "W", "w"];
+        let validDown = ["ArrowDown", "s", "S"];
+        let validLeft = ["ArrowLeft", "a", "A"];
+        let validRight = ["ArrowRight", "d", "D"];
+        let valid = validUp.concat(validDown, validLeft, validRight);
+
+        if (validUp.includes(event.key)) {
+          this.player.position.y = this.player.position.y - 1;
+        } else if (validDown.includes(event.key)) {
+          this.player.position.y = this.player.position.y + 1;
+        } else if (validLeft.includes(event.key)) {
+          this.player.position.x = this.player.position.x - 1;
+        } else if (validRight.includes(event.key)) {
+          this.player.position.x = this.player.position.x + 1;
+        }
+        console.log(this.player.position.x + "  " + this.player.position.y);
+        if (valid.includes(event.key)) {
+          event.preventDefault(); // prevent it from doing default behavior, like downarrow moving page downward
+          this.stompClient.send("/frontend/move", JSON.stringify(this.player.position), {});
+        }
+      }.bind(this));
     },
     async connect() {
       if (this.stompClient != null || this.socket != null || this.connected) {

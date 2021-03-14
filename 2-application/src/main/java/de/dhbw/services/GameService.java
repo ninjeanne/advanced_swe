@@ -147,11 +147,10 @@ public class GameService implements GameDomainService {
                 public void run() {
                     rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 20,
                             rankingEntity.getDate());
-                    System.out.println("Rankingpoints are " + rankingEntity.getEarned_points());
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");
-            rankingPointTimer.scheduleAtFixedRate(rankingPointTask, 0, 1000);
+            rankingPointTimer.scheduleAtFixedRate(rankingPointTask, 0, 500);
         }
     }
 
@@ -238,11 +237,10 @@ public class GameService implements GameDomainService {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
                     board.getColleagues().forEach(ColleagueAggregate::nextPosition);
-                    System.out.println("Colleagues have been moved.");
                 }
             };
             colleagueMovementTimer = new Timer("Colleague Movement Timer");
-            colleagueMovementTimer.scheduleAtFixedRate(rankingPointTask, 0, 1000);
+            colleagueMovementTimer.scheduleAtFixedRate(rankingPointTask, 0, 500);
         }
     }
 
