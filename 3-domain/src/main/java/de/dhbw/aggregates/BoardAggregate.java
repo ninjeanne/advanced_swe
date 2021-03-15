@@ -205,17 +205,22 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     private RankingEntity getLastTopRating() {
-        return topRankings.get(topRankings.size() - 1);
+        if (!topRankings.isEmpty()) {
+            return topRankings.get(topRankings.size() - 1);
+        }
+        return null;
     }
 
     public boolean addNewTopRanking(RankingEntity rankingEntity) {
+        if (topRankings.isEmpty() || getLastTopRating() == null || topRankings.size() < 10) {
+            topRankings.add(rankingEntity);
+            return true;
+        }
+
         if (rankingEntity.equals(getLastTopRating())) {
             return false;
         }
 
-        if (topRankings.isEmpty() || topRankings.size() < 10) {
-            return true;
-        }
         if (getLastTopRating().getEarned_points() < rankingEntity.getEarned_points()) {
             topRankings.remove(getLastTopRating());
             topRankings.add(rankingEntity);
@@ -225,12 +230,12 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     public boolean isNewTopRanking(RankingEntity rankingEntity) {
-        if (rankingEntity.equals(getLastTopRating())) {
-            return false;
+        if (topRankings.isEmpty() || getLastTopRating() == null || topRankings.size() < 10) {
+            return true;
         }
 
-        if (topRankings.isEmpty() || topRankings.size() < 10) {
-            return true;
+        if (rankingEntity.equals(getLastTopRating())) {
+            return false;
         }
         return getLastTopRating().getEarned_points() < rankingEntity.getEarned_points();
     }

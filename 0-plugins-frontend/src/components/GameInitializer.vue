@@ -38,6 +38,9 @@
       <div class="col-md-6">
         <p>last achieved points {{ ranking_points }}</p>
       </div>
+      <div class="col-md-6">
+        <p v-for="ranking in top_ranking">{{ ranking }}</p><!--TODO ordentlich anzeigen lassen-->
+      </div>
     </div>
     <div>
       <canvas v-if="started" id="c"></canvas>
@@ -55,12 +58,15 @@
 <script>
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
+import {api} from "../services/api";
 
 export default {
   name: "websocketdemo",
   data() {
     return {
+      boardName: null,
       player_name: "Default Spielername",
+      top_ranking: [],
       player: null,
       reset_player: null,
       ranking_points: 0,
@@ -78,6 +84,7 @@ export default {
   },
   methods: {
     stop() {
+      this.rankingForBoard();
       this.stompClient.send("/frontend/stop", this.player_name, {});
       this.disconnect();
     },
@@ -99,6 +106,7 @@ export default {
           let response = JSON.parse(tick.body);
           this.colleagues = response.colleagues;
           this.vaccination = response.vaccination;
+          this.boardName = response.name;
           this.workItem = response.workItem;
           if (this.plan == null) {
             this.plan = response.plan;
@@ -134,27 +142,29 @@ export default {
     },
     move() {
       document.addEventListener("keydown", function(event) {
-        let validUp = ["ArrowUp", "W", "w"];
-        let validDown = ["ArrowDown", "s", "S"];
-        let validLeft = ["ArrowLeft", "a", "A"];
-        let validRight = ["ArrowRight", "d", "D"];
-        let valid = validUp.concat(validDown, validLeft, validRight);
-        let position = {
-          x: this.player.position.x,
-          y: this.player.position.y
-        };
-        if (validUp.includes(event.key)) {
-          position.y = this.player.position.y - 1;
-        } else if (validDown.includes(event.key)) {
-          position.y = this.player.position.y + 1;
-        } else if (validLeft.includes(event.key)) {
-          position.x = this.player.position.x - 1;
-        } else if (validRight.includes(event.key)) {
-          position.x = this.player.position.x + 1;
-        }
-        if (valid.includes(event.key)) {
-          event.preventDefault(); // prevent it from doing default behavior, like downarrow moving page downward
-          this.stompClient.send("/frontend/move", JSON.stringify(position), {});
+        if (this.player != null) {
+          let validUp = ["ArrowUp", "W", "w"];
+          let validDown = ["ArrowDown", "s", "S"];
+          let validLeft = ["ArrowLeft", "a", "A"];
+          let validRight = ["ArrowRight", "d", "D"];
+          let valid = validUp.concat(validDown, validLeft, validRight);
+          let position = {
+            x: this.player.position.x,
+            y: this.player.position.y
+          };
+          if (validUp.includes(event.key)) {
+            position.y = this.player.position.y - 1;
+          } else if (validDown.includes(event.key)) {
+            position.y = this.player.position.y + 1;
+          } else if (validLeft.includes(event.key)) {
+            position.x = this.player.position.x - 1;
+          } else if (validRight.includes(event.key)) {
+            position.x = this.player.position.x + 1;
+          }
+          if (valid.includes(event.key)) {
+            event.preventDefault(); // prevent it from doing default behavior, like downarrow moving page downward
+            this.stompClient.send("/frontend/move", JSON.stringify(position), {});
+          }
         }
       }.bind(this));
     },
@@ -261,6 +271,11 @@ export default {
 
         this.vueCanvas.stroke();
       }
+    },
+    rankingForBoard() {
+      api("/ranking?boardName=" + this.boardName, {
+        method: "GET"
+      }).then(value => this.top_ranking = value);
     }
   },
   mounted() {

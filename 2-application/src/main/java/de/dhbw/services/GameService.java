@@ -17,6 +17,7 @@ import java.util.*;
 public class GameService implements GameDomainService {
 
     private final BoardRepository boardRepository;
+    private final RankingService rankingService;
 
     private PlayerEntity player;
     private RankingEntity rankingEntity;
@@ -28,8 +29,9 @@ public class GameService implements GameDomainService {
     private Timer colleagueMovementTimer;
 
     @Autowired
-    public GameService(BoardRepository boardRepository) {
+    public GameService(BoardRepository boardRepository, RankingService rankingService) {
         this.boardRepository = boardRepository;
+        this.rankingService = rankingService;
     }
 
     public void initializeGame(String playerName, String boardName) {
@@ -240,6 +242,7 @@ public class GameService implements GameDomainService {
     @Override
     public void stopGame() {
         if (isRunning()) {
+            rankingService.saveNewRankingForBoard(rankingEntity, board.getName());
             stopCountingRankingPointsForPlayer();
             stopMovingColleagues();
             player = null;

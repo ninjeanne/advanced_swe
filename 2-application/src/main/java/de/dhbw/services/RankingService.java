@@ -22,7 +22,12 @@ public class RankingService implements RankingDomainService {
     @Override
     public boolean saveNewRankingForBoard(RankingEntity ranking, String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
-        return boardAggregate.addNewTopRanking(ranking);
+        if (isTopRankingInBoard(ranking, boardName)) {
+            boardAggregate.addNewTopRanking(ranking);
+            boardRepository.save(boardAggregate);
+            return true;
+        }
+        return false;
     }
 
     @Override
