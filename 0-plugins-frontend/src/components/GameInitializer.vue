@@ -206,7 +206,7 @@ export default {
       for (var i = 0; i < this.colleagues.length; i++) {
         this.vueCanvas.beginPath();
         this.vueCanvas.arc(this.colleagues[i].position.x * this.multiplier + this.multiplier / 2,
-          this.colleagues[i].position.y * this.multiplier + this.multiplier / 2, this.multiplier * 2, 0, 2 * Math.PI);
+          this.colleagues[i].position.y * this.multiplier + this.multiplier / 2, this.multiplier * 3, 0, 2 * Math.PI);
         this.vueCanvas.fillStyle = "yellow";
         this.vueCanvas.fill();
         const img = new Image();
@@ -219,7 +219,8 @@ export default {
     drawObstacles() {
       for (var i = 0; i < this.obstacles.length; i++) {
         this.vueCanvas.beginPath();
-        this.vueCanvas.rect(this.obstacles[i].x * this.multiplier, this.obstacles[i].y * this.multiplier, this.multiplier, this.multiplier);
+        this.vueCanvas.rect(this.obstacles[i].x * this.multiplier + this.multiplier / 2, this.obstacles[i].y * this.multiplier + this.multiplier / 2,
+          this.multiplier, this.multiplier);
         this.vueCanvas.fillStyle = "black";
         this.vueCanvas.fill();
         this.vueCanvas.stroke();
@@ -230,7 +231,8 @@ export default {
         this.vueCanvas.beginPath();
         const img = new Image();
         img.src = "static/vaccination.png";
-        this.vueCanvas.drawImage(img, this.vaccination.x * this.multiplier, this.vaccination.y * this.multiplier, this.multiplier * 3, this.multiplier * 3);
+        this.vueCanvas.drawImage(img, this.vaccination.x * this.multiplier + this.multiplier / 2, this.vaccination.y * this.multiplier + this.multiplier / 2,
+          this.multiplier * 2, this.multiplier * 2);
         this.vueCanvas.stroke();
       }
     },
@@ -239,8 +241,8 @@ export default {
         this.vueCanvas.beginPath();
         const img = new Image();
         img.src = "static/pacman.png";
-        this.vueCanvas.drawImage(img, this.player.position.x * this.multiplier, this.player.position.y * this.multiplier, this.multiplier * 3,
-          this.multiplier * 3);
+        this.vueCanvas.drawImage(img, this.player.position.x * this.multiplier, this.player.position.y * this.multiplier, this.multiplier * 2,
+          this.multiplier * 2);
 
         this.vueCanvas.stroke();
       }
