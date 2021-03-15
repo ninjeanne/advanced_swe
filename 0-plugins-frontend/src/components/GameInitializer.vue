@@ -42,9 +42,10 @@
     <div>
       <canvas v-if="started" id="c"></canvas>
       <div v-if="started">
-        <p>{{ ranking_points }}</p>
-        <p>life points: {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10"
-          v-for="n in player.lifePoints" />
+        {{ ranking_points }}<br>
+        (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)
+        <p><b>life points</b> {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" />
+        <p><b>work items</b> {{ player.workItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />
         </p>
       </div>
     </div>
@@ -71,6 +72,7 @@ export default {
       colleagues: null,
       obstacles: null,
       vaccination: null,
+      workItem: null,
       multiplier: 10
     };
   },
@@ -97,6 +99,7 @@ export default {
           let response = JSON.parse(tick.body);
           this.colleagues = response.colleagues;
           this.vaccination = response.vaccination;
+          this.workItem = response.workItem;
           if (this.plan == null) {
             this.plan = response.plan;
           }
@@ -115,7 +118,8 @@ export default {
             x: 0,
             y: 0
           },
-          lifePoints: 3
+          lifePoints: 3,
+          workItem: 0
         };
         this.move();
       }
@@ -124,6 +128,7 @@ export default {
       this.drawMap();
       this.drawObstacles();
       this.drawVaccination();
+      this.drawWorkItem();
       this.drawColleagues();
       this.drawPlayer();
     },
@@ -232,6 +237,16 @@ export default {
         const img = new Image();
         img.src = "static/vaccination.png";
         this.vueCanvas.drawImage(img, this.vaccination.x * this.multiplier + this.multiplier / 2, this.vaccination.y * this.multiplier + this.multiplier / 2,
+          this.multiplier * 2, this.multiplier * 2);
+        this.vueCanvas.stroke();
+      }
+    },
+    drawWorkItem() {
+      if (this.vaccination != null) {
+        this.vueCanvas.beginPath();
+        const img = new Image();
+        img.src = "static/work_item.png";
+        this.vueCanvas.drawImage(img, this.workItem.x * this.multiplier + this.multiplier / 2, this.workItem.y * this.multiplier + this.multiplier / 2,
           this.multiplier * 2, this.multiplier * 2);
         this.vueCanvas.stroke();
       }

@@ -12,4 +12,5 @@ public class PlayerDTO {
     private String name;
     private CoordinatesVO coordinates;
     private int lifePoints;
+    private int workItems;
 }

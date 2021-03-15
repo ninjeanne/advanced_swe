@@ -24,6 +24,8 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     boolean isPlayerOnVaccination();
 
+    boolean isPlayerOnWorkItem();
+
     void vaccinatePlayer();
 
     boolean isPlayerInInfectionRadius();
@@ -45,6 +47,8 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
     void stopGame();
 
     void addRandomVaccinationToBoard();
+
+    void addRandomWorkItemToBoard();
 
     void startMovingColleagues();
 

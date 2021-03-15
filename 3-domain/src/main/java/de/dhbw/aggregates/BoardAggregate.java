@@ -33,6 +33,8 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     private final List<CoordinatesVO> obstacles = new ArrayList<>();
     @OneToOne(cascade = CascadeType.ALL)
     private CoordinatesVO vaccination;
+    @OneToOne(cascade = CascadeType.ALL)
+    private CoordinatesVO workItem;
     @NonNull
     @Embedded
     private PlanVO plan;
@@ -101,6 +103,21 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         throw new IllegalArgumentException(
                 "Coordinates for vaccination aren't part of board " + getName() + ". x: " + coordinatesOfVaccination.getX() + " and y: "
                         + coordinatesOfVaccination.getY());
+    }
+
+    public boolean addNewWorkItem(CoordinatesVO coordinatesOfWorkItem) {
+        if (containsCoordinate(coordinatesOfWorkItem)) {
+            if (obstacles.contains(coordinatesOfWorkItem)) {
+                log.warn("Work item couldn't be set. Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesOfWorkItem.getX(),
+                        coordinatesOfWorkItem.getY());
+                return false;
+            }
+            this.workItem = coordinatesOfWorkItem;
+            return true;
+        }
+        throw new IllegalArgumentException(
+                "Coordinates for work item aren't part of board " + getName() + ". x: " + coordinatesOfWorkItem.getX() + " and y: " + coordinatesOfWorkItem
+                        .getY());
     }
 
     public boolean addColleague(ColleagueAggregate colleague) {

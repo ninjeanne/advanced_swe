@@ -33,10 +33,10 @@ public class GameService implements GameDomainService {
     }
 
     public void initializeGame(String playerName, String boardName) {
-        if (!running) {
+        if (!isRunning()) {
             BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
             initialize(boardAggregate);
-            initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0, 0), 3));
+            initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0, 0), 3, 0));
             initializeDate();
             initialize(new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, date));
             return;
@@ -47,7 +47,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public void initialize(PlayerEntity player) {
-        if (!running) {
+        if (!isRunning()) {
             this.player = player;
             this.player.setPosition(new CoordinatesVO(0, 0, 0));//todo init better/random position
             return;
@@ -58,7 +58,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public void initialize(BoardAggregate board) {
-        if (!running) {
+        if (!isRunning()) {
             this.board = board;
             return;
         }
@@ -101,12 +101,33 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public void vaccinatePlayer() {
-        if (player.isAlive()) {
-            player.increaseLifePoints();
+    public boolean isPlayerOnWorkItem() {
+        if (isRunning()) {
+            return player.getPosition().equals(board.getWorkItem());
+        }
+
+        throw new RuntimeException("Game hasn't been started yet.");
+    }
+
+    public void solveWorkItemForPlayer() {
+        if (isRunning()) {
+            player.increaseWorkItems();
             return;
         }
-        stopGame();
+        throw new RuntimeException("Game hasn't been started yet.");
+    }
+
+    @Override
+    public void vaccinatePlayer() {
+        if (isRunning()) {
+            if (player.isAlive()) {
+                player.increaseLifePoints();
+                return;
+            }
+            stopGame();
+            return;
+        }
+        throw new RuntimeException("Game hasn't been started yet.");
     }
 
     @Override
@@ -139,10 +160,10 @@ public class GameService implements GameDomainService {
     @Override
     public int getLastRankingPointsForPlayer() {
         if (rankingEntity != null) {
-            return rankingEntity.getEarned_points();
+            return rankingEntity.getEarned_points() + player.getWorkItem() * 50;
         }
 
-        throw new RuntimeException("There is no saved ranking for this game and user");
+        throw new RuntimeException("There is no saved ranking for this game");
     }
 
     @Override
@@ -150,7 +171,7 @@ public class GameService implements GameDomainService {
         if (isRunning() && rankingPointTimer == null) {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
-                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 20,
+                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 1,
                             rankingEntity.getDate());
                 }
             };
@@ -175,6 +196,11 @@ public class GameService implements GameDomainService {
                     }
                 }
                 player.setPosition(newCoordinates);
+
+                if (isPlayerOnWorkItem()) {
+                    solveWorkItemForPlayer();
+                    addRandomWorkItemToBoard();
+                }
 
                 if (isPlayerOnVaccination()) {
                     vaccinatePlayer();
@@ -205,6 +231,7 @@ public class GameService implements GameDomainService {
         if (isInitialized()) {
             running = true;
             addRandomVaccinationToBoard();
+            addRandomWorkItemToBoard();
             startCountingRankingPointsForPlayer();
             startMovingColleagues();
         }
@@ -235,6 +262,17 @@ public class GameService implements GameDomainService {
             int y = (int) (Math.random() * plan.getHeight());
             coordinatesVO = new CoordinatesVO(0, x, y);
         } while (board.addNewVaccination(coordinatesVO));
+    }
+
+    @Override
+    public void addRandomWorkItemToBoard() {
+        PlanVO plan = board.getPlan();
+        CoordinatesVO coordinatesVO;
+        do {
+            int x = (int) (Math.random() * plan.getWidth());
+            int y = (int) (Math.random() * plan.getHeight());
+            coordinatesVO = new CoordinatesVO(0, x, y);
+        } while (board.addNewWorkItem(coordinatesVO));
     }
 
     @Override

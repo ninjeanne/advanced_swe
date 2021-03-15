@@ -30,6 +30,8 @@ public class PlayerEntity {
     private CoordinatesVO position;
     @Column
     private int lifePoints = 0;
+    @Column
+    private int workItem = 0;
 
     /**
      * the new position is only allowed to differ in one coordinate and by one step!
@@ -69,6 +71,10 @@ public class PlayerEntity {
 
     public void increaseLifePoints() {
         lifePoints++;
+    }
+
+    public void increaseWorkItems() {
+        workItem++;
     }
 
     public boolean isAlive() {
