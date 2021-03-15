@@ -45,17 +45,10 @@ public class GameService implements GameDomainService {
         throw new RuntimeException("Game can't be initialized because it's already running.");
     }
 
-    private void initializeLifePointsForPlayer() {
-        for (int i = 0; i < 3; i++) {
-            player.increaseLifePoints();
-        }
-    }
-
     @Override
     public void initialize(PlayerEntity player) {
         if (!running) {
             this.player = player;
-            initializeLifePointsForPlayer();
             this.player.setPosition(new CoordinatesVO(0, 0, 0));//todo init better/random position
             return;
         }
@@ -71,6 +64,11 @@ public class GameService implements GameDomainService {
         }
 
         throw new RuntimeException("Board can't be changed when the game is running");
+    }
+
+    @Override
+    public boolean isGameOver() {
+        return !player.isAlive();
     }
 
     @Override
@@ -94,33 +92,48 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public void vaccinatePlayer() {
+    public boolean isPlayerOnVaccination() {
         if (isRunning()) {
-            if (player.isAlive()) {
-                player.increaseLifePoints();
-                return;
-            }
-            stopGame();
-            return;
+            return player.getPosition().equals(board.getVaccination());
         }
 
         throw new RuntimeException("Game hasn't been started yet.");
     }
 
     @Override
-    public void infectPlayer() {
-        if (isRunning()) {
-            if (player.isAlive()) {
-                player.decreaseLifePoints();
-                if (player.isAlive()) {
-                    return;
-                }
-            }
-            stopGame();
+    public void vaccinatePlayer() {
+        if (player.isAlive()) {
+            player.increaseLifePoints();
             return;
+        }
+        stopGame();
+    }
+
+    @Override
+    public boolean isPlayerInInfectionRadius() {
+        if (isRunning()) {
+            CoordinatesVO playerPosition = player.getPosition();
+            int colleagueRadius = board.getColleagueRadius();
+            for (ColleagueAggregate colleague : board.getColleagues()) {
+                CoordinatesVO colleaguePosition = colleague.getPosition();
+
+                if (colleaguePosition.distanceTo(playerPosition) <= colleagueRadius) {
+                    return true;
+                }
+
+            }
+
+            return false;
         }
 
         throw new RuntimeException("Game hasn't been started yet.");
+    }
+
+    @Override
+    public void infectPlayerWithProbability(double probability) {
+        if (player.isAlive() && Math.random() >= probability) {
+            player.decreaseLifePoints();
+        }
     }
 
     @Override
@@ -130,14 +143,6 @@ public class GameService implements GameDomainService {
         }
 
         throw new RuntimeException("There is no saved ranking for this game and user");
-    }
-
-    @Override
-    public int getLifePointsForPlayer() {
-        if (isRunning()) {
-            return player.getLifePoints();
-        }
-        throw new RuntimeException("Game hasn't been started yet");
     }
 
     @Override
@@ -162,31 +167,32 @@ public class GameService implements GameDomainService {
 
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
-        if (board.containsCoordinate(newCoordinates) && !board.getObstacles().contains(newCoordinates)) {
-            for (ColleagueAggregate colleague : board.getColleagues()) {
-                if (colleague.getPosition().equals(newCoordinates)) {
-                    return false;
+        if (isRunning()) {
+            if (board.containsCoordinate(newCoordinates) && !board.getObstacles().contains(newCoordinates)) {
+                for (ColleagueAggregate colleague : board.getColleagues()) {
+                    if (colleague.getPosition().equals(newCoordinates)) {
+                        return false;
+                    }
                 }
+                player.setPosition(newCoordinates);
+
+                if (isPlayerOnVaccination()) {
+                    vaccinatePlayer();
+                    addRandomVaccinationToBoard();
+                }
+                if (isPlayerInInfectionRadius()) {
+                    infectPlayerWithProbability(board.getProbability());
+                }
+
+                return true;
             }
-            player.setPosition(newCoordinates);
-            return true;
+            return false;
         }
-        return false;
+        throw new RuntimeException("Game hasn't been started yet.");
     }
 
     public PlayerEntity getPlayer() {
-        if (isRunning()) {
-            return player;
-        }
-        return null;
-    }
-
-    @Override
-    public RankingEntity getLastRankingForPlayer() {
-        if (rankingEntity != null) {
-            return rankingEntity;
-        }
-        throw new RuntimeException("There is no last ranking for this game instance.");
+        return player;
     }
 
     @Override
@@ -198,6 +204,7 @@ public class GameService implements GameDomainService {
     public void startGame() {
         if (isInitialized()) {
             running = true;
+            addRandomVaccinationToBoard();
             startCountingRankingPointsForPlayer();
             startMovingColleagues();
         }
@@ -238,7 +245,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public void startMovingColleagues() {
-        if (isRunning() && colleagueMovementTimer == null) {
+        if (isRunning()) {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
                     board.getColleagues().forEach(ColleagueAggregate::nextPosition);

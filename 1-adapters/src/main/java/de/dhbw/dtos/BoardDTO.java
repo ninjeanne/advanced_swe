@@ -15,4 +15,6 @@ public class BoardDTO {
     private CoordinatesVO coordinates;
     private PlanVO plan;
     private int velocity;
+    private int probability;
+    private int colleagueRadius;
 }

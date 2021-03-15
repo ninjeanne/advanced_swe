@@ -32,19 +32,38 @@ public class GameController {
         this.boardMapper = boardMapper;
     }
 
-    @MessageMapping("/initialize")
-    public void initPlayer(String playerName) {
+    @MessageMapping("/start")
+    public void startGame(String playerName) {
         String boardName = "default";
         gameService.initializeGame(playerName, boardName);
         log.info("New game {} initialized for player {}", boardName, playerName);
+
+        if (gameService.isInitialized()) {
+            if (!gameService.isRunning()) {
+                gameService.startGame();
+            }
+        }
     }
 
     @MessageMapping("/stop")
-    public void stopGame() {
-        String playerName = gameService.getPlayer().getName();
-        String boardName = gameService.getCurrentBoard().getName();
-        gameService.stopGame();
-        log.info("Game {} stopped for player {}", boardName, playerName);
+    @SendTo("/backend/stop")
+    public boolean stopGame() {
+        if (gameService.isRunning()) {
+            String playerName = gameService.getPlayer().getName();
+            String boardName = gameService.getCurrentBoard().getName();
+            gameService.stopGame();
+            log.info("Game {} stopped for player {}", boardName, playerName);
+            return true;
+        }
+        log.info("Game is already stopped.");
+        return false;
+    }
+
+    @Scheduled(fixedRate = 500)
+    public void rankingPoints() {
+        if (gameService.isRunning()) {
+            this.template.convertAndSend("/backend/ranking", gameService.getLastRankingPointsForPlayer());
+        }
     }
 
     @MessageMapping("/move")
@@ -58,21 +77,22 @@ public class GameController {
         }
         if (gameService.isRunning()) {
             if (gameService.movePlayer(coordinatesVO)) {
-                return gameService.getPlayer();
+                PlayerEntity playerEntity = gameService.getPlayer();
+                if (gameService.isGameOver()) {
+                    autoBackendAnswer();
+                    this.template.convertAndSend("/backend/stop", stopGame());
+                }
+                return playerEntity;
             }
-            System.out.println("Nicht erlaubter Zug!");
-            return null;
         }
+
         return null;
     }
 
     @Scheduled(fixedRate = 500)
     public void autoBackendAnswer() {
-        if (gameService.isInitialized()) {
-            if (!gameService.isRunning()) {
-                gameService.startGame();
-            }
-            this.template.convertAndSend("/backend/start", gameService.getCurrentBoard());
+        if (gameService.isRunning()) {
+            this.template.convertAndSend("/backend/board", gameService.getCurrentBoard());
         }
     }
 

@@ -30,9 +30,10 @@ public class Application {
 
     @Bean
     public CommandLineRunner demo(BoardRepository repository) {
-        CoordinatesVO vaccination = new CoordinatesVO(20, 5);
         PlanVO plan = new PlanVO(50, 80);
-        BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", vaccination, plan, 1);
+        BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", plan);
+        board.setProbability(0.5);
+        board.setColleagueRadius(3);
         for (int y = 1; y < 5; y++) {
             for (int i = 0; i <= 12; i++) {
                 for (int j = i * 5; j < (i * 5) + 10 && i % 4 == 0; j++) {

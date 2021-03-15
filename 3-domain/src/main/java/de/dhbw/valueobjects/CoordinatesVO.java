@@ -45,6 +45,12 @@ public final class CoordinatesVO {
         return value >= 0;
     }
 
+    public double distanceTo(CoordinatesVO other) {
+        double dx = this.getX() - other.getX();
+        double dy = this.getY() - other.getY();
+        return Math.abs(Math.sqrt(dx * dx + dy * dy));
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof CoordinatesVO) {

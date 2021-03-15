@@ -3,7 +3,6 @@ package de.dhbw.aggregates;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
@@ -18,7 +17,6 @@ import java.util.Objects;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 @Slf4j
 @Entity
 public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
@@ -39,7 +37,11 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @Embedded
     private PlanVO plan;
     @Column
-    private int velocity;
+    private int velocity = 1;
+    @Column
+    private int colleagueRadius = 3;
+    @Column
+    private double probability = 0.3;
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
@@ -47,6 +49,29 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<RankingEntity> topRankings = new ArrayList<>();
+
+    public BoardAggregate(String uuid, String name, PlanVO plan) {
+        this();
+        this.uuid = uuid;
+        this.name = name;
+        this.plan = plan;
+    }
+
+    public void setProbability(double probability) {
+        if (probability > 0 && probability < 1) {
+            this.probability = probability;
+            return;
+        }
+        throw new IllegalArgumentException("Probability has to be between 0 and 1");
+    }
+
+    public void setColleagueRadius(int radius) {
+        if (radius > 0) {
+            this.colleagueRadius = radius;
+            return;
+        }
+        throw new IllegalArgumentException("Radius has to be be positive");
+    }
 
     public boolean addRanking(RankingEntity ranking) {
         if (topRankings.size() <= 10) {
@@ -119,7 +144,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     public boolean addObstacle(CoordinatesVO coordinate) {
         if (this.containsCoordinate(coordinate)) {
-            if (obstacles.contains(coordinate) || vaccination.equals(coordinate)) {
+            if (obstacles.contains(coordinate) || (vaccination != null && vaccination.equals(coordinate))) {
                 log.warn("obstacle at x:{}, y:{} already exists", coordinate.getX(), coordinate.getY());
                 return false;
             }

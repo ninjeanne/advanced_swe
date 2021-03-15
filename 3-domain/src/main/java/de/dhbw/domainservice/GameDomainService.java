@@ -12,6 +12,8 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     void initialize(BoardAggregate board);
 
+    boolean isGameOver();
+
     void initializeDate();
 
     void initialize(RankingEntity rankingEntity);
@@ -20,21 +22,21 @@ public interface GameDomainService { //todo kann das auch eine Abstrakte Klasse 
 
     boolean isRunning();
 
+    boolean isPlayerOnVaccination();
+
     void vaccinatePlayer();
 
-    void infectPlayer();
+    boolean isPlayerInInfectionRadius();
+
+    void infectPlayerWithProbability(double probability); //todo als VO
 
     int getLastRankingPointsForPlayer();
-
-    int getLifePointsForPlayer();
 
     void startCountingRankingPointsForPlayer();
 
     void stopCountingRankingPointsForPlayer();
 
     boolean movePlayer(CoordinatesVO newCoordinates);
-
-    RankingEntity getLastRankingForPlayer();
 
     BoardAggregate getCurrentBoard();
 

@@ -34,8 +34,19 @@
         </div>
       </div>
     </div>
+    <div class="row" v-if="game_over && !started">
+      <div class="col-md-6">
+        <p>last achieved points {{ ranking_points }}</p>
+      </div>
+    </div>
     <div>
-      <canvas id="c"></canvas>
+      <canvas v-if="started" id="c"></canvas>
+      <div v-if="started">
+        <p>{{ ranking_points }}</p>
+        <p>life points: {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10"
+          v-for="n in player.lifePoints" />
+        </p>
+      </div>
     </div>
   </div>
 </template>
@@ -51,9 +62,11 @@ export default {
       player_name: "Default Spielername",
       player: null,
       reset_player: null,
+      ranking_points: 0,
       vueCanvas: null,
       connected: false,
       started: false,
+      game_over: false,
       plan: null,
       colleagues: null,
       obstacles: null,
@@ -72,8 +85,15 @@ export default {
       }
       if (this.stompClient != null && this.connected) {
         this.started = true;
-        this.stompClient.send("/frontend/initialize", this.player_name, {});
-        this.stompClient.subscribe("/backend/start", tick => {
+        this.stompClient.subscribe("/backend/stop", tick => {
+          this.game_over = JSON.parse(tick.body);
+          this.stop();
+        });
+        this.stompClient.subscribe("/backend/ranking", tick => {
+          this.ranking_points = JSON.parse(tick.body);
+        });
+        this.stompClient.send("/frontend/start", this.player_name, {});
+        this.stompClient.subscribe("/backend/board", tick => {
           let response = JSON.parse(tick.body);
           this.colleagues = response.colleagues;
           this.vaccination = response.vaccination;
@@ -94,7 +114,8 @@ export default {
           position: {
             x: 0,
             y: 0
-          }
+          },
+          lifePoints: 3
         };
         this.move();
       }
@@ -126,7 +147,6 @@ export default {
         } else if (validRight.includes(event.key)) {
           position.x = this.player.position.x + 1;
         }
-        console.log(position.x);
         if (valid.includes(event.key)) {
           event.preventDefault(); // prevent it from doing default behavior, like downarrow moving page downward
           this.stompClient.send("/frontend/move", JSON.stringify(position), {});
@@ -154,6 +174,7 @@ export default {
       }
       this.socket = null;
       this.stompClient = null;
+      this.player = null;
       this.connected = false;
       this.started = false;
       this.removeCanvas();
@@ -220,6 +241,7 @@ export default {
         img.src = "static/pacman.png";
         this.vueCanvas.drawImage(img, this.player.position.x * this.multiplier, this.player.position.y * this.multiplier, this.multiplier * 3,
           this.multiplier * 3);
+
         this.vueCanvas.stroke();
       }
     }
