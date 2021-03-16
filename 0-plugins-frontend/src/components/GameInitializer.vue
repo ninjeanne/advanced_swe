@@ -15,7 +15,7 @@
       <hr>
       <h3>Top Ranking</h3>
       <table>
-        <tr v-for="(ranking, index) in top_ranking" :key="top_ranking">
+        <tr v-for="(ranking, index) in top_ranking" :key="index">
           <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>
           <th style="color:green;text-align:right;font-weight:bold">{{ ranking.total }}</th>
           <th>[{{ new Date(ranking.date) | formatDate }}]</th>
@@ -24,7 +24,7 @@
       <hr v-if="started">
       <div v-if="started">
         <b>{{ ranking_points }}</b> (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)<br>
-        {{ player.workItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" /> (work items)<br>
+        {{ player.workItems }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" /> (work items)<br>
         {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" /> (life points)<br>
       </div>
     </div>
@@ -128,7 +128,7 @@ export default {
             y: 0
           },
           lifePoints: 3,
-          workItem: 0
+          workItems: 0
         };
         this.move();
       }
@@ -162,6 +162,7 @@ export default {
           } else if (validRight.includes(event.key)) {
             position.x = this.player.position.x + 1;
           }
+
           if (valid.includes(event.key)) {
             event.preventDefault(); // prevent it from doing default behavior, like downarrow moving page downward
             this.stompClient.send("/frontend/move", JSON.stringify(position), {});
@@ -221,13 +222,13 @@ export default {
     drawColleagues() {
       for (var i = 0; i < this.colleagues.length; i++) {
         this.vueCanvas.beginPath();
-        this.vueCanvas.arc(this.colleagues[i].position.x * this.multiplier + this.multiplier / 2,
-          this.colleagues[i].position.y * this.multiplier + this.multiplier / 2, this.multiplier * 3, 0, 2 * Math.PI);
+        this.vueCanvas.arc(this.colleagues[i].x * this.multiplier + this.multiplier / 2,
+          this.colleagues[i].y * this.multiplier + this.multiplier / 2, this.multiplier * 3, 0, 2 * Math.PI);
         this.vueCanvas.fillStyle = "yellow";
         this.vueCanvas.fill();
         const img = new Image();
         img.src = "static/colleague.png";
-        this.vueCanvas.drawImage(img, this.colleagues[i].position.x * this.multiplier, this.colleagues[i].position.y * this.multiplier, this.multiplier,
+        this.vueCanvas.drawImage(img, this.colleagues[i].x * this.multiplier, this.colleagues[i].y * this.multiplier, this.multiplier,
           this.multiplier);
         // this.vueCanvas.stroke();
       }

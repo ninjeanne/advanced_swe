@@ -1,10 +1,11 @@
 package de.dhbw.websocket;
 
+import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlayerDTO;
 import de.dhbw.mapper.BoardDTOMapper;
+import de.dhbw.mapper.CoordinatesVOMapper;
 import de.dhbw.mapper.PlayerDTOMapper;
 import de.dhbw.services.GameService;
-import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -23,17 +24,25 @@ public class GameController {
     private final GameService gameService;
     private final PlayerDTOMapper playerDTOMapper;
     private final BoardDTOMapper boardDTOMapper;
+    private final CoordinatesVOMapper coordinatesVOMapper;
 
     @Autowired
-    public GameController(SimpMessagingTemplate template, GameService gameService, PlayerDTOMapper playerDTOMapper, BoardDTOMapper boardDTOMapper) {
+    public GameController(SimpMessagingTemplate template, GameService gameService, PlayerDTOMapper playerDTOMapper, BoardDTOMapper boardDTOMapper,
+            CoordinatesVOMapper coordinatesVOMapper) {
         this.template = template;
         this.gameService = gameService;
         this.playerDTOMapper = playerDTOMapper;
         this.boardDTOMapper = boardDTOMapper;
+        this.coordinatesVOMapper = coordinatesVOMapper;
     }
 
     @MessageMapping("/start")
     public void startGame(String playerName) {
+        if(gameService.isInitialized()){
+            stopGame();
+            log.warn("Stopping the running game...");
+        }
+
         String boardName = "default";
         gameService.initializeGame(playerName, boardName);
         log.info("New game {} initialized for player {}", boardName, playerName);
@@ -68,10 +77,10 @@ public class GameController {
 
     @MessageMapping("/move")
     @SendTo("/backend/player")
-    public PlayerDTO movePlayer(CoordinatesVO coordinatesVO) {
+    public PlayerDTO movePlayer(CoordinatesDTO coordinatesDTO) {
         try {
             if (gameService.isRunning()) {
-                if (gameService.movePlayer(coordinatesVO)) {
+                if (gameService.movePlayer(coordinatesVOMapper.apply(coordinatesDTO))) {
                     PlayerDTO playerDTO = playerDTOMapper.apply(gameService.getPlayer());
                     if (gameService.isGameOver()) {
                         autoBackendAnswer();

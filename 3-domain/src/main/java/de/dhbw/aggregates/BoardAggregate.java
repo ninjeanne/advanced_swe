@@ -53,7 +53,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     public BoardAggregate(String uuid, String name, PlanVO plan, RadiusVO colleagueRadius, ProbabilityVO infectProbability) {
         this.uuid = uuid;
-        this.name = name;
+        this.setName(name);
         this.plan = plan;
         this.colleagueRadius = colleagueRadius;
         this.infectProbability = infectProbability;
@@ -63,25 +63,10 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     public BoardAggregate() {
     }
 
-    public boolean addRanking(RankingEntity ranking) {
-        if (topRankings.isEmpty() || getLastTopRating() == null || topRankings.size() <= 10) {
-            topRankings.add(ranking);
-            return true;
-        }
-
-        if (getLastTopRating().getTotal() < ranking.getTotal()) {
-            topRankings.remove(getLastTopRating());
-            topRankings.add(ranking);
-            return true;
-        }
-
-        return false;
-    }
-
     public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {
         if (containsCoordinate(coordinatesOfVaccination)) {
             if (obstacles.contains(coordinatesOfVaccination)) {
-                log.warn("Vaccination couldn't be set. Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesOfVaccination.getX(),
+                log.debug("Vaccination couldn't be set. Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesOfVaccination.getX(),
                         coordinatesOfVaccination.getY());
                 return false;
             }
@@ -96,7 +81,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     public boolean addNewWorkItem(CoordinatesVO coordinatesOfWorkItem) {
         if (containsCoordinate(coordinatesOfWorkItem)) {
             if (obstacles.contains(coordinatesOfWorkItem)) {
-                log.warn("Work item couldn't be set. Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesOfWorkItem.getX(),
+                log.debug("Work item couldn't be set. Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesOfWorkItem.getX(),
                         coordinatesOfWorkItem.getY());
                 return false;
             }
@@ -133,10 +118,6 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         return false;
     }
 
-    public boolean isCoordinateBlocked(CoordinatesVO coordinate) {
-        return obstacles.contains(coordinate);
-    }
-
     public boolean addObstacle(CoordinatesVO coordinate) {
         if (this.containsCoordinate(coordinate)) {
             if (obstacles.contains(coordinate) || (vaccination != null && vaccination.equals(coordinate))) {
@@ -152,21 +133,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         return false;
     }
 
-    public boolean removeObstacle(CoordinatesVO coordinate) {
-        if (this.containsCoordinate(coordinate)) {
-            if (obstacles.remove(coordinate)) {
-                log.debug("obstacle at x:{}, y:{} has been removed", coordinate.getX(), coordinate.getY());
-                return false;
-            }
-            return true;
-        }
-
-        log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(),
-                plan.getWidth());
-        return false;
-    }
-
-    public void setName(String name) {
+    private void setName(String name) {
         if (name != null) {
             this.name = name;
             return;
