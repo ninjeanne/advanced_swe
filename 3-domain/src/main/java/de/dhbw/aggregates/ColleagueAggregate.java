@@ -2,9 +2,7 @@ package de.dhbw.aggregates;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 import de.dhbw.valueobjects.CoordinatesVO;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
@@ -15,8 +13,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Entity
 public class ColleagueAggregate {
 
@@ -29,7 +25,15 @@ public class ColleagueAggregate {
     boolean moveForward = true;
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private List<CoordinatesVO> path = new ArrayList<>();
+    private final List<CoordinatesVO> path = new ArrayList<>();
+
+    @SuppressWarnings("unused")
+    public ColleagueAggregate() {
+    }
+
+    public ColleagueAggregate(@NonNull String name) {
+        this.name = name;
+    }
 
     @JsonGetter("position")
     public CoordinatesVO getPosition() {

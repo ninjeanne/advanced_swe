@@ -3,8 +3,9 @@ package de.dhbw.aggregates;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
+import de.dhbw.valueobjects.ProbabilityVO;
+import de.dhbw.valueobjects.RadiusVO;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.LazyCollection;
@@ -17,7 +18,6 @@ import java.util.List;
 import java.util.Objects;
 
 @Getter
-@NoArgsConstructor
 @Slf4j
 @Entity
 public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
@@ -39,12 +39,10 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @NonNull
     @Embedded
     private PlanVO plan;
-    @Column
-    private int velocity = 1;
-    @Column
-    private int colleagueRadius = 3;
-    @Column
-    private double probability = 0.3;
+    @OneToOne(cascade = CascadeType.ALL)
+    private RadiusVO colleagueRadius;
+    @OneToOne(cascade = CascadeType.ALL)
+    private ProbabilityVO infectProbability;
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<ColleagueAggregate> colleagues = new ArrayList<>();
@@ -53,27 +51,16 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<RankingEntity> topRankings = new ArrayList<>();
 
-    public BoardAggregate(String uuid, String name, PlanVO plan) {
-        this();
+    public BoardAggregate(String uuid, String name, PlanVO plan, RadiusVO colleagueRadius, ProbabilityVO infectProbability) {
         this.uuid = uuid;
         this.name = name;
         this.plan = plan;
+        this.colleagueRadius = colleagueRadius;
+        this.infectProbability = infectProbability;
     }
 
-    public void setProbability(double probability) {
-        if (probability > 0 && probability < 1) {
-            this.probability = probability;
-            return;
-        }
-        throw new IllegalArgumentException("Probability has to be between 0 and 1");
-    }
-
-    public void setColleagueRadius(int radius) {
-        if (radius > 0) {
-            this.colleagueRadius = radius;
-            return;
-        }
-        throw new IllegalArgumentException("Radius has to be be positive");
+    @SuppressWarnings("unused")
+    public BoardAggregate() {
     }
 
     public boolean addRanking(RankingEntity ranking) {
@@ -137,16 +124,6 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         return false;
     }
 
-    public boolean removeColleague(ColleagueAggregate colleague) {
-        if (colleagues.contains(colleague)) {
-            colleagues.remove(colleague);
-            log.debug("colleague {} has been removed", colleague.getName());
-            return true;
-        }
-        log.warn("colleague {} doesn't exists", colleague.getName());
-        return false;
-    }
-
     public boolean containsCoordinate(CoordinatesVO coordinate) {
         if (coordinate.getX() < plan.getWidth() && coordinate.getY() < plan.getHeight()) {
             return true;
@@ -195,14 +172,6 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
             return;
         }
         throw new IllegalArgumentException("The name of a board mustn't be empty.");
-    }
-
-    public void setVelocity(int velocity) {
-        if (velocity >= 1) {
-            this.velocity = velocity;
-            return;
-        }
-        throw new IllegalArgumentException("The velocity of the board has to be positive.");
     }
 
     private RankingEntity getLastTopRating() {

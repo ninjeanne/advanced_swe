@@ -2,6 +2,8 @@ package de.dhbw.mapper;
 
 import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.dtos.BoardDTO;
+import de.dhbw.valueobjects.ProbabilityVO;
+import de.dhbw.valueobjects.RadiusVO;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -10,10 +12,8 @@ import java.util.function.Function;
 public class BoardMapper implements Function<BoardDTO, BoardAggregate> {
 
     private BoardAggregate map(BoardDTO boardDTO) {
-        BoardAggregate aggregate = new BoardAggregate(boardDTO.getId(), boardDTO.getName(), boardDTO.getPlan());
-        aggregate.setColleagueRadius(boardDTO.getColleagueRadius());
-        aggregate.setProbability(boardDTO.getProbability());
-        return aggregate;
+        return new BoardAggregate(boardDTO.getId(), boardDTO.getName(), boardDTO.getPlan(), new RadiusVO(boardDTO.getColleagueRadius()),
+                new ProbabilityVO(boardDTO.getProbability()));
     }
 
     @Override

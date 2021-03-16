@@ -15,7 +15,7 @@
       <hr>
       <h3>Top Ranking</h3>
       <table>
-        <tr v-for="(ranking, index) in top_ranking" :key="index">
+        <tr v-for="(ranking, index) in top_ranking" :key="top_ranking">
           <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>
           <th style="color:green;text-align:right;font-weight:bold">{{ ranking.total }}</th>
           <th>[{{ new Date(ranking.date) | formatDate }}]</th>
@@ -47,6 +47,7 @@
     <div class="item4">
       <h3 v-if="started">Office: {{ this.boardName }}</h3>
       <canvas v-if="started" id="c"></canvas>
+      <div v-if="game_over && !started">GAME OVER</div>
     </div>
 
   </div>
@@ -86,6 +87,7 @@ export default {
       this.stompClient.send("/frontend/stop", this.player_name, {});
       this.game_over = true;
       this.disconnect();
+      this.rankingForBoard();
     },
     async start() {
       if (!this.connected) {
@@ -93,14 +95,12 @@ export default {
       }
       if (this.stompClient != null && this.connected) {
         this.started = true;
-        this.rankingForBoard();
         this.stompClient.subscribe("/backend/stop", tick => {
           this.game_over = JSON.parse(tick.body);
           this.stop();
         });
         this.stompClient.subscribe("/backend/ranking", tick => {
           this.ranking_points = JSON.parse(tick.body);
-          this.rankingForBoard();
         });
         this.stompClient.send("/frontend/start", this.player_name, {});
         this.stompClient.subscribe("/backend/board", tick => {
