@@ -25,12 +25,12 @@ import Stomp from "webstomp-client";
 import {api} from "../services/api";
 import Vue from "vue";
 import moment from "moment";
-import RankingBoard from "./RankingBoard";
-import PlayerBoard from "./PlayerBoard";
-import StartStopController from "./StartStopController";
-import GameOver from "./GameOver";
-import Logo from "./Logo";
-import GameStatus from "./GameStatus";
+import RankingBoard from "../components/RankingBoard";
+import PlayerBoard from "../components/PlayerBoard";
+import StartStopController from "../components/StartStopController";
+import GameOver from "../components/GameOver";
+import Logo from "../components/Logo";
+import GameStatus from "../components/GameStatus";
 
 export default {
   name: "websocketdemo",
