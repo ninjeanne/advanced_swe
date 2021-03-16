@@ -84,7 +84,6 @@ export default {
   methods: {
     stop() {
       this.stompClient.send("/frontend/stop", this.player_name, {});
-      this.rankingForBoard();
       this.game_over = true;
       this.disconnect();
     },
@@ -94,12 +93,14 @@ export default {
       }
       if (this.stompClient != null && this.connected) {
         this.started = true;
+        this.rankingForBoard();
         this.stompClient.subscribe("/backend/stop", tick => {
           this.game_over = JSON.parse(tick.body);
           this.stop();
         });
         this.stompClient.subscribe("/backend/ranking", tick => {
           this.ranking_points = JSON.parse(tick.body);
+          this.rankingForBoard();
         });
         this.stompClient.send("/frontend/start", this.player_name, {});
         this.stompClient.subscribe("/backend/board", tick => {
@@ -283,7 +284,7 @@ export default {
     this.rankingForBoard();
     Vue.filter("formatDate", function(date) {
       if (date) {
-        return moment(date).format("DD. MMMM YYYY hh:mm");
+        return moment(date).format("DD. MMMM YYYY HH:mm");
       }
     });
   }

@@ -24,9 +24,10 @@ public class RankingService implements RankingDomainService {
     public boolean saveNewRankingForBoard(RankingEntity ranking, String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
         if (isTopRankingInBoard(ranking, boardName)) {
-            boardAggregate.addNewTopRanking(ranking);
-            boardRepository.save(boardAggregate);
-            return true;
+            if (boardAggregate.addNewTopRanking(ranking)) {
+                boardRepository.save(boardAggregate);
+                return true;
+            }
         }
         return false;
     }
@@ -41,7 +42,7 @@ public class RankingService implements RankingDomainService {
     public List<RankingEntity> getTopRankingsForBoard(String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
         List<RankingEntity> entities = boardAggregate.getTopRankings();
-        entities.sort(Comparator.comparing(RankingEntity::getEarned_points).reversed());
+        entities.sort(Comparator.comparing(RankingEntity::getTotal).reversed());
         return entities;
     }
 

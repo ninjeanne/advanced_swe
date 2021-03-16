@@ -77,12 +77,12 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     public boolean addRanking(RankingEntity ranking) {
-        if (topRankings.size() <= 10) {
+        if (topRankings.isEmpty() || getLastTopRating() == null || topRankings.size() <= 10) {
             topRankings.add(ranking);
             return true;
         }
 
-        if (getLastTopRating().getEarned_points() < ranking.getEarned_points()) {
+        if (getLastTopRating().getTotal() < ranking.getTotal()) {
             topRankings.remove(getLastTopRating());
             topRankings.add(ranking);
             return true;
@@ -207,7 +207,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     private RankingEntity getLastTopRating() {
         if (!topRankings.isEmpty()) {
-            topRankings.sort(Comparator.comparing(RankingEntity::getEarned_points).reversed());
+            topRankings.sort(Comparator.comparing(RankingEntity::getTotal).reversed());
             return topRankings.get(topRankings.size() - 1);
         }
         return null;
