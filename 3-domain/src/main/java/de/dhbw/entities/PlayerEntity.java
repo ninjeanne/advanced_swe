@@ -25,12 +25,15 @@ public class PlayerEntity {
     @NonNull
     @Id
     private String name;
+    @NonNull
     @OneToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     private CoordinatesVO position;
+    @NonNull
     @OneToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     private ItemsVO lifePoints;
+    @NonNull
     @OneToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     private ItemsVO workItems;

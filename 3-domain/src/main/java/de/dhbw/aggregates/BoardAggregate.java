@@ -51,9 +51,9 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<RankingEntity> topRankings = new ArrayList<>();
 
-    public BoardAggregate(String uuid, String name, PlanVO plan, RadiusVO colleagueRadius, ProbabilityVO infectProbability) {
+    public BoardAggregate(@NonNull String uuid, @NonNull String name, @NonNull PlanVO plan, @NonNull RadiusVO colleagueRadius, @NonNull ProbabilityVO infectProbability) {
         this.uuid = uuid;
-        this.setName(name);
+        this.name = name;
         this.plan = plan;
         this.colleagueRadius = colleagueRadius;
         this.infectProbability = infectProbability;
@@ -131,14 +131,6 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
         log.warn("obstacle (x:{}, y:{}) was not within game board (length:{}, width:{})", coordinate.getX(), coordinate.getY(), plan.getHeight(),
                 plan.getWidth());
         return false;
-    }
-
-    private void setName(String name) {
-        if (name != null) {
-            this.name = name;
-            return;
-        }
-        throw new IllegalArgumentException("The name of a board mustn't be empty.");
     }
 
     private RankingEntity getLastTopRating() {

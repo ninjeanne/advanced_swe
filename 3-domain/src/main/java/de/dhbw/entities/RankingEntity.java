@@ -21,13 +21,16 @@ public class RankingEntity {
     @NonNull
     @Id
     private String uuid;//entity id
+    @NonNull
     @Column
     private String name;
     @Column
     private int earned_points;
+    @NonNull
     @OneToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private ItemsVO workItems;
+    @NonNull
     @Column
     private Date date;
 
