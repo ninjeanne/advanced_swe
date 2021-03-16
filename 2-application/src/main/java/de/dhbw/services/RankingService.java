@@ -7,6 +7,7 @@ import de.dhbw.repositories.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -39,7 +40,9 @@ public class RankingService implements RankingDomainService {
     @Override
     public List<RankingEntity> getTopRankingsForBoard(String boardName) {
         BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
-        return boardAggregate.getTopRankings();
+        List<RankingEntity> entities = boardAggregate.getTopRankings();
+        entities.sort(Comparator.comparing(RankingEntity::getEarned_points).reversed());
+        return entities;
     }
 
 }

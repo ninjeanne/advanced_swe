@@ -1,56 +1,47 @@
 <template>
   <div>
-    <div
-      id="main-content"
-      class="container"
-    >
-      <div class="row">
-        <div class="col-md-6">
-          <div class="form-group">
-            <label for="player">What is your name?</label>
-            <input
-              type="text"
-              id="player"
-              class="form-control"
-              v-model="player_name"
-              :disabled="started"
-              placeholder="Your name here..."
-            >
-          </div>
-          <button
-            id="start"
-            class="btn btn-default"
-            :disabled="started"
-            @click.prevent="start"
-          >start
-          </button>
-          <button
-            id="stop"
-            class="btn btn-default"
-            :disabled="!started"
-            @click.prevent="stop"
-          >stop
-          </button>
-        </div>
-      </div>
+    <div>
+      <p v-for="(ranking, index) in top_ranking">{{ (index + 1) }}. {{ ranking.name }} - {{ ranking.earned_points }} - {{
+          new Date(ranking.date).getDate()
+        }}.{{ new Date(ranking.date).getMonth() }}.{{ new Date(ranking.date).getFullYear() }}</p>
     </div>
-    <div class="row" v-if="game_over && !started">
-      <div class="col-md-6">
-        <p>last achieved points {{ ranking_points }}</p>
-      </div>
-      <div class="col-md-6">
-        <p v-for="ranking in top_ranking">{{ ranking }}</p><!--TODO ordentlich anzeigen lassen-->
-      </div>
+    <div class="form-group">
+      <label for="player">What is your name?</label>
+      <input
+        type="text"
+        id="player"
+        class="form-control"
+        v-model="player_name"
+        :disabled="started"
+        placeholder="Your name here..."
+      >
+      <button
+        id="start"
+        class="btn btn-default"
+        :disabled="started"
+        @click.prevent="start"
+      >start
+      </button>
+      <button
+        id="stop"
+        class="btn btn-default"
+        :disabled="!started"
+        @click.prevent="stop"
+      >stop
+      </button>
+    </div>
+    <div>
+      <p v-if="game_over && !started">last achieved points {{ ranking_points }}</p>
     </div>
     <div>
       <canvas v-if="started" id="c"></canvas>
-      <div v-if="started">
-        {{ ranking_points }}<br>
-        (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)
-        <p><b>life points</b> {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" />
-        <p><b>work items</b> {{ player.workItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />
-        </p>
-      </div>
+    </div>
+    <div v-if="started">
+      {{ ranking_points }}<br>
+      (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)
+      <p><b>life points</b> {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" />
+      <p><b>work items</b> {{ player.workItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />
+      </p>
     </div>
   </div>
 </template>
@@ -64,7 +55,7 @@ export default {
   name: "websocketdemo",
   data() {
     return {
-      boardName: null,
+      boardName: "default",
       player_name: "Default Spielername",
       top_ranking: [],
       player: null,
@@ -86,6 +77,7 @@ export default {
     stop() {
       this.rankingForBoard();
       this.stompClient.send("/frontend/stop", this.player_name, {});
+      this.game_over = true;
       this.disconnect();
     },
     async start() {
@@ -280,6 +272,7 @@ export default {
   },
   mounted() {
     this.connect();
+    this.rankingForBoard();
   }
 };
 </script>

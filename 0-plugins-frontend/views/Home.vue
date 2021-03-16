@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div>
     <game-initializer></game-initializer>
   </div>
 </template>

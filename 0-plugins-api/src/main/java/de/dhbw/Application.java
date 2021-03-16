@@ -2,7 +2,9 @@ package de.dhbw;
 
 import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.aggregates.ColleagueAggregate;
+import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
+import de.dhbw.services.RankingService;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +17,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -29,7 +32,7 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner demo(BoardRepository repository) {
+    public CommandLineRunner demo(BoardRepository boardRepository, RankingService rankingService) {
         PlanVO plan = new PlanVO(50, 80);
         BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", plan);
         board.setProbability(0.5);
@@ -62,8 +65,10 @@ public class Application {
         }
 
         board.addColleague(new ColleagueAggregate("Fred", 0, true, pathOfColleague));
+        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new Date());
         return (args) -> {
-            repository.save(board);
+            boardRepository.save(board);
+            rankingService.saveNewRankingForBoard(rankingEntity, board.getName());
         };
     }
 }
