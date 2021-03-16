@@ -1,55 +1,21 @@
 <template>
-  <div class="grid-container">
-    <div class="item1">
-      <label v-if="!started" for="player"><b>Enter your name</b></label>
-      <input
-        type="text"
-        id="player"
-        class="form-control"
-        v-model="player_name"
-        :disabled="started"
-        v-if="!started"
-        placeholder="Your name here..."
-      >
-      <b v-else>Hi {{ this.player_name }}</b>
-      <hr>
-      <h3>Top Ranking</h3>
-      <table>
-        <tr v-for="(ranking, index) in top_ranking" :key="index">
-          <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>
-          <th style="color:green;text-align:right;font-weight:bold">{{ ranking.total }}</th>
-          <th>[{{ new Date(ranking.date) | formatDate }}]</th>
-        </tr>
-      </table>
-      <hr v-if="started">
-      <div v-if="started">
-        <b>{{ ranking_points }}</b> (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)<br>
-        {{ player.workItems }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" /> (work items)<br>
-        {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" /> (life points)<br>
+  <div>
+    <logo/>
+    <div class="grid-container">
+      <div class="menu">
+        <player-board v-bind:player-name="player_name" v-on:update:player_name="player_name = $event" v-bind:started="started" />
+        <hr>
+        <ranking-board v-bind:top-ranking="top_ranking" />
+        <hr>
+        <game-status v-if="started" v-bind:started="started" v-bind:rankingPoints="ranking_points" v-bind:workItems="player.workItems" v-bind:lifePoints="player.lifePoints"/>
+      </div>
+      <start-stop-controller v-bind:started="started" v-on:stop="stop" v-on:start="start" />
+      <div class="main">
+        <h3 v-if="started">Office: {{ this.boardName }}</h3>
+        <canvas v-if="started" id="c"></canvas>
+        <game-over v-if="game_over && !started" />
       </div>
     </div>
-    <div class="item2 form-group">
-      <button
-        id="start"
-        class="btn btn-default"
-        :disabled="started"
-        @click.prevent="start"
-      >start
-      </button>
-      <button
-        id="stop"
-        class="btn btn-default"
-        :disabled="!started"
-        @click.prevent="stop"
-      >stop
-      </button>
-    </div>
-    <div class="item4">
-      <h3 v-if="started">Office: {{ this.boardName }}</h3>
-      <canvas v-if="started" id="c"></canvas>
-      <div v-if="game_over && !started">GAME OVER</div>
-    </div>
-
   </div>
 </template>
 
@@ -59,9 +25,23 @@ import Stomp from "webstomp-client";
 import {api} from "../services/api";
 import Vue from "vue";
 import moment from "moment";
+import RankingBoard from "./RankingBoard";
+import PlayerBoard from "./PlayerBoard";
+import StartStopController from "./StartStopController";
+import GameOver from "./GameOver";
+import Logo from "./Logo";
+import GameStatus from "./GameStatus";
 
 export default {
   name: "websocketdemo",
+  components: {
+    GameStatus,
+    Logo,
+    GameOver,
+    StartStopController,
+    PlayerBoard,
+    RankingBoard
+  },
   data() {
     return {
       boardName: "default",
@@ -222,14 +202,13 @@ export default {
     drawColleagues() {
       for (var i = 0; i < this.colleagues.length; i++) {
         this.vueCanvas.beginPath();
-        this.vueCanvas.arc(this.colleagues[i].x * this.multiplier + this.multiplier / 2,
-          this.colleagues[i].y * this.multiplier + this.multiplier / 2, this.multiplier * 3, 0, 2 * Math.PI);
+        this.vueCanvas.arc(this.colleagues[i].x * this.multiplier + this.multiplier / 2, this.colleagues[i].y * this.multiplier + this.multiplier / 2,
+          this.multiplier * 3, 0, 2 * Math.PI);
         this.vueCanvas.fillStyle = "yellow";
         this.vueCanvas.fill();
         const img = new Image();
         img.src = "static/colleague.png";
-        this.vueCanvas.drawImage(img, this.colleagues[i].x * this.multiplier, this.colleagues[i].y * this.multiplier, this.multiplier,
-          this.multiplier);
+        this.vueCanvas.drawImage(img, this.colleagues[i].x * this.multiplier, this.colleagues[i].y * this.multiplier, this.multiplier, this.multiplier);
         // this.vueCanvas.stroke();
       }
     },
@@ -307,21 +286,14 @@ export default {
   padding: 20px 0;
 }
 
-.item1 {
+.menu {
   grid-area: menu;
   font-size: 12px;
   text-align: justify;
 }
 
-.item2 {
-  grid-area: header;
-}
-
-.item4 {
+.main {
   grid-area: main;
 }
 
-.item5 {
-  grid-area: footer;
-}
 </style>
