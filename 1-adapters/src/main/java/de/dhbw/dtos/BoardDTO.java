@@ -8,11 +8,10 @@ import lombok.Data;
 @Builder
 @AllArgsConstructor
 public class BoardDTO {
-    private String id;
     private String name;
     private CoordinatesDTO vaccination;
     private CoordinatesDTO workItem;
     private PlanDTO plan;
-    private int infectProbability;
+    private double infectProbability;
     private int colleagueRadius;
 }

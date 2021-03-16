@@ -1,8 +1,8 @@
 package de.dhbw.websocket;
 
-import de.dhbw.entities.PlayerEntity;
-import de.dhbw.mapper.BoardMapper;
-import de.dhbw.mapper.PlayerMapper;
+import de.dhbw.dtos.PlayerDTO;
+import de.dhbw.mapper.BoardDTOMapper;
+import de.dhbw.mapper.PlayerDTOMapper;
 import de.dhbw.services.GameService;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.extern.slf4j.Slf4j;
@@ -21,15 +21,15 @@ public class GameController {
 
     private final SimpMessagingTemplate template;
     private final GameService gameService;
-    private final PlayerMapper playerMapper;
-    private final BoardMapper boardMapper;
+    private final PlayerDTOMapper playerDTOMapper;
+    private final BoardDTOMapper boardDTOMapper;
 
     @Autowired
-    public GameController(SimpMessagingTemplate template, GameService gameService, PlayerMapper playerMapper, BoardMapper boardMapper) {
+    public GameController(SimpMessagingTemplate template, GameService gameService, PlayerDTOMapper playerDTOMapper, BoardDTOMapper boardDTOMapper) {
         this.template = template;
         this.gameService = gameService;
-        this.playerMapper = playerMapper;
-        this.boardMapper = boardMapper;
+        this.playerDTOMapper = playerDTOMapper;
+        this.boardDTOMapper = boardDTOMapper;
     }
 
     @MessageMapping("/start")
@@ -68,22 +68,21 @@ public class GameController {
 
     @MessageMapping("/move")
     @SendTo("/backend/player")
-    public PlayerEntity movePlayer(CoordinatesVO coordinatesVO) {
+    public PlayerDTO movePlayer(CoordinatesVO coordinatesVO) {
         try {
-            CoordinatesVO coordinates = new CoordinatesVO(coordinatesVO.getX(),
-                    coordinatesVO.getY()); //TODO hier ein coordinates DTO einführen und richtig parsen
-        } catch (Exception e) {
-            return null;
-        }
-        if (gameService.isRunning()) {
-            if (gameService.movePlayer(coordinatesVO)) {
-                PlayerEntity playerEntity = gameService.getPlayer();
-                if (gameService.isGameOver()) {
-                    autoBackendAnswer();
-                    this.template.convertAndSend("/backend/stop", stopGame());
+            if (gameService.isRunning()) {
+                if (gameService.movePlayer(coordinatesVO)) {
+                    PlayerDTO playerDTO = playerDTOMapper.apply(gameService.getPlayer());
+                    if (gameService.isGameOver()) {
+                        autoBackendAnswer();
+                        this.template.convertAndSend("/backend/stop", stopGame());
+                    }
+                    return playerDTO;
                 }
-                return playerEntity;
             }
+        } catch (Exception e) {
+            log.warn(e.getMessage());
+            return null;
         }
 
         return null;
@@ -92,7 +91,7 @@ public class GameController {
     @Scheduled(fixedRate = 500)
     public void autoBackendAnswer() {
         if (gameService.isRunning()) {
-            this.template.convertAndSend("/backend/board", gameService.getCurrentBoard());
+            this.template.convertAndSend("/backend/board", boardDTOMapper.apply(gameService.getCurrentBoard()));
         }
     }
 

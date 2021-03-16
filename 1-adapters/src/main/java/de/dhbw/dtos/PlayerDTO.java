@@ -9,7 +9,7 @@ import lombok.Data;
 @Builder
 public class PlayerDTO {
     private String name;
-    private CoordinatesDTO coordinates;
+    private CoordinatesDTO position;
     private int lifePoints;
     private int workItems;
 }

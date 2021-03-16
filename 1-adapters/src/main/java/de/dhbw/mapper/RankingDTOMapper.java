@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 import java.util.function.Function;
 
 @Component
-public class RankingMapper implements Function<RankingEntity, RankingDTO> {
+public class RankingDTOMapper implements Function<RankingEntity, RankingDTO> {
 
     private RankingDTO map(RankingEntity rankingEntity) {
         return new RankingDTO(rankingEntity.getName(), rankingEntity.getEarned_points(), rankingEntity.getWorkItems().getNumberOfItems(),
