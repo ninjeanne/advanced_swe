@@ -43,6 +43,7 @@ public class ColleagueAggregate {
     public void extendPath(CoordinatesVO coordinate) {
         if (path.isEmpty()) {
             path.add(coordinate);
+            return;
         } else {
             CoordinatesVO lastCoordinate = path.get(path.size() - 1);
             if (coordinate.equals(lastCoordinate)) {
@@ -53,8 +54,10 @@ public class ColleagueAggregate {
                     throw new IllegalArgumentException("new path coordinate for colleague must be de/increased for x OR for y");
                 }
                 path.add(coordinate);
+                return;
             } else if (lastCoordinate.getY() == coordinate.getY() + 1 || lastCoordinate.getY() == coordinate.getY() - 1) {
                 path.add(coordinate);
+                return;
             }
         }
         throw new IllegalArgumentException("path for colleague couldn't be extended for x:" + coordinate.getX() + " and y:" + coordinate.getY());

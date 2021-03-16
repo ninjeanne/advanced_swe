@@ -36,11 +36,6 @@ public final class CoordinatesVO {
         }
     }
 
-    public CoordinatesVO(long id, int x, int y) {
-        this(x, y);
-        this.id = id;
-    }
-
     private boolean isValid(int value) {
         return value >= 0;
     }

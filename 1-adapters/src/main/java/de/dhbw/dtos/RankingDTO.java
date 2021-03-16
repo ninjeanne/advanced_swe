@@ -4,12 +4,16 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 
+import java.util.Date;
+
 @Data
 @AllArgsConstructor
 @Builder
-public class PlayerDTO {
+public class RankingDTO {
+
     private String name;
-    private CoordinatesDTO coordinates;
-    private int lifePoints;
+    private int earned_points;
     private int workItems;
+    private int total;
+    private Date date;
 }

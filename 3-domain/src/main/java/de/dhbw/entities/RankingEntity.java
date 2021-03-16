@@ -1,14 +1,14 @@
 package de.dhbw.entities;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
+import de.dhbw.valueobjects.ItemsVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
 
@@ -25,8 +25,9 @@ public class RankingEntity {
     private String name;
     @Column
     private int earned_points;
-    @Column
-    private int workItem;
+    @OneToOne(cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private ItemsVO workItems;
     @Column
     private Date date;
 
@@ -34,17 +35,15 @@ public class RankingEntity {
         return earned_points;
     }
 
-    @JsonGetter("total")
     public int getTotal() {
-        return earned_points + workItem * 50;
+        return earned_points + workItems.getNumberOfItems() * 50;
     }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof RankingEntity) {
             RankingEntity rankingEntity = (RankingEntity) obj;
-            return this.getName().equals(rankingEntity.getName()) && this.getEarned_points() == rankingEntity.getEarned_points() && this.getDate()
-                    .equals(rankingEntity.getDate());
+            return this.getUuid().equals(rankingEntity.getUuid());
         }
         return false;
     }

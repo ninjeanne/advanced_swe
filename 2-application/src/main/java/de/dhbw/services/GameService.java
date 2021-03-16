@@ -7,11 +7,15 @@ import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.ItemsVO;
 import de.dhbw.valueobjects.PlanVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.UUID;
 
 @Service
 public class GameService implements GameDomainService {
@@ -38,9 +42,9 @@ public class GameService implements GameDomainService {
         if (!isRunning()) {
             BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
             initialize(boardAggregate);
-            initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0, 0), 3, 0));
+            initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0)));
             initializeDate();
-            initialize(new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, 0, date));
+            initializeRanking();
             return;
         }
 
@@ -51,7 +55,7 @@ public class GameService implements GameDomainService {
     public void initialize(PlayerEntity player) {
         if (!isRunning()) {
             this.player = player;
-            this.player.setPosition(new CoordinatesVO(0, 0, 0));//todo init better/random position
+            this.player.setPosition(new CoordinatesVO(0, 0));
             return;
         }
 
@@ -79,8 +83,8 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public void initialize(RankingEntity rankingEntity) {
-        this.rankingEntity = rankingEntity;
+    public void initializeRanking() {
+        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, player.getWorkItems(), date);
     }
 
     @Override
@@ -111,7 +115,8 @@ public class GameService implements GameDomainService {
         throw new RuntimeException("Game hasn't been started yet.");
     }
 
-    public void solveWorkItemForPlayer() {
+    @Override
+    public void playerHasWorked() {
         if (isRunning()) {
             player.increaseWorkItems();
             return;
@@ -136,11 +141,10 @@ public class GameService implements GameDomainService {
     public boolean isPlayerInInfectionRadius() {
         if (isRunning()) {
             CoordinatesVO playerPosition = player.getPosition();
-            int colleagueRadius = board.getColleagueRadius();
             for (ColleagueAggregate colleague : board.getColleagues()) {
                 CoordinatesVO colleaguePosition = colleague.getPosition();
 
-                if (colleaguePosition.distanceTo(playerPosition) <= colleagueRadius) {
+                if (colleaguePosition.distanceTo(playerPosition) <= board.getColleagueRadius().getRadius()) {
                     return true;
                 }
 
@@ -153,8 +157,8 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public void infectPlayerWithProbability(double probability) {
-        if (player.isAlive() && Math.random() >= probability) {
+    public void infectPlayer() {
+        if (player.isAlive() && Math.random() >= board.getInfectProbability().getProbability()) {
             player.decreaseLifePoints();
         }
     }
@@ -174,7 +178,7 @@ public class GameService implements GameDomainService {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
                     rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 1,
-                            player.getWorkItem(), rankingEntity.getDate());
+                            player.getWorkItems(), rankingEntity.getDate());
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");
@@ -200,7 +204,7 @@ public class GameService implements GameDomainService {
                 player.setPosition(newCoordinates);
 
                 if (isPlayerOnWorkItem()) {
-                    solveWorkItemForPlayer();
+                    playerHasWorked();
                     addRandomWorkItemToBoard();
                 }
 
@@ -209,7 +213,7 @@ public class GameService implements GameDomainService {
                     addRandomVaccinationToBoard();
                 }
                 if (isPlayerInInfectionRadius()) {
-                    infectPlayerWithProbability(board.getProbability());
+                    infectPlayer();
                 }
 
                 return true;
@@ -249,7 +253,6 @@ public class GameService implements GameDomainService {
             board = null;
             date = null;
             running = false;
-            //todo save ranking
             return;
         }
 
@@ -263,7 +266,7 @@ public class GameService implements GameDomainService {
         do {
             int x = (int) (Math.random() * plan.getWidth());
             int y = (int) (Math.random() * plan.getHeight());
-            coordinatesVO = new CoordinatesVO(0, x, y);
+            coordinatesVO = new CoordinatesVO(x, y);
         } while (board.addNewVaccination(coordinatesVO));
     }
 
@@ -274,7 +277,7 @@ public class GameService implements GameDomainService {
         do {
             int x = (int) (Math.random() * plan.getWidth());
             int y = (int) (Math.random() * plan.getHeight());
-            coordinatesVO = new CoordinatesVO(0, x, y);
+            coordinatesVO = new CoordinatesVO(x, y);
         } while (board.addNewWorkItem(coordinatesVO));
     }
 
@@ -295,10 +298,5 @@ public class GameService implements GameDomainService {
             colleagueMovementTimer = new Timer("Colleague Movement Timer");
             colleagueMovementTimer.scheduleAtFixedRate(rankingPointTask, 0, 500);
         }
-    }
-
-    @Override
-    public List<RankingEntity> getTotalRankingForBoard() {
-        return boardRepository.getTopRankingsByBoardName(board.getName());
     }
 }

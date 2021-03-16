@@ -2,6 +2,8 @@ package de.dhbw.mapper;
 
 import de.dhbw.dtos.PlayerDTO;
 import de.dhbw.entities.PlayerEntity;
+import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.ItemsVO;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -10,7 +12,8 @@ import java.util.function.Function;
 public class PlayerMapper implements Function<PlayerDTO, PlayerEntity> {
 
     private PlayerEntity map(PlayerDTO playerDTO) {
-        return new PlayerEntity(playerDTO.getName(), playerDTO.getCoordinates(), playerDTO.getLifePoints(), playerDTO.getWorkItems());
+        return new PlayerEntity(playerDTO.getName(), new CoordinatesVO(playerDTO.getCoordinates().getX(), playerDTO.getCoordinates().getY()),
+                new ItemsVO(playerDTO.getLifePoints()), new ItemsVO(playerDTO.getWorkItems()));
     }
 
     @Override

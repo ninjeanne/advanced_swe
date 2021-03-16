@@ -5,10 +5,7 @@ import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.services.RankingService;
-import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.PlanVO;
-import de.dhbw.valueobjects.ProbabilityVO;
-import de.dhbw.valueobjects.RadiusVO;
+import de.dhbw.valueobjects.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -64,7 +61,7 @@ public class Application {
         }
 
         board.addColleague(colleagueAggregate);
-        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, 0, new Date());
+        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new ItemsVO(0), new Date());
         return (args) -> {
             boardRepository.save(board);
             rankingService.saveNewRankingForBoard(rankingEntity, board.getName());

@@ -1,6 +1,7 @@
 package de.dhbw.entities;
 
 import de.dhbw.valueobjects.CoordinatesVO;
+import de.dhbw.valueobjects.ItemsVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +10,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
@@ -28,10 +28,12 @@ public class PlayerEntity {
     @OneToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     private CoordinatesVO position;
-    @Column
-    private int lifePoints = 0;
-    @Column
-    private int workItem = 0;
+    @OneToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private ItemsVO lifePoints;
+    @OneToOne
+    @LazyCollection(LazyCollectionOption.FALSE)
+    private ItemsVO workItems;
 
     /**
      * the new position is only allowed to differ in one coordinate and by one step!
@@ -61,8 +63,8 @@ public class PlayerEntity {
     }
 
     public void decreaseLifePoints() {
-        if (lifePoints > 0) {
-            lifePoints--;
+        if (isAlive()) {
+            lifePoints = new ItemsVO(lifePoints.getNumberOfItems() - 1);
             log.debug("Life points have been decreased for {}. Left: {}", getName(), lifePoints);
         } else {
             throw new IllegalArgumentException("Player " + getName() + " is already dead.");
@@ -70,15 +72,15 @@ public class PlayerEntity {
     }
 
     public void increaseLifePoints() {
-        lifePoints++;
+        lifePoints = new ItemsVO(lifePoints.getNumberOfItems() + 1);
     }
 
     public void increaseWorkItems() {
-        workItem++;
+        workItems = new ItemsVO(workItems.getNumberOfItems() + 1);
     }
 
     public boolean isAlive() {
-        return lifePoints > 0;
+        return !lifePoints.equals(new ItemsVO(0));
     }
 
     @Override
