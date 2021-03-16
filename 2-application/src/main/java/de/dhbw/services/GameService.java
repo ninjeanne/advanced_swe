@@ -40,7 +40,7 @@ public class GameService implements GameDomainService {
             initialize(boardAggregate);
             initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0, 0), 3, 0));
             initializeDate();
-            initialize(new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, date));
+            initialize(new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, 0, date));
             return;
         }
 
@@ -162,7 +162,7 @@ public class GameService implements GameDomainService {
     @Override
     public int getLastRankingPointsForPlayer() {
         if (rankingEntity != null) {
-            return rankingEntity.getEarned_points() + player.getWorkItem() * 50;
+            return rankingEntity.getTotal();
         }
 
         throw new RuntimeException("There is no saved ranking for this game");
@@ -174,7 +174,7 @@ public class GameService implements GameDomainService {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
                     rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 1,
-                            rankingEntity.getDate());
+                            player.getWorkItem(), rankingEntity.getDate());
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");

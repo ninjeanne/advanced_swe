@@ -1,5 +1,6 @@
 package de.dhbw.entities;
 
+import com.fasterxml.jackson.annotation.JsonGetter;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,13 +26,25 @@ public class RankingEntity {
     @Column
     private int earned_points;
     @Column
+    private int workItem;
+    @Column
     private Date date;
+
+    public int getEarned_points() {
+        return earned_points;
+    }
+
+    @JsonGetter("total")
+    public int getTotal() {
+        return earned_points + workItem * 50;
+    }
 
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof RankingEntity) {
             RankingEntity rankingEntity = (RankingEntity) obj;
-            return this.getName().equals(rankingEntity.getName());
+            return this.getName().equals(rankingEntity.getName()) && this.getEarned_points() == rankingEntity.getEarned_points() && this.getDate()
+                    .equals(rankingEntity.getDate());
         }
         return false;
     }

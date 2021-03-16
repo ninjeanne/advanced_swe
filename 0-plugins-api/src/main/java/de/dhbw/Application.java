@@ -65,7 +65,7 @@ public class Application {
         }
 
         board.addColleague(new ColleagueAggregate("Fred", 0, true, pathOfColleague));
-        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new Date());
+        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, 0, new Date());
         return (args) -> {
             boardRepository.save(board);
             rankingService.saveNewRankingForBoard(rankingEntity, board.getName());

@@ -1,20 +1,34 @@
 <template>
-  <div>
-    <div>
-      <p v-for="(ranking, index) in top_ranking">{{ (index + 1) }}. {{ ranking.name }} - {{ ranking.earned_points }} - {{
-          new Date(ranking.date).getDate()
-        }}.{{ new Date(ranking.date).getMonth() }}.{{ new Date(ranking.date).getFullYear() }}</p>
-    </div>
-    <div class="form-group">
-      <label for="player">What is your name?</label>
+  <div class="grid-container">
+    <div class="item1">
+      <label v-if="!started" for="player"><b>Enter your name</b></label>
       <input
         type="text"
         id="player"
         class="form-control"
         v-model="player_name"
         :disabled="started"
+        v-if="!started"
         placeholder="Your name here..."
       >
+      <b v-else>Hi {{ this.player_name }}</b>
+      <hr>
+      <h3>Top Ranking</h3>
+      <table>
+        <tr v-for="(ranking, index) in top_ranking" :key="index">
+          <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>
+          <th style="color:green;text-align:right;font-weight:bold">{{ ranking.total }}</th>
+          <th>[{{ new Date(ranking.date) | formatDate }}]</th>
+        </tr>
+      </table>
+      <hr v-if="started">
+      <div v-if="started">
+        <b>{{ ranking_points }}</b> (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)<br>
+        {{ player.workItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" /> (work items)<br>
+        {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" /> (life points)<br>
+      </div>
+    </div>
+    <div class="item2 form-group">
       <button
         id="start"
         class="btn btn-default"
@@ -30,19 +44,11 @@
       >stop
       </button>
     </div>
-    <div>
-      <p v-if="game_over && !started">last achieved points {{ ranking_points }}</p>
-    </div>
-    <div>
+    <div class="item4">
+      <h3 v-if="started">Office: {{ this.boardName }}</h3>
       <canvas v-if="started" id="c"></canvas>
     </div>
-    <div v-if="started">
-      {{ ranking_points }}<br>
-      (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)
-      <p><b>life points</b> {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" />
-      <p><b>work items</b> {{ player.workItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />
-      </p>
-    </div>
+
   </div>
 </template>
 
@@ -50,6 +56,8 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import {api} from "../services/api";
+import Vue from "vue";
+import moment from "moment";
 
 export default {
   name: "websocketdemo",
@@ -75,8 +83,8 @@ export default {
   },
   methods: {
     stop() {
-      this.rankingForBoard();
       this.stompClient.send("/frontend/stop", this.player_name, {});
+      this.rankingForBoard();
       this.game_over = true;
       this.disconnect();
     },
@@ -273,9 +281,45 @@ export default {
   mounted() {
     this.connect();
     this.rankingForBoard();
+    Vue.filter("formatDate", function(date) {
+      if (date) {
+        return moment(date).format("DD. MMMM YYYY hh:mm");
+      }
+    });
   }
 };
 </script>
 
 <style scoped>
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    'header header header header header header'
+    'menu main main main main main'
+    'menu footer footer footer footer footer';
+  grid-gap: 10px;
+  padding: 10px;
+}
+
+.grid-container > div {
+  padding: 20px 0;
+}
+
+.item1 {
+  grid-area: menu;
+  font-size: 12px;
+  text-align: justify;
+}
+
+.item2 {
+  grid-area: header;
+}
+
+.item4 {
+  grid-area: main;
+}
+
+.item5 {
+  grid-area: footer;
+}
 </style>

@@ -10,6 +10,7 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "moment": "^2.29.1",
     "rsocket-core": "0.0.23",
     "rsocket-flowable": "0.0.23",
     "rsocket-websocket-client": "0.0.23",

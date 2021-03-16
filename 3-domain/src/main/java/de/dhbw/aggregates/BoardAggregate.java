@@ -12,6 +12,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -206,6 +207,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     private RankingEntity getLastTopRating() {
         if (!topRankings.isEmpty()) {
+            topRankings.sort(Comparator.comparing(RankingEntity::getEarned_points).reversed());
             return topRankings.get(topRankings.size() - 1);
         }
         return null;
