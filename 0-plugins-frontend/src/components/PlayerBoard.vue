@@ -1,17 +1,13 @@
 <template>
   <div>
-    <label v-if="!started" for="player"><b>Enter your name</b></label>
-    <input
-      type="text"
+    <label for="player"><b>Hello &#128512;</b></label>
+    <b-form-input size="sm" placeholder="Enter your name" type="text"
       id="player"
-      class="form-control"
-      v-model="name"
+      v-model="player.name"
       :disabled="started"
-      v-if="!started"
-      placeholder="Your name here..."
-      @change="updatePlayerName"
-    >
-    <b v-else>Hi {{ this.name }}</b>
+      @change="updatePlayerName"></b-form-input>
+    <br>
+    <p>Do you dare go through the contaminated office?</p>
   </div>
 </template>
 
@@ -19,22 +15,15 @@
 export default {
   name: "PlayerBoard",
   props: [
-    'playerName',
+    'player',
     'started'
   ],
-  data() {
-    return {
-      name: ""
-    }
-  },
   methods: {
     updatePlayerName(){
-      this.$emit('update:player_name', this.name);
+      var name = this.player.name;
+      this.$emit('update:player_name', name);
     }
   },
- mounted() {
-    this.name = this.playerName;
- }
 };
 </script>
 

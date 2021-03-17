@@ -1,17 +1,18 @@
 <template>
   <div>
-    <logo/>
+    <logo />
     <div class="grid-container">
       <div class="menu">
-        <player-board v-bind:player-name="player_name" v-on:update:player_name="player_name = $event" v-bind:started="started" />
+        <player-board v-bind:player="player" v-on:update:player_name="player.name = $event" v-bind:started="started" />
+        <hr>
+        <start-stop-controller v-bind:started="started" v-on:stop="stop" v-on:start="start" />
+        <hr>
+        <game-status v-bind:started="started" v-bind:rankingPoints="ranking_points" v-bind:player="player"
+          v-bind:board-name="this.boardName" />
         <hr>
         <ranking-board v-bind:top-ranking="top_ranking" />
-        <hr>
-        <game-status v-if="started" v-bind:started="started" v-bind:rankingPoints="ranking_points" v-bind:workItems="player.workItems" v-bind:lifePoints="player.lifePoints"/>
       </div>
-      <start-stop-controller v-bind:started="started" v-on:stop="stop" v-on:start="start" />
       <div class="main">
-        <h3 v-if="started">Office: {{ this.boardName }}</h3>
         <canvas v-if="started" id="c"></canvas>
         <game-over v-if="game_over && !started" />
       </div>
@@ -45,9 +46,16 @@ export default {
   data() {
     return {
       boardName: "default",
-      player_name: "Default Spielername",
       top_ranking: [],
-      player: null,
+      player: {
+        name: null,
+        position: {
+          x: 0,
+          y: 0
+        },
+        lifePoints: 0,
+        workItems: 0
+      },
       reset_player: null,
       ranking_points: 0,
       vueCanvas: null,
@@ -64,7 +72,7 @@ export default {
   },
   methods: {
     stop() {
-      this.stompClient.send("/frontend/stop", this.player_name, {});
+      this.stompClient.send("/frontend/stop", this.player.name, {});
       this.game_over = true;
       this.disconnect();
       this.rankingForBoard();
@@ -82,7 +90,10 @@ export default {
         this.stompClient.subscribe("/backend/ranking", tick => {
           this.ranking_points = JSON.parse(tick.body);
         });
-        this.stompClient.send("/frontend/start", this.player_name, {});
+        if (this.player.name === null) {
+          this.player.name = "NOOB";
+        }
+        this.stompClient.send("/frontend/start", this.player.name, {});
         this.stompClient.subscribe("/backend/board", tick => {
           let response = JSON.parse(tick.body);
           this.colleagues = response.colleagues;
@@ -101,15 +112,6 @@ export default {
           this.player = JSON.parse(tick.body);
           this.redraw();
         });
-        this.player = {
-          name: this.player_name,
-          position: {
-            x: 0,
-            y: 0
-          },
-          lifePoints: 3,
-          workItems: 0
-        };
         this.move();
       }
     },
@@ -171,7 +173,15 @@ export default {
       }
       this.socket = null;
       this.stompClient = null;
-      this.player = null;
+      this.player = {
+        name: this.player.name,
+        position: {
+          x: 0,
+          y: 0
+        },
+        lifePoints: 0,
+        workItems: 0
+      };
       this.connected = false;
       this.started = false;
       this.removeCanvas();
@@ -183,10 +193,10 @@ export default {
       this.vueCanvas = null;
     },
     addCanvas() {
-      var c = document.getElementById("c");
-      c.width = 800;
-      c.height = 500;
-      this.vueCanvas = c.getContext("2d");
+      var canvas = document.getElementById("c");
+      canvas.width = 800;
+      canvas.height = 500;
+      this.vueCanvas = canvas.getContext("2d");
     },
     drawMap() {
       if (this.vueCanvas === null) {
@@ -294,6 +304,8 @@ export default {
 
 .main {
   grid-area: main;
+  width: 800px;
+  height: 500px;
 }
 
 </style>

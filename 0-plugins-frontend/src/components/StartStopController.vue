@@ -1,19 +1,21 @@
 <template>
-  <div class="item2 form-group">
-    <button
-      id="start"
-      class="btn btn-default"
+  <div class="item2">
+    <b-button
       :disabled="started"
       @click.prevent="start"
+      variant="dark"
+      size="lg"
+      id="start"
     >start
-    </button>
-    <button
+    </b-button>
+    <b-button
       id="stop"
-      class="btn btn-default"
+      variant="dark"
+      size="lg"
       :disabled="!started"
       @click.prevent="stop"
     >stop
-    </button>
+    </b-button>
   </div>
 </template>
 
