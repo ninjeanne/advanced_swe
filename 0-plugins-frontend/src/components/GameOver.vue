@@ -1,12 +1,12 @@
 <template>
   <div>
     <hr>
+    <img alt="img of work item" src="static/colleague.png" width="210" height="210" />
     <h1>GAME OVER</h1>
     <br>
+    <br>
     <hr>
-    <br>
-    <h3>{{ player.name }}, you should try again!</h3>
-    <br>
+    <h4>{{ player.name }}, you have to be ventilated in a hospital 🚑 🏥</h4>
     <h2>Achieved Points <b>{{ rankingPoints }}</b></h2>
     <h2>{{ workItem }} <img alt="img of work item" src="static/work_item.png" width="30" height="30" /></h2>
   </div>
