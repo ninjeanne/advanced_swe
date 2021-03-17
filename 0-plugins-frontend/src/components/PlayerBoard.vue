@@ -7,7 +7,7 @@
       :disabled="started"
       @change="updatePlayerName"></b-form-input>
     <br>
-    <p>Do you dare go through the contaminated office?</p>
+    <p>Do you dare to go through the contaminated office?</p>
   </div>
 </template>
 

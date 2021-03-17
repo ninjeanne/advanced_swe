@@ -1,6 +1,7 @@
 <template>
   <div>
     <h3 v-if="headline">Top Ranking</h3>
+    <br v-else>
     <table>
       <tr v-for="(ranking, index) in topRanking" :key="index">
         <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>

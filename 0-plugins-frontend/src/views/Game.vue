@@ -14,9 +14,9 @@
         <hr>
       </div>
       <div class="main">
-        <br>
+        <br v-if="started">
         <canvas v-if="started" id="c"></canvas>
-        <game-over v-if="game_over && !started" />
+        <game-over v-if="game_over && !started" v-bind:player="player" v-bind:ranking-points="last_ranking_points" v-bind:work-item="last_work_items" />
       </div>
       <div class="ranking">
         <hr>
@@ -63,7 +63,6 @@ export default {
         lifePoints: 0,
         workItems: 0
       },
-      reset_player: null,
       ranking_points: 0,
       vueCanvas: null,
       connected: false,
@@ -74,11 +73,14 @@ export default {
       obstacles: null,
       vaccination: null,
       workItem: null,
+      last_work_items: 0,
+      last_ranking_points: 0,
       multiplier: 10
     };
   },
   methods: {
     stop() {
+      this.last_ranking_points = this.ranking_points;
       this.stompClient.send("/frontend/stop", this.player.name, {});
       this.game_over = true;
       this.disconnect();
@@ -110,6 +112,7 @@ export default {
           this.vaccination = response.vaccination;
           this.boardName = response.name;
           this.workItem = response.workItem;
+          this.last_work_items = this.player.workItems;
           if (this.plan == null) {
             this.plan = response.plan;
           }
@@ -263,15 +266,13 @@ export default {
       }
     },
     drawPlayer() {
-      if (this.player != null) {
-        this.vueCanvas.beginPath();
-        const img = new Image();
-        img.src = "static/pacman.png";
-        this.vueCanvas.drawImage(img, this.player.position.x * this.multiplier, this.player.position.y * this.multiplier, this.multiplier * 2,
-          this.multiplier * 2);
+      this.vueCanvas.beginPath();
+      const img = new Image();
+      img.src = "static/pacman.png";
+      this.vueCanvas.drawImage(img, this.player.position.x * this.multiplier, this.player.position.y * this.multiplier, this.multiplier * 2,
+        this.multiplier * 2);
 
-        this.vueCanvas.stroke();
-      }
+      this.vueCanvas.stroke();
     },
     rankingForBoard() {
       api("/ranking?boardName=" + this.boardName, {
