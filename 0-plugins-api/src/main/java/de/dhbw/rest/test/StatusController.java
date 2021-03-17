@@ -1,4 +1,4 @@
-package de.dhbw.rest;
+package de.dhbw.rest.test;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;

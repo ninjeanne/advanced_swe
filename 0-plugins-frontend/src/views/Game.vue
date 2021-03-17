@@ -3,18 +3,25 @@
     <logo />
     <div class="grid-container">
       <div class="menu">
-        <player-board v-bind:player="player" v-on:update:player_name="player.name = $event" v-bind:started="started" />
         <hr>
+        <router-link to="/" size="lg">BACK</router-link>
+        <hr>
+        <player-board v-bind:player="player" v-on:update:player_name="player.name = $event" v-bind:started="started" />
         <start-stop-controller v-bind:started="started" v-on:stop="stop" v-on:start="start" />
         <hr>
         <game-status v-bind:started="started" v-bind:rankingPoints="ranking_points" v-bind:player="player"
           v-bind:board-name="this.boardName" />
         <hr>
-        <ranking-board v-bind:top-ranking="top_ranking" />
       </div>
       <div class="main">
+        <br>
         <canvas v-if="started" id="c"></canvas>
         <game-over v-if="game_over && !started" />
+      </div>
+      <div class="ranking">
+        <hr>
+        <ranking-board v-bind:headline="true" v-bind:top-ranking="top_ranking" />
+        <hr>
       </div>
     </div>
   </div>
@@ -34,7 +41,7 @@ import Logo from "../components/Logo";
 import GameStatus from "../components/GameStatus";
 
 export default {
-  name: "websocketdemo",
+  name: "Game",
   components: {
     GameStatus,
     Logo,
@@ -75,7 +82,6 @@ export default {
       this.stompClient.send("/frontend/stop", this.player.name, {});
       this.game_over = true;
       this.disconnect();
-      this.rankingForBoard();
     },
     async start() {
       if (!this.connected) {
@@ -89,6 +95,10 @@ export default {
         });
         this.stompClient.subscribe("/backend/ranking", tick => {
           this.ranking_points = JSON.parse(tick.body);
+        });
+        this.stompClient.subscribe("/backend/topranking", tick => {
+          this.top_ranking = JSON.parse(tick.body);
+          console.log(this.top_ranking);
         });
         if (this.player.name === null) {
           this.player.name = "NOOB";
@@ -125,7 +135,7 @@ export default {
     },
     move() {
       document.addEventListener("keydown", function(event) {
-        if (this.player != null) {
+        if (this.player != null && this.started === true) {
           let validUp = ["ArrowUp", "W", "w"];
           let validDown = ["ArrowDown", "s", "S"];
           let validLeft = ["ArrowLeft", "a", "A"];
@@ -286,8 +296,8 @@ export default {
   display: grid;
   grid-template-areas:
     'header header header header header header'
-    'menu main main main main main'
-    'menu footer footer footer footer footer';
+    'menu main main main main ranking'
+    'menu footer footer footer footer ranking';
   grid-gap: 10px;
   padding: 10px;
 }
@@ -306,6 +316,10 @@ export default {
   grid-area: main;
   width: 800px;
   height: 500px;
+}
+
+.ranking {
+  grid-area: ranking;
 }
 
 </style>

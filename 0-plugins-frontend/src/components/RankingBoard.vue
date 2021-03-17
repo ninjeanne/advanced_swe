@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3>Top Ranking</h3>
+    <h3 v-if="headline">Top Ranking</h3>
     <table>
       <tr v-for="(ranking, index) in topRanking" :key="index">
         <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>
@@ -15,11 +15,14 @@
 export default {
   name: "RankingBoard",
   props: [
-    'topRanking'
+    "topRanking",
+    "headline"
   ]
 };
 </script>
 
 <style scoped>
-
+th {
+  padding: 5px;
+}
 </style>

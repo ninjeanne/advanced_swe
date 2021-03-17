@@ -20,7 +20,7 @@ export default {
 
 <style scoped>
 .game_status {
-  height: 50px;
+  height: 70px;
 }
 
 </style>

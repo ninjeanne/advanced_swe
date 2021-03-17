@@ -27,6 +27,9 @@ public class RankingController {
 
     @GetMapping
     public List<RankingDTO> getRankingsForBoardName(@RequestParam String boardName) {
+        if(boardName == null){
+            boardName = "default";
+        }
         return rankingService.getTopRankingsForBoard(boardName).stream().map(rankingDTOMapper).collect(Collectors.toList());
     }
 }
