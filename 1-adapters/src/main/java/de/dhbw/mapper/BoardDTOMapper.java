@@ -30,6 +30,21 @@ public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
                     .y(colleagueAggregate.getPosition().getY())
                     .build());
         }
+        CoordinatesDTO vaccination = null;
+        if(boardAggregate.getVaccination() != null){
+        vaccination = CoordinatesDTO.builder()
+                .y(boardAggregate.getVaccination().getY())
+                .x(boardAggregate.getVaccination().getX())
+                .build();
+        }
+
+        CoordinatesDTO workItem = null;
+        if(boardAggregate.getWorkItem() != null){
+        workItem = CoordinatesDTO.builder()
+                .y(boardAggregate.getWorkItem().getY())
+                .x(boardAggregate.getWorkItem().getX())
+                .build();
+        }
 
        return BoardDTO.builder()
                .name(boardAggregate.getName())
@@ -37,14 +52,8 @@ public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
                .colleagues(colleagues)
                .infectProbability(boardAggregate.getInfectProbability().getProbability())
                .colleagueRadius(boardAggregate.getColleagueRadius().getRadius())
-               .workItem(CoordinatesDTO.builder()
-                       .y(boardAggregate.getWorkItem().getY())
-                       .x(boardAggregate.getWorkItem().getX())
-                       .build())
-               .vaccination(CoordinatesDTO.builder()
-                       .y(boardAggregate.getVaccination().getY())
-                       .x(boardAggregate.getVaccination().getX())
-                       .build())
+               .workItem(workItem)
+               .vaccination(vaccination)
                .plan(PlanDTO.builder()
                        .height(boardAggregate.getPlan().getHeight())
                        .width(boardAggregate.getPlan().getWidth())
