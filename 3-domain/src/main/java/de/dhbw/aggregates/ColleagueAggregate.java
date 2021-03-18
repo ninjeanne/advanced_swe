@@ -1,6 +1,6 @@
 package de.dhbw.aggregates;
 
-import de.dhbw.helper.ColleagueIterator;
+import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
 import lombok.NonNull;
@@ -58,8 +58,8 @@ public class ColleagueAggregate {
         throw new IllegalArgumentException("path for colleague couldn't be extended for x:" + coordinate.getX() + " and y:" + coordinate.getY());
     }
 
-    public ColleagueIterator createColleagueIterator(){
-        return new ColleagueIterator(this);
+    public ColleagueMovement createColleagueIterator(){
+        return new ColleagueMovement(this);
     }
 
     @Override

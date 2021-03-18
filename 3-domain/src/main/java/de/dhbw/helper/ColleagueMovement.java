@@ -3,17 +3,20 @@ package de.dhbw.helper;
 import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.valueobjects.CoordinatesVO;
 
-public class ColleagueIterator {
+/**
+ * Design Pattern: Iterator!
+ */
+public class ColleagueMovement {
 
     private final ColleagueAggregate aggregate;
     private int position = 0;
-    boolean moveForward = true;
+    private boolean moveForward = true;
 
-    public ColleagueIterator(ColleagueAggregate aggregate){
+    public ColleagueMovement(ColleagueAggregate aggregate){
         this.aggregate = aggregate;
     }
 
-    public CoordinatesVO getPosition() {
+    public CoordinatesVO getCurrentPosition() {
         return aggregate.getPath().get(position);
     }
 

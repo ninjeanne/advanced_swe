@@ -2,7 +2,8 @@ package de.dhbw.services;
 
 import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.aggregates.ColleagueAggregate;
-import de.dhbw.helper.ColleagueIterator;
+import de.dhbw.domainservice.BoardDomainService;
+import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
@@ -15,10 +16,10 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Service
-public class BoardService {
+public class BoardService implements BoardDomainService {
     private final BoardRepository boardRepository;
     private BoardAggregate boardAggregate;
-    private List<ColleagueIterator> colleagueIterator;
+    private List<ColleagueMovement> colleagueMovements;
     private Timer colleagueMovementTimer;
 
     @Autowired
@@ -27,20 +28,20 @@ public class BoardService {
     }
 
     public boolean isInitialized() {
-        return boardAggregate != null && colleagueIterator != null;
+        return boardAggregate != null && colleagueMovements != null;
     }
 
     public void resetBoard() {
         stopMovingColleagues();
         boardAggregate = null;
-        colleagueIterator = null;
+        colleagueMovements = null;
     }
 
     public void initializeBoard(String boardName) {
         this.boardAggregate = boardRepository.getBoardByName(boardName);
-        this.colleagueIterator = new ArrayList<>();
+        this.colleagueMovements = new ArrayList<>();
         for (ColleagueAggregate colleague : boardAggregate.getColleagues()) {
-            colleagueIterator.add(colleague.createColleagueIterator());
+            colleagueMovements.add(colleague.createColleagueIterator());
         }
     }
 
@@ -53,8 +54,8 @@ public class BoardService {
     }
 
     public boolean isInInfectionRadius(CoordinatesVO coordinatesVO) {
-        for (ColleagueIterator iterator : this.colleagueIterator) {
-            CoordinatesVO colleaguePosition = iterator.getPosition();
+        for (ColleagueMovement iterator : this.colleagueMovements) {
+            CoordinatesVO colleaguePosition = iterator.getCurrentPosition();
 
             if (colleaguePosition.distanceTo(coordinatesVO) <= boardAggregate.getColleagueRadius().getRadius()) {
                 return true;
@@ -94,26 +95,26 @@ public class BoardService {
 
     public boolean isCoordinateEmpty(CoordinatesVO coordinatesVO) {
         boolean isEmpty = boardAggregate.containsCoordinate(coordinatesVO) && !boardAggregate.getObstacles().contains(coordinatesVO);
-        for (ColleagueIterator iterator : this.getColleagueIterator()) {
-            if (iterator.getPosition().equals(coordinatesVO)) {
+        for (ColleagueMovement iterator : this.colleagueMovements) {
+            if (iterator.getCurrentPosition().equals(coordinatesVO)) {
                 return false;
             }
         }
         return isEmpty;
     }
 
-    public List<ColleagueIterator> getColleagueIterator() {
-        return this.colleagueIterator;
+    public List<ColleagueMovement> getColleagueMovements() {
+        return new ArrayList<>(colleagueMovements); //forbid changing the original list
     }
 
     public void startMovingColleagues() {
-        this.colleagueIterator = new ArrayList<>();
+        this.colleagueMovements = new ArrayList<>();
         boardAggregate.getColleagues().forEach(value -> {
-            this.colleagueIterator.add(value.createColleagueIterator());
+            this.colleagueMovements.add(value.createColleagueIterator());
         });
         TimerTask rankingPointTask = new TimerTask() {
             public void run() {
-                getColleagueIterator().forEach(ColleagueIterator::nextPosition);
+                colleagueMovements.forEach(ColleagueMovement::nextPosition);
             }
         };
         colleagueMovementTimer = new Timer("Colleague Movement Timer");
