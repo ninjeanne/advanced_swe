@@ -66,7 +66,7 @@ public class GameController {
     @SendTo("/backend/stop")
     public boolean stopGame() {
         if (gameService.isRunning()) {
-            String playerName = gameService.getPlayer().getName();
+            String playerName = gameService.getCurrentPlayer().getName();
             gameService.stopGame();
             log.info("Game stopped for player {}", playerName);
             updateRanking();
@@ -89,7 +89,7 @@ public class GameController {
         try {
             if (gameService.isRunning()) {
                 if (gameService.movePlayer(coordinatesVOMapper.apply(coordinatesDTO))) {
-                    PlayerDTO playerDTO = playerDTOMapper.apply(gameService.getPlayer());
+                    PlayerDTO playerDTO = playerDTOMapper.apply(gameService.getCurrentPlayer());
                     if (gameService.isGameOver()) {
                         autoBackendAnswer();
                         this.template.convertAndSend("/backend/stop", stopGame());
@@ -108,7 +108,7 @@ public class GameController {
     @Scheduled(fixedRate = 500)
     public void autoBackendAnswer() {
         if (gameService.isRunning()) {
-            this.template.convertAndSend("/backend/board", boardDTOMapper.apply(gameService.getBoard()));
+            this.template.convertAndSend("/backend/board", boardDTOMapper.apply(gameService.getCurrentBoard()));
         }
     }
 

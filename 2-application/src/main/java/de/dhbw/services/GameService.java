@@ -5,7 +5,6 @@ import de.dhbw.domainservice.GameDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.ItemsVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,8 +18,8 @@ public class GameService implements GameDomainService {
 
     private final BoardService boardService;
     private final RankingService rankingService;
+    private final PlayerService playerService;
 
-    private PlayerEntity player;
     private RankingEntity rankingEntity;
     private Date date;
     private boolean running = false;
@@ -28,15 +27,16 @@ public class GameService implements GameDomainService {
     private Timer rankingPointTimer;
 
     @Autowired
-    public GameService(BoardService boardService, RankingService rankingService) {
+    public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService) {
         this.boardService = boardService;
         this.rankingService = rankingService;
+        this.playerService = playerService;
     }
 
     public void initializeGame(String playerName, String boardName) {
         if (!isRunning()) {
             initializeBoard(boardName);
-            initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0)));
+            initializePlayer(playerName);
             initializeDate();
             initializeRanking();
             return;
@@ -45,24 +45,17 @@ public class GameService implements GameDomainService {
         throw new RuntimeException("Game can't be initialized because it's already running.");
     }
 
-    @Override
-    public void initialize(PlayerEntity player) {
-        if (!isRunning()) {
-            this.player = player;
-            this.player.setPosition(new CoordinatesVO(0, 0));
-            return;
-        }
-
-        throw new RuntimeException("Player can't be changed when the game is running");
-    }
-
     public void initializeBoard(String boardName) {
         boardService.initializeBoard(boardName);
     }
 
+    public void initializePlayer(String playerName) {
+        playerService.initialize(playerName);
+    }
+
     @Override
     public boolean isGameOver() {
-        return !player.isAlive();
+        return !playerService.isAlive();
     }
 
     @Override
@@ -72,46 +65,19 @@ public class GameService implements GameDomainService {
 
     @Override
     public void initializeRanking() {
-        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), this.player.getName(), 0, player.getWorkItems(), date);
+        PlayerEntity currentPlayer = playerService.getCurrentPlayer();
+        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), currentPlayer.getName(), 0,
+                currentPlayer.getWorkItems(), date);
     }
 
     @Override
     public boolean isInitialized() {
-        return date != null && boardService.isInitialized() && player != null && rankingEntity != null;
+        return date != null && boardService.isInitialized() && playerService.isInitialized() && rankingEntity != null;
     }
 
     @Override
     public boolean isRunning() {
         return running;
-    }
-
-    @Override
-    public void playerHasWorked() {
-        if (isRunning()) {
-            player.increaseWorkItems();
-            return;
-        }
-        throw new RuntimeException("Game hasn't been started yet.");
-    }
-
-    @Override
-    public void vaccinatePlayer() {
-        if (isRunning()) {
-            if (player.isAlive()) {
-                player.increaseLifePoints();
-                return;
-            }
-            stopGame();
-            return;
-        }
-        throw new RuntimeException("Game hasn't been started yet.");
-    }
-
-    @Override
-    public void infectPlayer() {
-        if (player.isAlive() && boardService.infectByProbability()) {
-            player.decreaseLifePoints();
-        }
     }
 
     @Override
@@ -128,8 +94,9 @@ public class GameService implements GameDomainService {
         if (isRunning() && rankingPointTimer == null) {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
-                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 1,
-                            player.getWorkItems(), rankingEntity.getDate());
+                    PlayerEntity currentPlayer = playerService.getCurrentPlayer();
+                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), currentPlayer.getName(), rankingEntity.getEarned_points() + 1,
+                           currentPlayer.getWorkItems(), rankingEntity.getDate());
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");
@@ -147,19 +114,23 @@ public class GameService implements GameDomainService {
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (isRunning()) {
             if (boardService.isCoordinateEmpty(newCoordinates)) {
-                player.setPosition(newCoordinates);
+                playerService.setNewPosition(newCoordinates);
 
                 if (boardService.isWorkItem(newCoordinates)) {
-                    playerHasWorked();
+                    playerService.work();
                     boardService.addRandomWorkItemToBoard();
                 }
 
                 if (boardService.isVaccination(newCoordinates)) {
-                    vaccinatePlayer();
-                    boardService.addRandomVaccinationToBoard();
+                    if (playerService.vaccinate()) {
+                        boardService.addRandomVaccinationToBoard();
+                    } else {
+                        stopGame();
+                    }
                 }
                 if (boardService.isInInfectionRadius(newCoordinates)) {
-                    infectPlayer();
+                    boolean isInfected = boardService.infectByProbability();
+                    playerService.infect(isInfected);
                 }
 
                 return true;
@@ -169,12 +140,14 @@ public class GameService implements GameDomainService {
         throw new RuntimeException("Game hasn't been started yet.");
     }
 
-    public PlayerEntity getPlayer() {
-        return player;
+    @Override
+    public PlayerEntity getCurrentPlayer() {
+        return playerService.getCurrentPlayer();
     }
 
-    public BoardAggregate getBoard() {
-       return boardService.getCurrentBoard();
+    @Override
+    public BoardAggregate getCurrentBoard() {
+        return boardService.getCurrentBoard();
     }
 
     @Override
@@ -194,7 +167,7 @@ public class GameService implements GameDomainService {
             if (rankingService.saveNewRankingForBoard(rankingEntity, boardService.getCurrentBoard().getName())) {
                 stopCountingRankingPointsForPlayer();
                 boardService.resetBoard();
-                player = null;
+                playerService.resetPlayer();
                 date = null;
                 running = false;
                 rankingEntity = null;
