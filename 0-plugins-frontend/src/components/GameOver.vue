@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="game_over">
     <hr>
     <img alt="img of work item" src="static/colleague.png" width="210" height="210" />
     <h1>GAME OVER</h1>
@@ -22,5 +22,9 @@ export default {
 </script>
 
 <style scoped>
+.game_over {
+  justify-content: center;
+  width: 1100px;
+}
 
 </style>
