@@ -1,13 +1,16 @@
 package de.dhbw.aggregates;
 
-import com.fasterxml.jackson.annotation.JsonGetter;
+import de.dhbw.helper.ColleagueIterator;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
 import lombok.NonNull;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -19,10 +22,7 @@ public class ColleagueAggregate {
     @NonNull
     @Id
     private String name; //name as entity id
-    @Column
-    private int position = 0;
-    @Column
-    boolean moveForward = true;
+
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<CoordinatesVO> path = new ArrayList<>();
@@ -33,11 +33,6 @@ public class ColleagueAggregate {
 
     public ColleagueAggregate(@NonNull String name) {
         this.name = name;
-    }
-
-    @JsonGetter("position")
-    public CoordinatesVO getPosition() {
-        return path.get(position);
     }
 
     public void extendPath(CoordinatesVO coordinate) {
@@ -63,35 +58,8 @@ public class ColleagueAggregate {
         throw new IllegalArgumentException("path for colleague couldn't be extended for x:" + coordinate.getX() + " and y:" + coordinate.getY());
     }
 
-    private void setPosition(int position) {
-        if (position >= 0 && position < path.size()) {
-            this.position = position;
-            return;
-        }
-
-        throw new IllegalArgumentException(
-                "The position has to be positive and part of the path. " + "Path Size is: " + path.size() + ", new position: " + position + ", old position: "
-                        + this.position);
-    }
-
-    public CoordinatesVO nextPosition() {
-        if (moveForward) {
-            if (position + 1 == path.size()) {
-                moveForward = false;
-                return nextPosition();
-            } else {
-                setPosition(++position);
-                return path.get(position);
-            }
-        } else {
-            if (position == 0) {
-                moveForward = true;
-                return nextPosition();
-            } else {
-                setPosition(--position);
-                return path.get(position);
-            }
-        }
+    public ColleagueIterator createColleagueIterator(){
+        return new ColleagueIterator(this);
     }
 
     @Override

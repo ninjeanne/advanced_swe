@@ -1,11 +1,13 @@
 package de.dhbw.mapper;
 
 import de.dhbw.aggregates.BoardAggregate;
-import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.dtos.BoardDTO;
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlanDTO;
+import de.dhbw.helper.ColleagueIterator;
+import de.dhbw.services.BoardService;
 import de.dhbw.valueobjects.CoordinatesVO;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -14,6 +16,13 @@ import java.util.function.Function;
 
 @Component
 public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
+
+    private final BoardService boardService;
+
+    @Autowired
+    public BoardDTOMapper(BoardService boardService) {
+        this.boardService = boardService;
+    }
 
     private BoardDTO map(BoardAggregate boardAggregate) {
         List<CoordinatesDTO> obstacles = new ArrayList<>();
@@ -24,10 +33,10 @@ public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
                     .build());
         }
         List<CoordinatesDTO> colleagues = new ArrayList<>();
-        for (ColleagueAggregate colleagueAggregate : boardAggregate.getColleagues()) {
+        for (ColleagueIterator colleagueIterator : boardService.getColleagueIterator()) {
             colleagues.add(CoordinatesDTO.builder()
-                    .x(colleagueAggregate.getPosition().getX())
-                    .y(colleagueAggregate.getPosition().getY())
+                    .x(colleagueIterator.getPosition().getX())
+                    .y(colleagueIterator.getPosition().getY())
                     .build());
         }
         CoordinatesDTO vaccination = null;

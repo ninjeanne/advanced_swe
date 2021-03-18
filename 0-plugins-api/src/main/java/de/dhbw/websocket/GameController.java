@@ -67,9 +67,8 @@ public class GameController {
     public boolean stopGame() {
         if (gameService.isRunning()) {
             String playerName = gameService.getPlayer().getName();
-            String boardName = gameService.getCurrentBoard().getName();
             gameService.stopGame();
-            log.info("Game {} stopped for player {}", boardName, playerName);
+            log.info("Game stopped for player {}", playerName);
             updateRanking();
             return true;
         }
@@ -109,7 +108,7 @@ public class GameController {
     @Scheduled(fixedRate = 500)
     public void autoBackendAnswer() {
         if (gameService.isRunning()) {
-            this.template.convertAndSend("/backend/board", boardDTOMapper.apply(gameService.getCurrentBoard()));
+            this.template.convertAndSend("/backend/board", boardDTOMapper.apply(gameService.getBoard()));
         }
     }
 

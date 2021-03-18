@@ -1,14 +1,11 @@
 package de.dhbw.services;
 
 import de.dhbw.aggregates.BoardAggregate;
-import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.domainservice.GameDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
-import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.ItemsVO;
-import de.dhbw.valueobjects.PlanVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,28 +17,25 @@ import java.util.UUID;
 @Service
 public class GameService implements GameDomainService {
 
-    private final BoardRepository boardRepository;
+    private final BoardService boardService;
     private final RankingService rankingService;
 
     private PlayerEntity player;
     private RankingEntity rankingEntity;
-    private BoardAggregate board;
     private Date date;
     private boolean running = false;
 
     private Timer rankingPointTimer;
-    private Timer colleagueMovementTimer;
 
     @Autowired
-    public GameService(BoardRepository boardRepository, RankingService rankingService) {
-        this.boardRepository = boardRepository;
+    public GameService(BoardService boardService, RankingService rankingService) {
+        this.boardService = boardService;
         this.rankingService = rankingService;
     }
 
     public void initializeGame(String playerName, String boardName) {
         if (!isRunning()) {
-            BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
-            initialize(boardAggregate);
+            initializeBoard(boardName);
             initialize(new PlayerEntity(playerName, new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0)));
             initializeDate();
             initializeRanking();
@@ -62,14 +56,8 @@ public class GameService implements GameDomainService {
         throw new RuntimeException("Player can't be changed when the game is running");
     }
 
-    @Override
-    public void initialize(BoardAggregate board) {
-        if (!isRunning()) {
-            this.board = board;
-            return;
-        }
-
-        throw new RuntimeException("Board can't be changed when the game is running");
+    public void initializeBoard(String boardName) {
+        boardService.initializeBoard(boardName);
     }
 
     @Override
@@ -89,30 +77,12 @@ public class GameService implements GameDomainService {
 
     @Override
     public boolean isInitialized() {
-        return date != null && board != null && player != null && rankingEntity != null;
+        return date != null && boardService.isInitialized() && player != null && rankingEntity != null;
     }
 
     @Override
     public boolean isRunning() {
         return running;
-    }
-
-    @Override
-    public boolean isPlayerOnVaccination() {
-        if (isRunning()) {
-            return player.getPosition().equals(board.getVaccination());
-        }
-
-        throw new RuntimeException("Game hasn't been started yet.");
-    }
-
-    @Override
-    public boolean isPlayerOnWorkItem() {
-        if (isRunning()) {
-            return player.getPosition().equals(board.getWorkItem());
-        }
-
-        throw new RuntimeException("Game hasn't been started yet.");
     }
 
     @Override
@@ -138,27 +108,8 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public boolean isPlayerInInfectionRadius() {
-        if (isRunning()) {
-            CoordinatesVO playerPosition = player.getPosition();
-            for (ColleagueAggregate colleague : board.getColleagues()) {
-                CoordinatesVO colleaguePosition = colleague.getPosition();
-
-                if (colleaguePosition.distanceTo(playerPosition) <= board.getColleagueRadius().getRadius()) {
-                    return true;
-                }
-
-            }
-
-            return false;
-        }
-
-        throw new RuntimeException("Game hasn't been started yet.");
-    }
-
-    @Override
     public void infectPlayer() {
-        if (player.isAlive() && Math.random() >= board.getInfectProbability().getProbability()) {
+        if (player.isAlive() && boardService.infectByProbability()) {
             player.decreaseLifePoints();
         }
     }
@@ -195,24 +146,19 @@ public class GameService implements GameDomainService {
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (isRunning()) {
-            if (board.containsCoordinate(newCoordinates) && !board.getObstacles().contains(newCoordinates)) {
-                for (ColleagueAggregate colleague : board.getColleagues()) {
-                    if (colleague.getPosition().equals(newCoordinates)) {
-                        return false;
-                    }
-                }
+            if (boardService.isCoordinateEmpty(newCoordinates)) {
                 player.setPosition(newCoordinates);
 
-                if (isPlayerOnWorkItem()) {
+                if (boardService.isWorkItem(newCoordinates)) {
                     playerHasWorked();
-                    addRandomWorkItemToBoard();
+                    boardService.addRandomWorkItemToBoard();
                 }
 
-                if (isPlayerOnVaccination()) {
+                if (boardService.isVaccination(newCoordinates)) {
                     vaccinatePlayer();
-                    addRandomVaccinationToBoard();
+                    boardService.addRandomVaccinationToBoard();
                 }
-                if (isPlayerInInfectionRadius()) {
+                if (boardService.isInInfectionRadius(newCoordinates)) {
                     infectPlayer();
                 }
 
@@ -227,76 +173,37 @@ public class GameService implements GameDomainService {
         return player;
     }
 
-    @Override
-    public BoardAggregate getCurrentBoard() {
-        return board;
+    public BoardAggregate getBoard() {
+       return boardService.getCurrentBoard();
     }
 
     @Override
     public void startGame() {
         if (isInitialized()) {
             running = true;
-            addRandomVaccinationToBoard();
-            addRandomWorkItemToBoard();
+            boardService.addRandomVaccinationToBoard();
+            boardService.addRandomWorkItemToBoard();
             startCountingRankingPointsForPlayer();
-            startMovingColleagues();
+            boardService.startMovingColleagues();
         }
     }
 
     @Override
     public void stopGame() {
         if (isRunning()) {
-            rankingService.saveNewRankingForBoard(rankingEntity, board.getName());
-            stopCountingRankingPointsForPlayer();
-            stopMovingColleagues();
-            player = null;
-            board = null;
-            date = null;
-            running = false;
-            return;
+            if (rankingService.saveNewRankingForBoard(rankingEntity, boardService.getCurrentBoard().getName())) {
+                stopCountingRankingPointsForPlayer();
+                boardService.resetBoard();
+                player = null;
+                date = null;
+                running = false;
+                rankingEntity = null;
+                return;
+            }
+            throw new RuntimeException("Ranking couldn't be saved");
         }
 
         throw new RuntimeException("Game can't be stopped. It's not running.");
     }
 
-    @Override
-    public void addRandomVaccinationToBoard() {
-        PlanVO plan = board.getPlan();
-        CoordinatesVO coordinatesVO;
-        do {
-            int x = (int) (Math.random() * plan.getWidth());
-            int y = (int) (Math.random() * plan.getHeight());
-            coordinatesVO = new CoordinatesVO(x, y);
-        } while (board.addNewVaccination(coordinatesVO));
-    }
-
-    @Override
-    public void addRandomWorkItemToBoard() {
-        PlanVO plan = board.getPlan();
-        CoordinatesVO coordinatesVO;
-        do {
-            int x = (int) (Math.random() * plan.getWidth());
-            int y = (int) (Math.random() * plan.getHeight());
-            coordinatesVO = new CoordinatesVO(x, y);
-        } while (board.addNewWorkItem(coordinatesVO));
-    }
-
-    @Override
-    public void stopMovingColleagues() {
-        colleagueMovementTimer.cancel();
-        colleagueMovementTimer = null;
-    }
-
-    @Override
-    public void startMovingColleagues() {
-        if (isRunning()) {
-            TimerTask rankingPointTask = new TimerTask() {
-                public void run() {
-                    board.getColleagues().forEach(ColleagueAggregate::nextPosition);
-                }
-            };
-            colleagueMovementTimer = new Timer("Colleague Movement Timer");
-            colleagueMovementTimer.scheduleAtFixedRate(rankingPointTask, 0, 500);
-        }
-    }
 }
