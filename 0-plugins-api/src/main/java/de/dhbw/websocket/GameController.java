@@ -79,7 +79,7 @@ public class GameController {
     @Scheduled(fixedRate = 500)
     public void rankingPoints() {
         if (gameService.isRunning()) {
-            this.template.convertAndSend("/backend/ranking", gameService.getLastRankingPointsForPlayer());
+            this.template.convertAndSend("/backend/ranking", gameService.getCurrentRanking().getTotal());
         }
     }
 

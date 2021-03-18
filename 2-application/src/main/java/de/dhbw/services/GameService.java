@@ -8,10 +8,6 @@ import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 
 @Service
 public class GameService implements GameDomainService {
@@ -20,11 +16,8 @@ public class GameService implements GameDomainService {
     private final RankingService rankingService;
     private final PlayerService playerService;
 
-    private RankingEntity rankingEntity;
-    private Date date;
     private boolean running = false;
 
-    private Timer rankingPointTimer;
 
     @Autowired
     public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService) {
@@ -37,8 +30,6 @@ public class GameService implements GameDomainService {
         if (!isRunning()) {
             initializeBoard(boardName);
             initializePlayer(playerName);
-            initializeDate();
-            initializeRanking();
             return;
         }
 
@@ -59,55 +50,13 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public void initializeDate() {
-        this.date = new Date();
-    }
-
-    @Override
-    public void initializeRanking() {
-        PlayerEntity currentPlayer = playerService.getCurrentPlayer();
-        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), currentPlayer.getName(), 0,
-                currentPlayer.getWorkItems(), date);
-    }
-
-    @Override
     public boolean isInitialized() {
-        return date != null && boardService.isInitialized() && playerService.isInitialized() && rankingEntity != null;
+        return  boardService.isInitialized() && playerService.isInitialized();
     }
 
     @Override
     public boolean isRunning() {
         return running;
-    }
-
-    @Override
-    public int getLastRankingPointsForPlayer() {
-        if (rankingEntity != null) {
-            return rankingEntity.getTotal();
-        }
-
-        throw new RuntimeException("There is no saved ranking for this game");
-    }
-
-    @Override
-    public void startCountingRankingPointsForPlayer() {
-        if (isRunning() && rankingPointTimer == null) {
-            TimerTask rankingPointTask = new TimerTask() {
-                public void run() {
-                    PlayerEntity currentPlayer = playerService.getCurrentPlayer();
-                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), currentPlayer.getName(), rankingEntity.getEarned_points() + 1,
-                           currentPlayer.getWorkItems(), rankingEntity.getDate());
-                }
-            };
-            rankingPointTimer = new Timer("Increase Ranking Points");
-            rankingPointTimer.scheduleAtFixedRate(rankingPointTask, 0, 500);
-        }
-    }
-
-    @Override
-    public void stopCountingRankingPointsForPlayer() {
-        rankingPointTimer.cancel();
-        rankingPointTimer = null;
     }
 
     @Override
@@ -146,6 +95,11 @@ public class GameService implements GameDomainService {
     }
 
     @Override
+    public RankingEntity getCurrentRanking() {
+        return playerService.getRankingEntity();
+    }
+
+    @Override
     public BoardAggregate getCurrentBoard() {
         return boardService.getCurrentBoard();
     }
@@ -156,7 +110,7 @@ public class GameService implements GameDomainService {
             running = true;
             boardService.addRandomVaccinationToBoard();
             boardService.addRandomWorkItemToBoard();
-            startCountingRankingPointsForPlayer();
+            playerService.startCountingRankingPoints();
             boardService.startMovingColleagues();
         }
     }
@@ -164,13 +118,10 @@ public class GameService implements GameDomainService {
     @Override
     public void stopGame() {
         if (isRunning()) {
-            if (rankingService.saveNewRankingForBoard(rankingEntity, boardService.getCurrentBoard().getName())) {
-                stopCountingRankingPointsForPlayer();
-                boardService.resetBoard();
-                playerService.resetPlayer();
-                date = null;
+            if (rankingService.saveNewRankingForBoard(playerService.getRankingEntity(), boardService.getCurrentBoard().getName())) {
+                boardService.reset();
+                playerService.reset();
                 running = false;
-                rankingEntity = null;
                 return;
             }
             throw new RuntimeException("Ranking couldn't be saved");

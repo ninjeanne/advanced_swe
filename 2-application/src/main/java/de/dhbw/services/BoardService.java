@@ -31,7 +31,7 @@ public class BoardService implements BoardDomainService {
         return boardAggregate != null && colleagueMovements != null;
     }
 
-    public void resetBoard() {
+    public void reset() {
         stopMovingColleagues();
         boardAggregate = null;
         colleagueMovements = null;

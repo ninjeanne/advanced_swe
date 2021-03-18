@@ -22,6 +22,6 @@ public interface BoardDomainService {
 
     BoardAggregate getCurrentBoard();
 
-    void resetBoard();
+    void reset();
     void stopMovingColleagues();
 }
