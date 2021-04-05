@@ -45,9 +45,6 @@ public class PlayerEntity {
      * @return true if the new position has been valid, otherwise false
      */
     public boolean isNewPosition(CoordinatesVO newPosition) {
-        if (position == null) {
-            return true;
-        }
         if (position.equals(newPosition)) {
             return true;
         }

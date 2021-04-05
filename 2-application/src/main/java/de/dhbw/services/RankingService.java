@@ -1,7 +1,7 @@
 package de.dhbw.services;
 
-import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.domainservice.RankingDomainService;
+import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +22,10 @@ public class RankingService implements RankingDomainService {
 
     @Override
     public boolean saveNewRankingForBoard(RankingEntity ranking, String boardName) {
-        BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
+        BoardEntity boardEntity = boardRepository.getBoardByName(boardName);
         if (isTopRankingInBoard(ranking, boardName)) {
-            if (boardAggregate.addNewTopRanking(ranking)) {
-                boardRepository.save(boardAggregate);
+            if (boardEntity.addNewTopRanking(ranking)) {
+                boardRepository.save(boardEntity);
                 return true;
             }
         }
@@ -34,14 +34,14 @@ public class RankingService implements RankingDomainService {
 
     @Override
     public boolean isTopRankingInBoard(RankingEntity ranking, String boardName) {
-        BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
-        return boardAggregate.isNewTopRanking(ranking);
+        BoardEntity boardEntity = boardRepository.getBoardByName(boardName);
+        return boardEntity.isNewTopRanking(ranking);
     }
 
     @Override
     public List<RankingEntity> getTopRankingsForBoard(String boardName) {
-        BoardAggregate boardAggregate = boardRepository.getBoardByName(boardName);
-        List<RankingEntity> entities = boardAggregate.getTopRankings();
+        BoardEntity boardEntity = boardRepository.getBoardByName(boardName);
+        List<RankingEntity> entities = boardEntity.getTopRankings();
         entities.sort(Comparator.comparing(RankingEntity::getTotal).reversed());
         return entities;
     }

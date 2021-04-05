@@ -1,7 +1,7 @@
 package de.dhbw;
 
-import de.dhbw.aggregates.BoardAggregate;
-import de.dhbw.aggregates.ColleagueAggregate;
+import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.services.RankingService;
@@ -33,7 +33,7 @@ public class Application {
         PlanVO plan = new PlanVO(50, 80);
         ProbabilityVO probabilityVO = new ProbabilityVO(0.5);
         RadiusVO radiusVO = new RadiusVO(3);
-        BoardAggregate board = new BoardAggregate(UUID.randomUUID().toString(), "default", plan, radiusVO, probabilityVO);
+        BoardEntity board = new BoardEntity(UUID.randomUUID().toString(), "default", plan, radiusVO, probabilityVO);
         for (int y = 1; y < 5; y++) {
             for (int i = 0; i <= 12; i++) {
                 for (int j = i * 5; j < (i * 5) + 10 && i % 4 == 0; j++) {
@@ -52,15 +52,15 @@ public class Application {
             }
         }
 
-        ColleagueAggregate colleagueAggregate = new ColleagueAggregate("Fred");
+        ColleagueEntity colleagueEntity = new ColleagueEntity("Fred");
         for (int x = 0; x < 10; x++) {
-            colleagueAggregate.extendPath(new CoordinatesVO(11 + x, 11));
+            colleagueEntity.extendPath(new CoordinatesVO(11 + x, 11));
         }
         for (int y = 0; y < 5; y++) {
-            colleagueAggregate.extendPath(new CoordinatesVO(21, 11 + y));
+            colleagueEntity.extendPath(new CoordinatesVO(21, 11 + y));
         }
 
-        board.addColleague(colleagueAggregate);
+        board.addColleague(colleagueEntity);
         RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new ItemsVO(0), new Date());
         return (args) -> {
             boardRepository.save(board);

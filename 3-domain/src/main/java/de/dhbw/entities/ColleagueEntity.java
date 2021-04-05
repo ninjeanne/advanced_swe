@@ -1,5 +1,6 @@
-package de.dhbw.aggregates;
+package de.dhbw.entities;
 
+import de.dhbw.aggregates.AggregateRoot;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import java.util.Objects;
 
 @Getter
 @Entity
-public class ColleagueAggregate {
+public class ColleagueEntity implements AggregateRoot {
 
     @NonNull
     @Id
@@ -28,10 +29,10 @@ public class ColleagueAggregate {
     private final List<CoordinatesVO> path = new ArrayList<>();
 
     @SuppressWarnings("unused")
-    public ColleagueAggregate() {
+    public ColleagueEntity() {
     }
 
-    public ColleagueAggregate(@NonNull String name) {
+    public ColleagueEntity(@NonNull String name) {
         this.name = name;
     }
 
@@ -64,8 +65,8 @@ public class ColleagueAggregate {
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof ColleagueAggregate) {
-            ColleagueAggregate colleague = (ColleagueAggregate) obj;
+        if (obj instanceof ColleagueEntity) {
+            ColleagueEntity colleague = (ColleagueEntity) obj;
             return this.name.equals(colleague.name);
         }
         return false;

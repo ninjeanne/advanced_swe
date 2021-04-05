@@ -1,6 +1,6 @@
 package de.dhbw.helper;
 
-import de.dhbw.aggregates.ColleagueAggregate;
+import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
 /**
@@ -8,11 +8,11 @@ import de.dhbw.valueobjects.CoordinatesVO;
  */
 public class ColleagueMovement {
 
-    private final ColleagueAggregate aggregate;
+    private final ColleagueEntity aggregate;
     private int position = 0;
     private boolean moveForward = true;
 
-    public ColleagueMovement(ColleagueAggregate aggregate){
+    public ColleagueMovement(ColleagueEntity aggregate){
         this.aggregate = aggregate;
     }
 

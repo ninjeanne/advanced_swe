@@ -1,6 +1,6 @@
 package de.dhbw.domainservice;
 
-import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.entities.BoardEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
 
@@ -20,7 +20,7 @@ public interface BoardDomainService {
     boolean isInInfectionRadius(CoordinatesVO coordinatesVO);
     boolean infectByProbability();
 
-    BoardAggregate getCurrentBoard();
+    BoardEntity getCurrentBoard();
 
     void reset();
     void stopMovingColleagues();

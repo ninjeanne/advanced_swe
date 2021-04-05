@@ -1,7 +1,7 @@
 package de.dhbw.services;
 
-import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.domainservice.GameDomainService;
+import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -100,7 +100,7 @@ public class GameService implements GameDomainService {
     }
 
     @Override
-    public BoardAggregate getCurrentBoard() {
+    public BoardEntity getCurrentBoard() {
         return boardService.getCurrentBoard();
     }
 

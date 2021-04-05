@@ -1,6 +1,6 @@
 package de.dhbw.domainservice;
 
-import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -14,7 +14,7 @@ public interface GameDomainService {
     boolean isRunning();
     PlayerEntity getCurrentPlayer();
     RankingEntity getCurrentRanking();
-    BoardAggregate getCurrentBoard();
+    BoardEntity getCurrentBoard();
 
     boolean movePlayer(CoordinatesVO newCoordinates);
 

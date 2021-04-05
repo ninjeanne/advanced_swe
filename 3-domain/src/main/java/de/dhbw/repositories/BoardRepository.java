@@ -1,9 +1,9 @@
 package de.dhbw.repositories;
 
-import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.entities.BoardEntity;
 
 public interface BoardRepository {
-    BoardAggregate getBoardByName(String name);
+    BoardEntity getBoardByName(String name);
 
-    void save(BoardAggregate boardAggregate);
+    void save(BoardEntity boardEntity);
 }

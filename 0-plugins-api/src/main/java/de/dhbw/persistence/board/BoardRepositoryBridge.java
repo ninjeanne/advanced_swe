@@ -1,6 +1,6 @@
 package de.dhbw.persistence.board;
 
-import de.dhbw.aggregates.BoardAggregate;
+import de.dhbw.entities.BoardEntity;
 import de.dhbw.repositories.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -16,12 +16,12 @@ public class BoardRepositoryBridge implements BoardRepository {
     }
 
     @Override
-    public BoardAggregate getBoardByName(String name) {
+    public BoardEntity getBoardByName(String name) {
         return springDataBoardRepository.getBoardAggregateByName(name);
     }
 
     @Override
-    public void save(BoardAggregate boardAggregate) {
-        springDataBoardRepository.save(boardAggregate);
+    public void save(BoardEntity boardEntity) {
+        springDataBoardRepository.save(boardEntity);
     }
 }

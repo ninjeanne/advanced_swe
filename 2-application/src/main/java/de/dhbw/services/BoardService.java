@@ -1,8 +1,8 @@
 package de.dhbw.services;
 
-import de.dhbw.aggregates.BoardAggregate;
-import de.dhbw.aggregates.ColleagueAggregate;
 import de.dhbw.domainservice.BoardDomainService;
+import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -18,7 +18,7 @@ import java.util.TimerTask;
 @Service
 public class BoardService implements BoardDomainService {
     private final BoardRepository boardRepository;
-    private BoardAggregate boardAggregate;
+    private BoardEntity boardEntity;
     private List<ColleagueMovement> colleagueMovements;
     private Timer colleagueMovementTimer;
 
@@ -28,36 +28,36 @@ public class BoardService implements BoardDomainService {
     }
 
     public boolean isInitialized() {
-        return boardAggregate != null && colleagueMovements != null;
+        return boardEntity != null && colleagueMovements != null;
     }
 
     public void reset() {
         stopMovingColleagues();
-        boardAggregate = null;
+        boardEntity = null;
         colleagueMovements = null;
     }
 
     public void initializeBoard(String boardName) {
-        this.boardAggregate = boardRepository.getBoardByName(boardName);
+        this.boardEntity = boardRepository.getBoardByName(boardName);
         this.colleagueMovements = new ArrayList<>();
-        for (ColleagueAggregate colleague : boardAggregate.getColleagues()) {
+        for (ColleagueEntity colleague : boardEntity.getColleagues()) {
             colleagueMovements.add(colleague.createColleagueIterator());
         }
     }
 
     public boolean isVaccination(CoordinatesVO coordinatesVO) {
-        return coordinatesVO.equals(boardAggregate.getVaccination());
+        return coordinatesVO.equals(boardEntity.getVaccination());
     }
 
     public boolean isWorkItem(CoordinatesVO coordinatesVO) {
-        return coordinatesVO.equals(boardAggregate.getWorkItem());
+        return coordinatesVO.equals(boardEntity.getWorkItem());
     }
 
     public boolean isInInfectionRadius(CoordinatesVO coordinatesVO) {
         for (ColleagueMovement iterator : this.colleagueMovements) {
             CoordinatesVO colleaguePosition = iterator.getCurrentPosition();
 
-            if (colleaguePosition.distanceTo(coordinatesVO) <= boardAggregate.getColleagueRadius().getRadius()) {
+            if (colleaguePosition.distanceTo(coordinatesVO) <= boardEntity.getColleagueRadius().getRadius()) {
                 return true;
             }
         }
@@ -65,36 +65,36 @@ public class BoardService implements BoardDomainService {
         return false;
     }
 
-    public BoardAggregate getCurrentBoard() {
-        return boardAggregate;
+    public BoardEntity getCurrentBoard() {
+        return boardEntity;
     }
 
     public void addRandomVaccinationToBoard() {
-        PlanVO plan = boardAggregate.getPlan();
+        PlanVO plan = boardEntity.getPlan();
         CoordinatesVO coordinatesVO;
         do {
             int x = (int) (Math.random() * plan.getWidth());
             int y = (int) (Math.random() * plan.getHeight());
             coordinatesVO = new CoordinatesVO(x, y);
-        } while (boardAggregate.addNewVaccination(coordinatesVO));
+        } while (boardEntity.addNewVaccination(coordinatesVO));
     }
 
     public void addRandomWorkItemToBoard() {
-        PlanVO plan = boardAggregate.getPlan();
+        PlanVO plan = boardEntity.getPlan();
         CoordinatesVO coordinatesVO;
         do {
             int x = (int) (Math.random() * plan.getWidth());
             int y = (int) (Math.random() * plan.getHeight());
             coordinatesVO = new CoordinatesVO(x, y);
-        } while (boardAggregate.addNewWorkItem(coordinatesVO));
+        } while (boardEntity.addNewWorkItem(coordinatesVO));
     }
 
     public boolean infectByProbability() {
-        return Math.random() >= boardAggregate.getInfectProbability().getProbability();
+        return Math.random() >= boardEntity.getInfectProbability().getProbability();
     }
 
     public boolean isCoordinateEmpty(CoordinatesVO coordinatesVO) {
-        boolean isEmpty = boardAggregate.containsCoordinate(coordinatesVO) && !boardAggregate.getObstacles().contains(coordinatesVO);
+        boolean isEmpty = boardEntity.containsCoordinate(coordinatesVO) && !boardEntity.getObstacles().contains(coordinatesVO);
         for (ColleagueMovement iterator : this.colleagueMovements) {
             if (iterator.getCurrentPosition().equals(coordinatesVO)) {
                 return false;
@@ -109,7 +109,7 @@ public class BoardService implements BoardDomainService {
 
     public void startMovingColleagues() {
         this.colleagueMovements = new ArrayList<>();
-        boardAggregate.getColleagues().forEach(value -> {
+        boardEntity.getColleagues().forEach(value -> {
             this.colleagueMovements.add(value.createColleagueIterator());
         });
         TimerTask rankingPointTask = new TimerTask() {

@@ -1,9 +1,9 @@
 package de.dhbw.mapper;
 
-import de.dhbw.aggregates.BoardAggregate;
 import de.dhbw.dtos.BoardDTO;
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlanDTO;
+import de.dhbw.entities.BoardEntity;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.services.BoardService;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.function.Function;
 
 @Component
-public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
+public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
 
     private final BoardService boardService;
 
@@ -24,9 +24,9 @@ public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
         this.boardService = boardService;
     }
 
-    private BoardDTO map(BoardAggregate boardAggregate) {
+    private BoardDTO map(BoardEntity boardEntity) {
         List<CoordinatesDTO> obstacles = new ArrayList<>();
-        for (CoordinatesVO obstacle : boardAggregate.getObstacles()) {
+        for (CoordinatesVO obstacle : boardEntity.getObstacles()) {
             obstacles.add(CoordinatesDTO.builder()
                     .x(obstacle.getX())
                     .y(obstacle.getY())
@@ -40,38 +40,38 @@ public class BoardDTOMapper implements Function<BoardAggregate, BoardDTO> {
                     .build());
         }
         CoordinatesDTO vaccination = null;
-        if(boardAggregate.getVaccination() != null){
+        if(boardEntity.getVaccination() != null){
         vaccination = CoordinatesDTO.builder()
-                .y(boardAggregate.getVaccination().getY())
-                .x(boardAggregate.getVaccination().getX())
+                .y(boardEntity.getVaccination().getY())
+                .x(boardEntity.getVaccination().getX())
                 .build();
         }
 
         CoordinatesDTO workItem = null;
-        if(boardAggregate.getWorkItem() != null){
+        if(boardEntity.getWorkItem() != null){
         workItem = CoordinatesDTO.builder()
-                .y(boardAggregate.getWorkItem().getY())
-                .x(boardAggregate.getWorkItem().getX())
+                .y(boardEntity.getWorkItem().getY())
+                .x(boardEntity.getWorkItem().getX())
                 .build();
         }
 
        return BoardDTO.builder()
-               .name(boardAggregate.getName())
+               .name(boardEntity.getName())
                .obstacles(obstacles)
                .colleagues(colleaguePosition)
-               .infectProbability(boardAggregate.getInfectProbability().getProbability())
-               .colleagueRadius(boardAggregate.getColleagueRadius().getRadius())
+               .infectProbability(boardEntity.getInfectProbability().getProbability())
+               .colleagueRadius(boardEntity.getColleagueRadius().getRadius())
                .workItem(workItem)
                .vaccination(vaccination)
                .plan(PlanDTO.builder()
-                       .height(boardAggregate.getPlan().getHeight())
-                       .width(boardAggregate.getPlan().getWidth())
+                       .height(boardEntity.getPlan().getHeight())
+                       .width(boardEntity.getPlan().getWidth())
                        .build())
                .build();
     }
 
     @Override
-    public BoardDTO apply(BoardAggregate boardAggregate) {
-        return map(boardAggregate);
+    public BoardDTO apply(BoardEntity boardEntity) {
+        return map(boardEntity);
     }
 }

@@ -1,6 +1,6 @@
-package de.dhbw.aggregates;
+package de.dhbw.entities;
 
-import de.dhbw.entities.RankingEntity;
+import de.dhbw.aggregates.AggregateRoot;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import de.dhbw.valueobjects.ProbabilityVO;
@@ -20,7 +20,7 @@ import java.util.Objects;
 @Getter
 @Slf4j
 @Entity
-public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
+public class BoardEntity implements AggregateRoot { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
 
     @NonNull
     @Id
@@ -45,13 +45,13 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     private ProbabilityVO infectProbability;
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private final List<ColleagueAggregate> colleagues = new ArrayList<>();
+    private final List<ColleagueEntity> colleagues = new ArrayList<>();
     @OrderBy
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<RankingEntity> topRankings = new ArrayList<>();
 
-    public BoardAggregate(@NonNull String uuid, @NonNull String name, @NonNull PlanVO plan, @NonNull RadiusVO colleagueRadius, @NonNull ProbabilityVO infectProbability) {
+    public BoardEntity(@NonNull String uuid, @NonNull String name, @NonNull PlanVO plan, @NonNull RadiusVO colleagueRadius, @NonNull ProbabilityVO infectProbability) {
         this.uuid = uuid;
         this.name = name;
         this.plan = plan;
@@ -60,7 +60,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
     }
 
     @SuppressWarnings("unused")
-    public BoardAggregate() {
+    public BoardEntity() {
     }
 
     public boolean addNewVaccination(CoordinatesVO coordinatesOfVaccination) {
@@ -93,7 +93,7 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
                         .getY());
     }
 
-    public boolean addColleague(ColleagueAggregate colleague) {
+    public boolean addColleague(ColleagueEntity colleague) {
         if (!colleagues.contains(colleague)) {
             for (CoordinatesVO coordinatesVO : colleague.getPath()) {
                 if (obstacles.contains(coordinatesVO)) {
@@ -172,8 +172,8 @@ public class BoardAggregate { //aggregate, weil es in der DB abgelegt werden mus
 
     @Override
     public boolean equals(Object obj) {
-        if (obj instanceof BoardAggregate) {
-            BoardAggregate game = (BoardAggregate) obj;
+        if (obj instanceof BoardEntity) {
+            BoardEntity game = (BoardEntity) obj;
             return this.uuid.equals(game.uuid);
         }
         return false;
