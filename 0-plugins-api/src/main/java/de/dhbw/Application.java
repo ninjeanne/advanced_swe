@@ -52,15 +52,24 @@ public class Application {
             }
         }
 
-        ColleagueEntity colleagueEntity = new ColleagueEntity("Fred");
+        ColleagueEntity fred = new ColleagueEntity("Fred");
         for (int x = 0; x < 10; x++) {
-            colleagueEntity.extendPath(new CoordinatesVO(11 + x, 11));
+            fred.extendPath(new CoordinatesVO(11 + x, 11));
         }
         for (int y = 0; y < 5; y++) {
-            colleagueEntity.extendPath(new CoordinatesVO(21, 11 + y));
+            fred.extendPath(new CoordinatesVO(21, 11 + y));
         }
 
-        board.addColleague(colleagueEntity);
+        ColleagueEntity jochen = new ColleagueEntity("Jochen");
+        for (int x = 0; x < 10; x++) {
+            jochen.extendPath(new CoordinatesVO(20 + x, 11));
+        }
+        for (int y = 0; y < 5; y++) {
+            jochen.extendPath(new CoordinatesVO(31, 11 + y));
+        }
+
+        board.addColleague(fred);
+        board.addColleague(jochen);
         RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new ItemsVO(0), new Date());
         return (args) -> {
             boardRepository.save(board);
