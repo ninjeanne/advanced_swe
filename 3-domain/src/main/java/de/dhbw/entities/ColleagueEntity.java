@@ -1,6 +1,5 @@
 package de.dhbw.entities;
 
-import de.dhbw.aggregates.AggregateRoot;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
@@ -18,7 +17,7 @@ import java.util.Objects;
 
 @Getter
 @Entity
-public class ColleagueEntity implements AggregateRoot {
+public class ColleagueEntity {
 
     @NonNull
     @Id

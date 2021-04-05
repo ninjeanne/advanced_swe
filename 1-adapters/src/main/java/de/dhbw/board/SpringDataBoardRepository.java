@@ -1,4 +1,4 @@
-package de.dhbw.persistence.board;
+package de.dhbw.board;
 
 import de.dhbw.entities.BoardEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
