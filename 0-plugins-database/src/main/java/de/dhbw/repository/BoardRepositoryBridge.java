@@ -1,4 +1,4 @@
-package de.dhbw.board;
+package de.dhbw.repository;
 
 import de.dhbw.entities.BoardEntity;
 import de.dhbw.repositories.BoardRepository;
