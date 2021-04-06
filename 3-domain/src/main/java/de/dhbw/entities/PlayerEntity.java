@@ -24,7 +24,7 @@ public class PlayerEntity {
 
     @NonNull
     @Id
-    private String name;
+    private String nameAsEntityID;
     @NonNull
     @OneToOne
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -94,6 +94,6 @@ public class PlayerEntity {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(nameAsEntityID);
     }
 }

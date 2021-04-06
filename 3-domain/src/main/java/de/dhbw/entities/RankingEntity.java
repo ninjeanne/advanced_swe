@@ -20,7 +20,7 @@ public class RankingEntity {
 
     @NonNull
     @Id
-    private String uuid;//entity id
+    private String entityID;
     @NonNull
     @Column
     private String name;
@@ -46,13 +46,13 @@ public class RankingEntity {
     public boolean equals(Object obj) {
         if (obj instanceof RankingEntity) {
             RankingEntity rankingEntity = (RankingEntity) obj;
-            return this.getUuid().equals(rankingEntity.getUuid());
+            return this.getEntityID().equals(rankingEntity.getEntityID());
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return Objects.hash(entityID);
     }
 }

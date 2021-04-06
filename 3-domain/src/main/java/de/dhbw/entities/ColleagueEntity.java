@@ -21,7 +21,7 @@ public class ColleagueEntity {
 
     @NonNull
     @Id
-    private String name; //name as entity id
+    private String nameAsEntityID;
 
     @OneToMany(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
@@ -31,8 +31,8 @@ public class ColleagueEntity {
     public ColleagueEntity() {
     }
 
-    public ColleagueEntity(@NonNull String name) {
-        this.name = name;
+    public ColleagueEntity(@NonNull String nameAsEntityID) {
+        this.nameAsEntityID = nameAsEntityID;
     }
 
     public void extendPath(CoordinatesVO coordinate) {
@@ -66,13 +66,13 @@ public class ColleagueEntity {
     public boolean equals(Object obj) {
         if (obj instanceof ColleagueEntity) {
             ColleagueEntity colleague = (ColleagueEntity) obj;
-            return this.name.equals(colleague.name);
+            return this.nameAsEntityID.equals(colleague.nameAsEntityID);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(nameAsEntityID);
     }
 }

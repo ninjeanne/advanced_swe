@@ -20,11 +20,11 @@ import java.util.Objects;
 @Getter
 @Slf4j
 @Entity
-public class BoardEntity implements AggregateRoot { //aggregate, weil es in der DB abgelegt werden muss! TBD: Aggregat Root, Getter dürfen nur immutable/copied instances zurückgeben
+public class BoardEntity implements AggregateRoot {
 
     @NonNull
     @Id
-    private String uuid;
+    private String entityID;
     @NonNull
     @Column
     private String name;
@@ -51,8 +51,8 @@ public class BoardEntity implements AggregateRoot { //aggregate, weil es in der 
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<RankingEntity> topRankings = new ArrayList<>();
 
-    public BoardEntity(@NonNull String uuid, @NonNull String name, @NonNull PlanVO plan, @NonNull RadiusVO colleagueRadius, @NonNull ProbabilityVO infectProbability) {
-        this.uuid = uuid;
+    public BoardEntity(@NonNull String entityID, @NonNull String name, @NonNull PlanVO plan, @NonNull RadiusVO colleagueRadius, @NonNull ProbabilityVO infectProbability) {
+        this.entityID = entityID;
         this.name = name;
         this.plan = plan;
         this.colleagueRadius = colleagueRadius;
@@ -97,15 +97,15 @@ public class BoardEntity implements AggregateRoot { //aggregate, weil es in der 
         if (!colleagues.contains(colleague)) {
             for (CoordinatesVO coordinatesVO : colleague.getPath()) {
                 if (obstacles.contains(coordinatesVO)) {
-                    log.debug("there is an obstacle at x {} and y {} of colleague {}", coordinatesVO.getX(), coordinatesVO.getY(), colleague.getName());
+                    log.debug("there is an obstacle at x {} and y {} of colleague {}", coordinatesVO.getX(), coordinatesVO.getY(), colleague.getNameAsEntityID());
                     return false;
                 }
             }
             colleagues.add(colleague);
-            log.debug("colleague {} has been added", colleague.getName());
+            log.debug("colleague {} has been added", colleague.getNameAsEntityID());
             return true;
         }
-        log.warn("colleague {} already exists", colleague.getName());
+        log.warn("colleague {} already exists", colleague.getNameAsEntityID());
         return false;
     }
 
@@ -174,13 +174,13 @@ public class BoardEntity implements AggregateRoot { //aggregate, weil es in der 
     public boolean equals(Object obj) {
         if (obj instanceof BoardEntity) {
             BoardEntity game = (BoardEntity) obj;
-            return this.uuid.equals(game.uuid);
+            return this.entityID.equals(game.entityID);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(uuid);
+        return Objects.hash(entityID);
     }
 }
