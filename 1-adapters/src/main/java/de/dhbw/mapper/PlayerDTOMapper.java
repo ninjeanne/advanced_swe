@@ -14,7 +14,7 @@ public class PlayerDTOMapper implements Function<PlayerEntity, PlayerDTO> {
         return PlayerDTO.builder()
                 .lifePoints(playerEntity.getLifePoints().getNumberOfItems())
                 .workItems(playerEntity.getWorkItems().getNumberOfItems())
-                .name(playerEntity.getName())
+                .name(playerEntity.getNameAsEntityID())
                 .position(CoordinatesDTO.builder()
                         .x(playerEntity.getPosition().getX())
                         .y(playerEntity.getPosition().getY())

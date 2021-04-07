@@ -65,9 +65,9 @@ public class PlayerEntity {
     public void decreaseLifePoints() {
         if (isAlive()) {
             lifePoints = new ItemsVO(lifePoints.getNumberOfItems() - 1);
-            log.debug("Life points have been decreased for {}. Left: {}", getName(), lifePoints);
+            log.debug("Life points have been decreased for {}. Left: {}", getNameAsEntityID(), lifePoints);
         } else {
-            throw new IllegalArgumentException("Player " + getName() + " is already dead.");
+            throw new IllegalArgumentException("Player " + getNameAsEntityID() + " is already dead.");
         }
     }
 
@@ -87,7 +87,7 @@ public class PlayerEntity {
     public boolean equals(Object obj) {
         if (obj instanceof PlayerEntity) {
             PlayerEntity player = (PlayerEntity) obj;
-            return this.getName().equals(player.getName());
+            return this.getNameAsEntityID().equals(player.getNameAsEntityID());
         }
         return false;
     }

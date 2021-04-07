@@ -66,7 +66,7 @@ public class GameController {
     @SendTo("/backend/stop")
     public boolean stopGame() {
         if (gameService.isRunning()) {
-            String playerName = gameService.getCurrentPlayer().getName();
+            String playerName = gameService.getCurrentPlayer().getNameAsEntityID();
             gameService.stopGame();
             log.info("Game stopped for player {}", playerName);
             updateRanking();

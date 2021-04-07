@@ -23,7 +23,7 @@ public class PlayerService implements PlayerDomainService {
     public void initialize(String playerName) {
         this.player = new PlayerEntity(playerName, new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0));
         this.player.setPosition(new CoordinatesVO(0, 0));
-        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), 0, player.getWorkItems(), new Date());
+        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getWorkItems(), new Date());
     }
 
     @Override
@@ -78,7 +78,7 @@ public class PlayerService implements PlayerDomainService {
         if (rankingPointTimer == null) {
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
-                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getName(), rankingEntity.getEarned_points() + 1,
+                    rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), rankingEntity.getEarned_points() + 1,
                             player.getWorkItems(), rankingEntity.getDate());
                 }
             };

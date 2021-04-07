@@ -4,10 +4,12 @@ import de.dhbw.domainservice.GameDomainService;
 import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
+import de.dhbw.helper.GameAction;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 
 @Service
 public class GameService implements GameDomainService {
@@ -15,15 +17,17 @@ public class GameService implements GameDomainService {
     private final BoardService boardService;
     private final RankingService rankingService;
     private final PlayerService playerService;
+    private final List<GameAction> gameActions;
 
     private boolean running = false;
 
 
     @Autowired
-    public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService) {
+    public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService, List<GameAction> gameActions) {
         this.boardService = boardService;
         this.rankingService = rankingService;
         this.playerService = playerService;
+        this.gameActions = gameActions;
     }
 
     public void initializeGame(String playerName, String boardName) {
@@ -55,31 +59,21 @@ public class GameService implements GameDomainService {
     }
 
     @Override
+    public List<GameAction> getGameActions() {
+        return gameActions;
+    }
+
+    @Override
     public boolean isRunning() {
-        return running;
+        return running && getCurrentPlayer().isAlive();
     }
 
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (isRunning()) {
             if (boardService.isCoordinateEmpty(newCoordinates)) {
-                playerService.setNewPosition(newCoordinates);
-
-                if (boardService.isWorkItem(newCoordinates)) {
-                    playerService.work();
-                    boardService.addRandomWorkItemToBoard();
-                }
-
-                if (boardService.isVaccination(newCoordinates)) {
-                    if (playerService.vaccinate()) {
-                        boardService.addRandomVaccinationToBoard();
-                    } else {
-                        stopGame();
-                    }
-                }
-                if (boardService.isInInfectionRadius(newCoordinates)) {
-                    boolean isInfected = boardService.infectByProbability();
-                    playerService.infect(isInfected);
+                for (GameAction gameAction : gameActions) {
+                    gameAction.doActionOn(newCoordinates);
                 }
 
                 return true;
