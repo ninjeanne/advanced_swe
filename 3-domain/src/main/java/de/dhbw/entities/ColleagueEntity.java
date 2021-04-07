@@ -1,6 +1,7 @@
 package de.dhbw.entities;
 
 import de.dhbw.helper.ColleagueMovement;
+import de.dhbw.helper.ForwardAndBackMovement;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
 import lombok.NonNull;
@@ -59,7 +60,7 @@ public class ColleagueEntity {
     }
 
     public ColleagueMovement createColleagueIterator(){
-        return new ColleagueMovement(this);
+        return new ForwardAndBackMovement(this);
     }
 
     @Override

@@ -19,7 +19,7 @@ import java.util.TimerTask;
 public class BoardService implements BoardDomainService {
     private final BoardRepository boardRepository;
     private BoardEntity boardEntity;
-    private List<ColleagueMovement> colleagueMovements;
+    private List<ColleagueMovement> forwardAndBackMovements;
     private Timer colleagueMovementTimer;
 
     @Autowired
@@ -28,20 +28,20 @@ public class BoardService implements BoardDomainService {
     }
 
     public boolean isInitialized() {
-        return boardEntity != null && colleagueMovements != null;
+        return boardEntity != null && forwardAndBackMovements != null;
     }
 
     public void reset() {
         stopMovingColleagues();
         boardEntity = null;
-        colleagueMovements = null;
+        forwardAndBackMovements = null;
     }
 
     public void initializeBoard(String boardName) {
         this.boardEntity = boardRepository.getBoardByName(boardName);
-        this.colleagueMovements = new ArrayList<>();
+        this.forwardAndBackMovements = new ArrayList<>();
         for (ColleagueEntity colleague : boardEntity.getColleagues()) {
-            colleagueMovements.add(colleague.createColleagueIterator());
+            forwardAndBackMovements.add(colleague.createColleagueIterator());
         }
     }
 
@@ -54,7 +54,7 @@ public class BoardService implements BoardDomainService {
     }
 
     public boolean isInInfectionRadius(CoordinatesVO coordinatesVO) {
-        for (ColleagueMovement iterator : this.colleagueMovements) {
+        for (ColleagueMovement iterator : this.forwardAndBackMovements) {
             CoordinatesVO colleaguePosition = iterator.getCurrentPosition();
 
             if (colleaguePosition.distanceTo(coordinatesVO) <= boardEntity.getColleagueRadius().getRadius()) {
@@ -95,7 +95,7 @@ public class BoardService implements BoardDomainService {
 
     public boolean isCoordinateEmpty(CoordinatesVO coordinatesVO) {
         boolean isEmpty = boardEntity.containsCoordinate(coordinatesVO) && !boardEntity.getObstacles().contains(coordinatesVO);
-        for (ColleagueMovement iterator : this.colleagueMovements) {
+        for (ColleagueMovement iterator : this.forwardAndBackMovements) {
             if (iterator.getCurrentPosition().equals(coordinatesVO)) {
                 return false;
             }
@@ -104,17 +104,17 @@ public class BoardService implements BoardDomainService {
     }
 
     public List<ColleagueMovement> getColleagueMovements() {
-        return new ArrayList<>(colleagueMovements); //forbid changing the original list
+        return new ArrayList<>(forwardAndBackMovements); //forbid changing the original list
     }
 
     public void startMovingColleagues() {
-        this.colleagueMovements = new ArrayList<>();
+        this.forwardAndBackMovements = new ArrayList<>();
         boardEntity.getColleagues().forEach(value -> {
-            this.colleagueMovements.add(value.createColleagueIterator());
+            this.forwardAndBackMovements.add(value.createColleagueIterator());
         });
         TimerTask rankingPointTask = new TimerTask() {
             public void run() {
-                colleagueMovements.forEach(ColleagueMovement::nextPosition);
+                forwardAndBackMovements.forEach(ColleagueMovement::nextPosition);
             }
         };
         colleagueMovementTimer = new Timer("Colleague Movement Timer");
