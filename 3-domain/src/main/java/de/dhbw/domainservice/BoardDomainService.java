@@ -5,10 +5,6 @@ import de.dhbw.valueobjects.CoordinatesVO;
 
 
 public interface BoardDomainService {
-    void initializeBoard(String boardName);
-    boolean isInitialized();
-    void startMovingColleagues();
-
     boolean isCoordinateEmpty(CoordinatesVO coordinatesVO);
 
     boolean isVaccination(CoordinatesVO coordinatesVO);
@@ -23,5 +19,4 @@ public interface BoardDomainService {
     BoardEntity getCurrentBoard();
 
     void reset();
-    void stopMovingColleagues();
 }

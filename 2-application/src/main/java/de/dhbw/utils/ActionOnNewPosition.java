@@ -18,6 +18,6 @@ public class ActionOnNewPosition implements GameAction {
 
     @Override
     public void doActionOn(CoordinatesVO coordinatesVO) {
-        playerService.setNewPosition(coordinatesVO);
+        playerService.setNewPositionForPlayer(coordinatesVO);
     }
 }

@@ -9,10 +9,6 @@ import de.dhbw.valueobjects.CoordinatesVO;
 import java.util.List;
 
 public interface GameDomainService {
-    void initializeBoard(String boardName);
-    void initializePlayer(String playerName);
-    boolean isInitialized();
-
     List<GameAction> getGameActions();
 
     void startGame();

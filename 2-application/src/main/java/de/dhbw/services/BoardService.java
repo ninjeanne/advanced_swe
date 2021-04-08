@@ -1,6 +1,7 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.BoardDomainService;
+import de.dhbw.domainservice.MoveColleaguesDomainService;
 import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.helper.ColleagueMovement;
@@ -16,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Service
-public class BoardService implements BoardDomainService {
+public class BoardService implements BoardDomainService, MoveColleaguesDomainService {
     private final BoardRepository boardRepository;
     private BoardEntity boardEntity;
     private List<ColleagueMovement> forwardAndBackMovements;

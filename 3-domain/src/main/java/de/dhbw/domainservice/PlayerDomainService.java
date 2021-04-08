@@ -5,13 +5,9 @@ import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
 public interface PlayerDomainService {
-    void initialize(String playerName);
-    boolean isInitialized();
+    RankingEntity getRankingEntityForPlayer();
 
-    void startCountingRankingPoints();
-    RankingEntity getRankingEntity();
-
-    void setNewPosition(CoordinatesVO coordinatesVO);
+    void setNewPositionForPlayer(CoordinatesVO coordinatesVO);
     PlayerEntity getCurrentPlayer();
     boolean isAlive();
 
@@ -20,5 +16,4 @@ public interface PlayerDomainService {
     void infect(boolean infectProbability);
 
     void reset();
-    void stopCountingRankingPoints();
 }

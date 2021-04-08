@@ -52,7 +52,7 @@ public class GameController {
         }
 
         String boardName = "default";
-        gameService.initializeGame(playerName, boardName);
+        gameService.initialize(boardName, playerName);
         log.info("New game {} initialized for player {}", boardName, playerName);
 
         if (gameService.isInitialized()) {

@@ -1,5 +1,7 @@
 package de.dhbw.services;
 
+import de.dhbw.domainservice.CountRankingDomainService;
+import de.dhbw.domainservice.InitializerDomainService;
 import de.dhbw.domainservice.PlayerDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
@@ -13,21 +15,24 @@ import java.util.TimerTask;
 import java.util.UUID;
 
 @Component
-public class PlayerService implements PlayerDomainService {
+public class PlayerService implements PlayerDomainService, CountRankingDomainService, InitializerDomainService {
 
     private PlayerEntity player;
     private RankingEntity rankingEntity;
     private Timer rankingPointTimer;
 
+    /**
+     * @param data needs a playerName as its only argument
+     */
     @Override
-    public void initialize(String playerName) {
-        this.player = new PlayerEntity(playerName, new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0));
+    public void initialize(String ... data) {
+        this.player = new PlayerEntity(data[0], new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0));
         this.player.setPosition(new CoordinatesVO(0, 0));
         this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getWorkItems(), new Date());
     }
 
     @Override
-    public void setNewPosition(CoordinatesVO coordinatesVO) {
+    public void setNewPositionForPlayer(CoordinatesVO coordinatesVO) {
         this.player.setPosition(coordinatesVO);
     }
 
@@ -88,7 +93,7 @@ public class PlayerService implements PlayerDomainService {
     }
 
     @Override
-    public RankingEntity getRankingEntity() {
+    public RankingEntity getRankingEntityForPlayer() {
         return rankingEntity;
     }
 

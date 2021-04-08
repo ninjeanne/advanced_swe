@@ -1,6 +1,7 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.GameDomainService;
+import de.dhbw.domainservice.InitializerDomainService;
 import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GameService implements GameDomainService {
+public class GameService implements GameDomainService, InitializerDomainService {
 
     private final BoardService boardService;
     private final RankingService rankingService;
@@ -30,22 +31,14 @@ public class GameService implements GameDomainService {
         this.gameActions = gameActions;
     }
 
-    public void initializeGame(String playerName, String boardName) {
+    private void initializeGame(String playerName, String boardName) {
         if (!isRunning()) {
-            initializeBoard(boardName);
-            initializePlayer(playerName);
+            boardService.initializeBoard(boardName);
+            playerService.initialize(playerName);
             return;
         }
 
         throw new RuntimeException("Game can't be initialized because it's already running.");
-    }
-
-    public void initializeBoard(String boardName) {
-        boardService.initializeBoard(boardName);
-    }
-
-    public void initializePlayer(String playerName) {
-        playerService.initialize(playerName);
     }
 
     @Override
@@ -56,6 +49,15 @@ public class GameService implements GameDomainService {
     @Override
     public boolean isInitialized() {
         return  boardService.isInitialized() && playerService.isInitialized();
+    }
+
+    /**
+     * first argument will be used as boardName, the second one as player name
+     * @param data
+     */
+    @Override
+    public void initialize(String... data) {
+        initializeGame(data[0], data[1]);
     }
 
     @Override
@@ -90,7 +92,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public RankingEntity getCurrentRanking() {
-        return playerService.getRankingEntity();
+        return playerService.getRankingEntityForPlayer();
     }
 
     @Override
@@ -112,7 +114,7 @@ public class GameService implements GameDomainService {
     @Override
     public void stopGame() {
         if (isRunning()) {
-            if (rankingService.saveNewRankingForBoard(playerService.getRankingEntity(), boardService.getCurrentBoard().getName())) {
+            if (rankingService.saveNewRankingForBoard(playerService.getRankingEntityForPlayer(), boardService.getCurrentBoard().getName())) {
                 boardService.reset();
                 playerService.reset();
                 running = false;
