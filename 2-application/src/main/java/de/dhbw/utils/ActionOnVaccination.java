@@ -1,30 +1,25 @@
 package de.dhbw.utils;
 
+import de.dhbw.entities.Vaccination;
 import de.dhbw.helper.GameAction;
-import de.dhbw.services.BoardService;
 import de.dhbw.services.PlayerService;
-import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActionOnVaccination implements GameAction {
+public class ActionOnVaccination extends GameAction<Vaccination> {
 
-    private final BoardService boardService;
     private final PlayerService playerService;
 
     @Autowired
-    public ActionOnVaccination(BoardService boardService, PlayerService playerService) {
-        this.boardService = boardService;
+    public ActionOnVaccination(PlayerService playerService) {
+        super(Vaccination.class);
         this.playerService = playerService;
     }
 
     @Override
-    public void doActionOn(CoordinatesVO coordinatesVO) {
-        if (boardService.isVaccination(coordinatesVO)) {
-            if (playerService.vaccinate()) {
-                boardService.addRandomVaccinationToBoard();
-            }
-        }
+    public void doActionOn(Vaccination vaccination) {
+        vaccination.doToPlayer(playerService.getCurrentPlayer());
+        //todo add new item
     }
 }

@@ -2,7 +2,10 @@ package de.dhbw.mapper;
 
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlayerDTO;
+import de.dhbw.entities.Infection;
 import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.Vaccination;
+import de.dhbw.entities.WorkItem;
 import org.springframework.stereotype.Component;
 
 import java.util.function.Function;
@@ -11,9 +14,11 @@ import java.util.function.Function;
 public class PlayerDTOMapper implements Function<PlayerEntity, PlayerDTO> {
 
     private PlayerDTO map(PlayerEntity playerEntity) {
+        int vaccination = playerEntity.getPlayerStatistics().getStatistic(Vaccination.class).getCount();
+        int infection = playerEntity.getPlayerStatistics().getStatistic(Infection.class).getCount();
         return PlayerDTO.builder()
-                .lifePoints(playerEntity.getLifePoints().getNumberOfItems())
-                .workItems(playerEntity.getWorkItems().getNumberOfItems())
+                .lifePoints(vaccination - infection)
+                .workItems(playerEntity.getPlayerStatistics().getStatistic(WorkItem.class).getCount())
                 .name(playerEntity.getNameAsEntityID())
                 .position(CoordinatesDTO.builder()
                         .x(playerEntity.getPosition().getX())

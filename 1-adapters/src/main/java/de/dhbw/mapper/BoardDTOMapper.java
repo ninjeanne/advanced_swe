@@ -4,6 +4,9 @@ import de.dhbw.dtos.BoardDTO;
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlanDTO;
 import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.GameObject;
+import de.dhbw.entities.Vaccination;
+import de.dhbw.entities.WorkItem;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.services.BoardService;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -26,7 +29,7 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
 
     private BoardDTO map(BoardEntity boardEntity) {
         List<CoordinatesDTO> obstacles = new ArrayList<>();
-        for (CoordinatesVO obstacle : boardEntity.getObstacles()) {
+        for (CoordinatesVO obstacle : boardEntity.getBoardLayout().getObstacles()) {
             obstacles.add(CoordinatesDTO.builder()
                     .x(obstacle.getX())
                     .y(obstacle.getY())
@@ -40,18 +43,20 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
                     .build());
         }
         CoordinatesDTO vaccination = null;
-        if(boardEntity.getVaccination() != null){
+        GameObject vaccinationGO = boardService.getGameObjects().get(Vaccination.class);
+        if(vaccinationGO != null){
         vaccination = CoordinatesDTO.builder()
-                .y(boardEntity.getVaccination().getY())
-                .x(boardEntity.getVaccination().getX())
+                .y(vaccinationGO.getCoordinatesVO().getY())
+                .x(vaccinationGO.getCoordinatesVO().getX())
                 .build();
         }
 
         CoordinatesDTO workItem = null;
-        if(boardEntity.getWorkItem() != null){
+        GameObject workItemGO = boardService.getGameObjects().get(WorkItem.class);
+        if(workItemGO != null){
         workItem = CoordinatesDTO.builder()
-                .y(boardEntity.getWorkItem().getY())
-                .x(boardEntity.getWorkItem().getX())
+                .y(workItemGO.getCoordinatesVO().getY())
+                .x(workItemGO.getCoordinatesVO().getX())
                 .build();
         }
 
@@ -59,13 +64,13 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
                .name(boardEntity.getName())
                .obstacles(obstacles)
                .colleagues(colleaguePosition)
-               .infectProbability(boardEntity.getInfectProbability().getProbability())
-               .colleagueRadius(boardEntity.getColleagueRadius().getRadius())
+               .infectProbability(boardEntity.getBoardConfiguration().getInfectProbability().getProbability())
+               .colleagueRadius(boardEntity.getBoardConfiguration().getColleagueRadius().getRadius())
                .workItem(workItem)
                .vaccination(vaccination)
                .plan(PlanDTO.builder()
-                       .height(boardEntity.getPlan().getHeight())
-                       .width(boardEntity.getPlan().getWidth())
+                       .height(boardEntity.getBoardLayout().getPlan().getHeight())
+                       .width(boardEntity.getBoardLayout().getPlan().getWidth())
                        .build())
                .build();
     }

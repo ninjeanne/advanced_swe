@@ -116,7 +116,7 @@ public class GameController {
     public void updateRanking() {
         String boardName = "default";
         this.template.convertAndSend("/backend/topranking",
-                rankingService.getTopRankingsForBoard(boardName).stream().map(rankingDTOMapper).collect(Collectors.toList()));
+                rankingService.getTopRankings().stream().map(rankingDTOMapper).collect(Collectors.toList()));
         log.debug("Top Rankings updated for board {}", boardName);
     }
 

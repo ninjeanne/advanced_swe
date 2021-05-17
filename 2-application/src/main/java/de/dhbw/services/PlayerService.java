@@ -4,9 +4,9 @@ import de.dhbw.domainservice.CountRankingDomainService;
 import de.dhbw.domainservice.InitializerDomainService;
 import de.dhbw.domainservice.PlayerDomainService;
 import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.PlayerStatistics;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.ItemsVO;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
@@ -26,9 +26,9 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
      */
     @Override
     public void initialize(String ... data) {
-        this.player = new PlayerEntity(data[0], new CoordinatesVO(0, 0), new ItemsVO(3), new ItemsVO(0));
+        this.player = new PlayerEntity(data[0], new CoordinatesVO(0, 0), new PlayerStatistics());
         this.player.setPosition(new CoordinatesVO(0, 0));
-        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getWorkItems(), new Date());
+        this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getPlayerStatistics(), new Date());
     }
 
     @Override
@@ -37,32 +37,10 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
     }
 
     @Override
-    public void work() {
-        player.increaseWorkItems();
-    }
-
-    @Override
-    public boolean vaccinate() {
-        if (player.isAlive()) {
-            player.increaseLifePoints();
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public void infect(boolean infected) {
-        if (player.isAlive() && infected) {
-            player.decreaseLifePoints();
-        }
-    }
-
-    @Override
     public PlayerEntity getCurrentPlayer() {
         return this.player;
     }
 
-    @Override
     public boolean isAlive() {
         return player.isAlive();
     }
@@ -84,7 +62,7 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
             TimerTask rankingPointTask = new TimerTask() {
                 public void run() {
                     rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), rankingEntity.getEarned_points() + 1,
-                            player.getWorkItems(), rankingEntity.getDate());
+                            player.getPlayerStatistics(), rankingEntity.getDate());
                 }
             };
             rankingPointTimer = new Timer("Increase Ranking Points");

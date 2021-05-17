@@ -1,29 +1,24 @@
 package de.dhbw.utils;
 
+import de.dhbw.entities.Infection;
 import de.dhbw.helper.GameAction;
-import de.dhbw.services.BoardService;
 import de.dhbw.services.PlayerService;
-import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActionOnInfectionRadius implements GameAction {
+public class ActionOnInfectionRadius extends GameAction<Infection> {
 
-    private final BoardService boardService;
     private final PlayerService playerService;
 
     @Autowired
-    public ActionOnInfectionRadius(BoardService boardService, PlayerService playerService) {
-        this.boardService = boardService;
+    public ActionOnInfectionRadius(PlayerService playerService) {
+        super(Infection.class);
         this.playerService = playerService;
     }
 
-    @Override
-    public void doActionOn(CoordinatesVO coordinatesVO) {
-        if (boardService.isInInfectionRadius(coordinatesVO)) {
-            boolean isInfected = boardService.infectByProbability();
-            playerService.infect(isInfected);
-        }
+    public void doActionOn(Infection infection) {
+       infection.doToPlayer(playerService.getCurrentPlayer());
+       //todo is in infection radius
     }
 }

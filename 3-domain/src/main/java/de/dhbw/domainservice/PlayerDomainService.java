@@ -9,11 +9,6 @@ public interface PlayerDomainService {
 
     void setNewPositionForPlayer(CoordinatesVO coordinatesVO);
     PlayerEntity getCurrentPlayer();
-    boolean isAlive();
-
-    boolean vaccinate();
-    void work();
-    void infect(boolean infectProbability);
 
     void reset();
 }

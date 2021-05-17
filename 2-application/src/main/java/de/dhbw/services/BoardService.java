@@ -2,25 +2,21 @@ package de.dhbw.services;
 
 import de.dhbw.domainservice.BoardDomainService;
 import de.dhbw.domainservice.MoveColleaguesDomainService;
-import de.dhbw.entities.BoardEntity;
-import de.dhbw.entities.ColleagueEntity;
+import de.dhbw.entities.*;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.PlanVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 @Service
 public class BoardService implements BoardDomainService, MoveColleaguesDomainService {
     private final BoardRepository boardRepository;
     private BoardEntity boardEntity;
     private List<ColleagueMovement> forwardAndBackMovements;
+    private final Map<Class<? extends GameObject>, GameObject> gameObjects = new HashMap<>();
     private Timer colleagueMovementTimer;
 
     @Autowired
@@ -41,61 +37,33 @@ public class BoardService implements BoardDomainService, MoveColleaguesDomainSer
     public void initializeBoard(String boardName) {
         this.boardEntity = boardRepository.getBoardByName(boardName);
         this.forwardAndBackMovements = new ArrayList<>();
+        initializeGameObjects(new Vaccination(), new WorkItem());
         for (ColleagueEntity colleague : boardEntity.getColleagues()) {
             forwardAndBackMovements.add(colleague.createColleagueIterator());
         }
     }
 
-    public boolean isVaccination(CoordinatesVO coordinatesVO) {
-        return coordinatesVO.equals(boardEntity.getVaccination());
+    public Map<Class<? extends GameObject>, GameObject> getGameObjects(){
+        return this.gameObjects;
     }
 
-    public boolean isWorkItem(CoordinatesVO coordinatesVO) {
-        return coordinatesVO.equals(boardEntity.getWorkItem());
-    }
-
-    public boolean isInInfectionRadius(CoordinatesVO coordinatesVO) {
-        for (ColleagueMovement iterator : this.forwardAndBackMovements) {
-            CoordinatesVO colleaguePosition = iterator.getCurrentPosition();
-
-            if (colleaguePosition.distanceTo(coordinatesVO) <= boardEntity.getColleagueRadius().getRadius()) {
-                return true;
-            }
+    public void initializeGameObjects(GameObject... gameObjects) {
+        for (GameObject gameObject : gameObjects) {
+            CoordinatesVO coordinatesVO;
+            do {
+                coordinatesVO = boardEntity.getBoardLayout().getRandomCoordinate();
+            } while (!isCoordinateEmpty(coordinatesVO));
+            gameObject.setNewCoordinate(coordinatesVO);
+            this.gameObjects.put(GameObject.class, gameObject);
         }
-
-        return false;
     }
 
     public BoardEntity getCurrentBoard() {
         return boardEntity;
     }
 
-    public void addRandomVaccinationToBoard() {
-        PlanVO plan = boardEntity.getPlan();
-        CoordinatesVO coordinatesVO;
-        do {
-            int x = (int) (Math.random() * plan.getWidth());
-            int y = (int) (Math.random() * plan.getHeight());
-            coordinatesVO = new CoordinatesVO(x, y);
-        } while (boardEntity.addNewVaccination(coordinatesVO));
-    }
-
-    public void addRandomWorkItemToBoard() {
-        PlanVO plan = boardEntity.getPlan();
-        CoordinatesVO coordinatesVO;
-        do {
-            int x = (int) (Math.random() * plan.getWidth());
-            int y = (int) (Math.random() * plan.getHeight());
-            coordinatesVO = new CoordinatesVO(x, y);
-        } while (boardEntity.addNewWorkItem(coordinatesVO));
-    }
-
-    public boolean infectByProbability() {
-        return Math.random() >= boardEntity.getInfectProbability().getProbability();
-    }
-
     public boolean isCoordinateEmpty(CoordinatesVO coordinatesVO) {
-        boolean isEmpty = boardEntity.containsCoordinate(coordinatesVO) && !boardEntity.getObstacles().contains(coordinatesVO);
+        boolean isEmpty = !boardEntity.getBoardLayout().isCoordinateBlocked(coordinatesVO);
         for (ColleagueMovement iterator : this.forwardAndBackMovements) {
             if (iterator.getCurrentPosition().equals(coordinatesVO)) {
                 return false;

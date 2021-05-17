@@ -1,6 +1,5 @@
 package de.dhbw.entities;
 
-import de.dhbw.valueobjects.ItemsVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +10,7 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 @AllArgsConstructor
@@ -29,7 +29,7 @@ public class RankingEntity {
     @NonNull
     @OneToOne(cascade = CascadeType.ALL)
     @LazyCollection(LazyCollectionOption.FALSE)
-    private ItemsVO workItems;
+    private PlayerStatistics playerStatistics;
     @NonNull
     @Column
     private Date date;
@@ -39,7 +39,11 @@ public class RankingEntity {
     }
 
     public int getTotal() {
-        return earned_points + workItems.getNumberOfItems() * 50;
+        AtomicInteger total = new AtomicInteger();
+        playerStatistics.getStatisticsPerItems().forEach((key,value) -> {
+            total.addAndGet(value.getCount() * 50); //todo andere bewertung als 50.. nicht jedes game object sollte einen wert haben
+        });
+        return earned_points + total.get();
     }
 
     @Override

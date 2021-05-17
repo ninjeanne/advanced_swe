@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.Date;
+import java.util.Map;
 
 /**
  * Design Pattern: Builder
@@ -14,7 +15,7 @@ public class RankingDTO {
 
     private String name;
     private int earned_points;
-    private int workItems;
+    private Map<String, Integer> statistics;
     private int total;
     private Date date;
 
@@ -25,7 +26,7 @@ public class RankingDTO {
     public static class RankingDTOBuilder {
         private String name;
         private int earned_points;
-        private int workItems;
+        private Map<String, Integer> statistics;
         private int total;
         private Date date;
 
@@ -42,8 +43,8 @@ public class RankingDTO {
             return this;
         }
 
-        public RankingDTO.RankingDTOBuilder workItems(int workItems) {
-            this.workItems = workItems;
+        public RankingDTO.RankingDTOBuilder statistics(Map<String, Integer> statistics) {
+            this.statistics = statistics;
             return this;
         }
 
@@ -58,11 +59,11 @@ public class RankingDTO {
         }
 
         public RankingDTO build() {
-            return new RankingDTO(this.name, this.earned_points, this.workItems, this.total, this.date);
+            return new RankingDTO(this.name, this.earned_points, this.statistics, this.total, this.date);
         }
 
         public String toString() {
-            return "RankingDTO.RankingDTOBuilder(name=" + this.name + ", earned_points=" + this.earned_points + ", workItems=" + this.workItems + ", total=" + this.total + ", date=" + this.date + ")";
+            return "RankingDTO.RankingDTOBuilder(name=" + this.name + ", earned_points=" + this.earned_points + ", statistics=" + this.statistics + ", total=" + this.total + ", date=" + this.date + ")";
         }
     }
 }

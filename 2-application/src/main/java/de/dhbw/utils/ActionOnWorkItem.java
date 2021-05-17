@@ -1,29 +1,25 @@
 package de.dhbw.utils;
 
+import de.dhbw.entities.WorkItem;
 import de.dhbw.helper.GameAction;
-import de.dhbw.services.BoardService;
 import de.dhbw.services.PlayerService;
-import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActionOnWorkItem implements GameAction {
+public class ActionOnWorkItem extends GameAction<WorkItem> {
 
-    private final BoardService boardService;
     private final PlayerService playerService;
 
     @Autowired
-    public ActionOnWorkItem(BoardService boardService, PlayerService playerService) {
-        this.boardService = boardService;
+    public ActionOnWorkItem(PlayerService playerService) {
+        super(WorkItem.class);
         this.playerService = playerService;
     }
 
     @Override
-    public void doActionOn(CoordinatesVO coordinatesVO) {
-        if (boardService.isWorkItem(coordinatesVO)) {
-            playerService.work();
-            boardService.addRandomWorkItemToBoard();
-        }
+    public void doActionOn(WorkItem workItem) {
+        workItem.doToPlayer(playerService.getCurrentPlayer());
+        //todo add new item
     }
 }

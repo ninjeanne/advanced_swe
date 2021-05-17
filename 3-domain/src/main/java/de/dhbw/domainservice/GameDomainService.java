@@ -1,6 +1,7 @@
 package de.dhbw.domainservice;
 
 import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.GameObject;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.helper.GameAction;
@@ -9,7 +10,7 @@ import de.dhbw.valueobjects.CoordinatesVO;
 import java.util.List;
 
 public interface GameDomainService {
-    List<GameAction> getGameActions();
+    List<GameAction<GameObject>> getGameActions();
 
     void startGame();
     boolean isRunning();

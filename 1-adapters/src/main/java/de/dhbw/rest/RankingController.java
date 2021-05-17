@@ -6,7 +6,6 @@ import de.dhbw.services.RankingService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -26,10 +25,7 @@ public class RankingController {
     }
 
     @GetMapping
-    public List<RankingDTO> getRankingsForBoardName(@RequestParam String boardName) {
-        if(boardName == null){
-            boardName = "default";
-        }
-        return rankingService.getTopRankingsForBoard(boardName).stream().map(rankingDTOMapper).collect(Collectors.toList());
+    public List<RankingDTO> getRankingsForBoardName() {
+        return rankingService.getTopRankings().stream().map(rankingDTOMapper).collect(Collectors.toList());
     }
 }

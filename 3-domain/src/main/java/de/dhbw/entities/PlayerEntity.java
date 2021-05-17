@@ -1,7 +1,7 @@
 package de.dhbw.entities;
 
 import de.dhbw.valueobjects.CoordinatesVO;
-import de.dhbw.valueobjects.ItemsVO;
+import de.dhbw.valueobjects.GameObjectCountVO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,14 +29,9 @@ public class PlayerEntity {
     @OneToOne
     @LazyCollection(LazyCollectionOption.FALSE)
     private CoordinatesVO position;
-    @NonNull
+
     @OneToOne
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private ItemsVO lifePoints;
-    @NonNull
-    @OneToOne
-    @LazyCollection(LazyCollectionOption.FALSE)
-    private ItemsVO workItems;
+    private PlayerStatistics playerStatistics;
 
     /**
      * the new position is only allowed to differ in one coordinate and by one step!
@@ -56,31 +51,18 @@ public class PlayerEntity {
         return false;
     }
 
+    public void updateStatistics(Class<? extends GameObject> gameObject, GameObjectCountVO gameObjectCountVO) {
+
+    }
+
     public void setPosition(CoordinatesVO newPosition) {
         if (isNewPosition(newPosition)) {
             this.position = newPosition;
         }
     }
 
-    public void decreaseLifePoints() {
-        if (isAlive()) {
-            lifePoints = new ItemsVO(lifePoints.getNumberOfItems() - 1);
-            log.debug("Life points have been decreased for {}. Left: {}", getNameAsEntityID(), lifePoints);
-        } else {
-            throw new IllegalArgumentException("Player " + getNameAsEntityID() + " is already dead.");
-        }
-    }
-
-    public void increaseLifePoints() {
-        lifePoints = new ItemsVO(lifePoints.getNumberOfItems() + 1);
-    }
-
-    public void increaseWorkItems() {
-        workItems = new ItemsVO(workItems.getNumberOfItems() + 1);
-    }
-
     public boolean isAlive() {
-        return !lifePoints.equals(new ItemsVO(0));
+        return !playerStatistics.getStatisticsPerItems().get(Vaccination.class).equals(new GameObjectCountVO(0));
     }
 
     @Override

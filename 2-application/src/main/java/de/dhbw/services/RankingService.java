@@ -1,9 +1,8 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.RankingDomainService;
-import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.RankingEntity;
-import de.dhbw.repositories.BoardRepository;
+import de.dhbw.repositories.RankingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,35 +12,40 @@ import java.util.List;
 @Service
 public class RankingService implements RankingDomainService {
 
-    private final BoardRepository boardRepository;
+    private final RankingRepository rankingRepository;
+    private final int NUMBER_OF_RANKINGS = 10;
 
     @Autowired
-    public RankingService(BoardRepository boardRepository) {
-        this.boardRepository = boardRepository;
+    public RankingService(RankingRepository rankingRepository) {
+        this.rankingRepository = rankingRepository;
     }
 
     @Override
-    public boolean saveNewRankingForBoard(RankingEntity ranking, String boardName) {
-        BoardEntity boardEntity = boardRepository.getBoardByName(boardName);
-        if (isTopRankingInBoard(ranking, boardName)) {
-            if (boardEntity.addNewTopRanking(ranking)) {
-                boardRepository.save(boardEntity);
-                return true;
+    public boolean saveNewRanking(RankingEntity ranking) {
+        List<RankingEntity> rankingEntities = getTopRankings();
+        if (isTopRanking(ranking)) {
+            if (rankingEntities.size() >= NUMBER_OF_RANKINGS) {
+                rankingRepository.delete(rankingEntities.get(rankingEntities.size() - 1));
             }
+            rankingRepository.save(ranking);
+            return true;
         }
         return false;
     }
 
     @Override
-    public boolean isTopRankingInBoard(RankingEntity ranking, String boardName) {
-        BoardEntity boardEntity = boardRepository.getBoardByName(boardName);
-        return boardEntity.isNewTopRanking(ranking);
+    public boolean isTopRanking(RankingEntity ranking) {
+        List<RankingEntity> rankingEntities = getTopRankings();
+        if (rankingEntities.size() < NUMBER_OF_RANKINGS) {
+            return true;
+        }
+
+        return rankingEntities.get(rankingEntities.size() - 1).getTotal() < ranking.getTotal();
     }
 
     @Override
-    public List<RankingEntity> getTopRankingsForBoard(String boardName) {
-        BoardEntity boardEntity = boardRepository.getBoardByName(boardName);
-        List<RankingEntity> entities = boardEntity.getTopRankings();
+    public List<RankingEntity> getTopRankings() {
+        List<RankingEntity> entities = rankingRepository.getTopRankings();
         entities.sort(Comparator.comparing(RankingEntity::getTotal).reversed());
         return entities;
     }
