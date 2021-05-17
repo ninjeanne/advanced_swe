@@ -1,7 +1,6 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.GameDomainService;
-import de.dhbw.domainservice.InitializerDomainService;
 import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.GameObject;
 import de.dhbw.entities.PlayerEntity;
@@ -14,28 +13,27 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class GameService implements GameDomainService, InitializerDomainService {
+public class GameService implements GameDomainService {
 
     private final BoardService boardService;
     private final RankingService rankingService;
     private final PlayerService playerService;
-    private final List<GameAction<GameObject>> gameActions;
-    private List<GameObject> gameObjects; //TODO hier zur Laufzeit die gameObjects setzen. Generische methode implementieren, um ein neues Vaccination oder workitem zu setzen.
-
+    private final List<GameAction> gameActions;
     private boolean running = false;
 
     @Autowired
-    public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService, List<GameAction<GameObject>> gameActions) {
+    public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService, List<GameObject> gameObjects,
+            List<GameAction> gameActions) {
         this.boardService = boardService;
         this.rankingService = rankingService;
         this.playerService = playerService;
         this.gameActions = gameActions;
     }
 
-    private void initializeGame(String playerName, String boardName) {
+    public void initialize(String boardName, String playerName) {
         if (!isRunning()) {
             boardService.initializeBoard(boardName);
-            playerService.initialize(playerName);
+            playerService.initialize(playerName, boardService.getGameObjects());
             return;
         }
 
@@ -47,21 +45,12 @@ public class GameService implements GameDomainService, InitializerDomainService 
         return !playerService.isAlive();
     }
 
-    @Override
     public boolean isInitialized() {
         return boardService.isInitialized() && playerService.isInitialized();
     }
 
-    /**
-     * first argument will be used as boardName, the second one as player name
-     */
     @Override
-    public void initialize(String... data) {
-        initializeGame(data[0], data[1]);
-    }
-
-    @Override
-    public List<GameAction<GameObject>> getGameActions() {
+    public List<GameAction> getGameActions() {
         return gameActions;
     }
 
@@ -71,14 +60,17 @@ public class GameService implements GameDomainService, InitializerDomainService 
     }
 
     private GameObject get(CoordinatesVO coordinate) {
-        //TODO hier prüfen, ob leere coordinate oder ob item
+        for (GameObject gameObject : boardService.getGameObjects()) {
+            if (gameObject.isInRangeOfGameObject(coordinate)) {
+                return gameObject;
+            }
+        }
         return null;
     }
 
     private GameAction<GameObject> getActionFor(GameObject gameObject) {
         for (GameAction<GameObject> gameAction : gameActions) {
             if (gameAction.getType().equals(gameObject.getClass())) {
-                //TODO prüfen, welche gameaction die klasse t speichert. diese nutzen
                 return gameAction;
             }
         }
@@ -89,7 +81,6 @@ public class GameService implements GameDomainService, InitializerDomainService 
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (isRunning()) {
             if (boardService.isCoordinateEmpty(newCoordinates)) {
-                //TODO was ist auf dieser COordinate -> gib mal GameObject
                 playerService.setNewPositionForPlayer(newCoordinates);
                 doAction(newCoordinates);
                 return true;
@@ -101,10 +92,11 @@ public class GameService implements GameDomainService, InitializerDomainService 
 
     private void doAction(CoordinatesVO newCoordinates) {
         GameObject gameObject = get(newCoordinates);
-        GameAction<GameObject> gameAction = getActionFor(gameObject);
-        if (gameAction != null) {
-        //todo -> ist die new coordinate auch ein item?
-            gameAction.doActionOn(gameObject);
+        if (gameObject != null) {
+            GameAction<GameObject> gameAction = getActionFor(gameObject);
+            if (gameAction != null) {
+                gameAction.doActionOn(gameObject);
+            }
         }
     }
 

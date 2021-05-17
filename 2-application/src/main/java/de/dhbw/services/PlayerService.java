@@ -1,33 +1,24 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.CountRankingDomainService;
-import de.dhbw.domainservice.InitializerDomainService;
 import de.dhbw.domainservice.PlayerDomainService;
+import de.dhbw.entities.GameObject;
 import de.dhbw.entities.PlayerEntity;
-import de.dhbw.entities.PlayerStatistics;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 
 @Component
-public class PlayerService implements PlayerDomainService, CountRankingDomainService, InitializerDomainService {
+public class PlayerService implements PlayerDomainService, CountRankingDomainService {
 
     private PlayerEntity player;
     private RankingEntity rankingEntity;
     private Timer rankingPointTimer;
 
-    /**
-     * @param data needs a playerName as its only argument
-     */
-    @Override
-    public void initialize(String ... data) {
-        this.player = new PlayerEntity(data[0], new CoordinatesVO(0, 0), new PlayerStatistics());
-        this.player.setPosition(new CoordinatesVO(0, 0));
+    public void initialize(String playerName, List<GameObject> gameObjects) {
+        this.player = new PlayerEntity(playerName, new CoordinatesVO(0, 0), gameObjects);
         this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getPlayerStatistics(), new Date());
     }
 
@@ -45,7 +36,6 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
         return player.isAlive();
     }
 
-    @Override
     public boolean isInitialized() {
         return player != null && rankingEntity != null;
     }

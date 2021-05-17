@@ -4,8 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -27,8 +25,7 @@ public class RankingEntity {
     @Column
     private int earned_points;
     @NonNull
-    @OneToOne(cascade = CascadeType.ALL)
-    @LazyCollection(LazyCollectionOption.FALSE)
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private PlayerStatistics playerStatistics;
     @NonNull
     @Column

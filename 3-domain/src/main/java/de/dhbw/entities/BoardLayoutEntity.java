@@ -69,9 +69,9 @@ public class BoardLayoutEntity {
         if (containsCoordinate(coordinatesVO)) {
             if (obstacles.contains(coordinatesVO)) {
                 log.debug("Coordinate is blocked by obstacle at x:{} and y:{}", coordinatesVO.getX(), coordinatesVO.getY());
-                return false;
+                return true;
             }
-            return true;
+            return false;
         }
         throw new IllegalArgumentException(
                 "Coordinates aren't part of board, x: " + coordinatesVO.getX() + " and y: " + coordinatesVO.getY());

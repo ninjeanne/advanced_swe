@@ -2,26 +2,33 @@ package de.dhbw.services;
 
 import de.dhbw.domainservice.BoardDomainService;
 import de.dhbw.domainservice.MoveColleaguesDomainService;
-import de.dhbw.entities.*;
+import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.ColleagueEntity;
+import de.dhbw.entities.GameObject;
+import de.dhbw.entities.Infection;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 @Service
 public class BoardService implements BoardDomainService, MoveColleaguesDomainService {
     private final BoardRepository boardRepository;
     private BoardEntity boardEntity;
     private List<ColleagueMovement> forwardAndBackMovements;
-    private final Map<Class<? extends GameObject>, GameObject> gameObjects = new HashMap<>();
     private Timer colleagueMovementTimer;
+    private final List<GameObject> gameObjects;
 
     @Autowired
-    public BoardService(BoardRepository boardRepository) {
+    public BoardService(BoardRepository boardRepository, List<GameObject> gameObjects) {
         this.boardRepository = boardRepository;
+        this.gameObjects = gameObjects;
     }
 
     public boolean isInitialized() {
@@ -34,27 +41,26 @@ public class BoardService implements BoardDomainService, MoveColleaguesDomainSer
         forwardAndBackMovements = null;
     }
 
+    public List<GameObject> getGameObjects(){
+        return gameObjects;
+    }
+
     public void initializeBoard(String boardName) {
         this.boardEntity = boardRepository.getBoardByName(boardName);
         this.forwardAndBackMovements = new ArrayList<>();
-        initializeGameObjects(new Vaccination(), new WorkItem());
         for (ColleagueEntity colleague : boardEntity.getColleagues()) {
             forwardAndBackMovements.add(colleague.createColleagueIterator());
         }
+        initializeCoordinatesForGameObjects();
     }
 
-    public Map<Class<? extends GameObject>, GameObject> getGameObjects(){
-        return this.gameObjects;
-    }
-
-    public void initializeGameObjects(GameObject... gameObjects) {
-        for (GameObject gameObject : gameObjects) {
+    private void initializeCoordinatesForGameObjects() {
+        for (GameObject gameObject : getGameObjects()) {
             CoordinatesVO coordinatesVO;
             do {
-                coordinatesVO = boardEntity.getBoardLayout().getRandomCoordinate();
+                coordinatesVO = getCurrentBoard().getBoardLayout().getRandomCoordinate();
             } while (!isCoordinateEmpty(coordinatesVO));
             gameObject.setNewCoordinate(coordinatesVO);
-            this.gameObjects.put(GameObject.class, gameObject);
         }
     }
 
@@ -82,8 +88,18 @@ public class BoardService implements BoardDomainService, MoveColleaguesDomainSer
             this.forwardAndBackMovements.add(value.createColleagueIterator());
         });
         TimerTask rankingPointTask = new TimerTask() {
+            List<Infection> infections = new ArrayList<>();
+
             public void run() {
-                forwardAndBackMovements.forEach(ColleagueMovement::nextPosition);
+                getGameObjects().removeAll(infections);
+                infections = new ArrayList<>();
+                forwardAndBackMovements.forEach(movement -> {
+                    movement.nextPosition();
+                    Infection newInfection = new Infection(boardEntity.getBoardConfiguration(), movement.getCurrentPosition());
+                    infections.add(newInfection);
+                    getGameObjects().add(newInfection);
+                });
+
             }
         };
         colleagueMovementTimer = new Timer("Colleague Movement Timer");

@@ -3,8 +3,8 @@
     <div v-if="started">
       <b>Office:</b> {{ boardName }} <br>
       <b>{{ rankingPoints }}</b> (with <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" />: +50)<br>
-      {{ player.workItems }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" /> (work items)<br>
-      {{ player.lifePoints }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" /> (vaccination)<br>
+      {{ player.statistics.WorkItem }} <img alt="img of vaccination" src="static/work_item.png" width="10" height="10" /> (work items)<br>
+      {{ player.statistics.Vaccination }} <img alt="img of vaccination" src="static/vaccination.png" width="10" height="10" /> (vaccination)<br>
     </div>
   </div>
 </template>

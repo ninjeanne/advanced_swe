@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Design Pattern: Builder
@@ -12,8 +13,7 @@ import java.util.List;
 @AllArgsConstructor
 public class BoardDTO {
     private String name;
-    private CoordinatesDTO vaccination;
-    private CoordinatesDTO workItem;
+    private Map<String, CoordinatesDTO> gameObjects;
     private List<CoordinatesDTO> obstacles;
     private List<CoordinatesDTO> colleagues;
     private PlanDTO plan;
@@ -26,8 +26,7 @@ public class BoardDTO {
 
     public static class BoardDTOBuilder {
         private String name;
-        private CoordinatesDTO vaccination;
-        private CoordinatesDTO workItem;
+        private Map<String, CoordinatesDTO> gameObjects;
         private List<CoordinatesDTO> obstacles;
         private List<CoordinatesDTO> colleagues;
         private PlanDTO plan;
@@ -39,13 +38,8 @@ public class BoardDTO {
             return this;
         }
 
-        public BoardDTO.BoardDTOBuilder vaccination(CoordinatesDTO vaccination) {
-            this.vaccination = vaccination;
-            return this;
-        }
-
-        public BoardDTO.BoardDTOBuilder workItem(CoordinatesDTO workItem) {
-            this.workItem = workItem;
+        public BoardDTO.BoardDTOBuilder gameObjects(Map<String, CoordinatesDTO> gameObjects) {
+            this.gameObjects = gameObjects;
             return this;
         }
 
@@ -75,12 +69,12 @@ public class BoardDTO {
         }
 
         public BoardDTO build() {
-            return new BoardDTO(this.name, this.vaccination, this.workItem, this.obstacles, this.colleagues, this.plan, this.infectProbability,
+            return new BoardDTO(this.name, this.gameObjects, this.obstacles, this.colleagues, this.plan, this.infectProbability,
                     this.colleagueRadius);
         }
 
         public String toString() {
-            return "BoardDTO.BoardDTOBuilder(name=" + this.name + ", vaccination=" + this.vaccination + ", workItem=" + this.workItem + ", obstacles="
+            return "BoardDTO.BoardDTOBuilder(name=" + this.name + ", gameObjects=" + this.gameObjects + ", obstacles="
                     + this.obstacles + ", colleagues=" + this.colleagues + ", plan=" + this.plan + ", infectProbability=" + this.infectProbability
                     + ", colleagueRadius=" + this.colleagueRadius + ")";
         }

@@ -5,8 +5,6 @@ import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlanDTO;
 import de.dhbw.entities.BoardEntity;
 import de.dhbw.entities.GameObject;
-import de.dhbw.entities.Vaccination;
-import de.dhbw.entities.WorkItem;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.services.BoardService;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -14,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 
 @Component
@@ -42,22 +42,13 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
                     .y(colleagueMovement.getCurrentPosition().getY())
                     .build());
         }
-        CoordinatesDTO vaccination = null;
-        GameObject vaccinationGO = boardService.getGameObjects().get(Vaccination.class);
-        if(vaccinationGO != null){
-        vaccination = CoordinatesDTO.builder()
-                .y(vaccinationGO.getCoordinatesVO().getY())
-                .x(vaccinationGO.getCoordinatesVO().getX())
-                .build();
-        }
-
-        CoordinatesDTO workItem = null;
-        GameObject workItemGO = boardService.getGameObjects().get(WorkItem.class);
-        if(workItemGO != null){
-        workItem = CoordinatesDTO.builder()
-                .y(workItemGO.getCoordinatesVO().getY())
-                .x(workItemGO.getCoordinatesVO().getX())
-                .build();
+        Map<String, CoordinatesDTO> gameObjects = new HashMap<>();
+        for (GameObject gameObject : boardService.getGameObjects()) {
+            gameObjects.put(gameObject.getClass().getSimpleName(),
+                    CoordinatesDTO.builder()
+                            .y(gameObject.getCoordinatesVO().getY())
+                            .x(gameObject.getCoordinatesVO().getX())
+                            .build());
         }
 
        return BoardDTO.builder()
@@ -66,8 +57,7 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
                .colleagues(colleaguePosition)
                .infectProbability(boardEntity.getBoardConfiguration().getInfectProbability().getProbability())
                .colleagueRadius(boardEntity.getBoardConfiguration().getColleagueRadius().getRadius())
-               .workItem(workItem)
-               .vaccination(vaccination)
+               .gameObjects(gameObjects)
                .plan(PlanDTO.builder()
                        .height(boardEntity.getBoardLayout().getPlan().getHeight())
                        .width(boardEntity.getBoardLayout().getPlan().getWidth())

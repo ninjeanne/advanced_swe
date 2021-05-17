@@ -1,5 +1,8 @@
 package de.dhbw.entities;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class WorkItem extends GameObject {
     @Override
     public void doToPlayer(PlayerEntity playerEntity) {

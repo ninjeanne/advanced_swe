@@ -60,8 +60,9 @@ export default {
           x: 0,
           y: 0
         },
-        lifePoints: 0,
-        workItems: 0
+        statistics: {
+
+        }
       },
       ranking_points: 0,
       vueCanvas: null,
@@ -100,7 +101,6 @@ export default {
         });
         this.stompClient.subscribe("/backend/topranking", tick => {
           this.top_ranking = JSON.parse(tick.body);
-          console.log(this.top_ranking);
         });
         if (this.player.name === null) {
           this.player.name = "NOOB";
@@ -109,10 +109,10 @@ export default {
         this.stompClient.subscribe("/backend/board", tick => {
           let response = JSON.parse(tick.body);
           this.colleagues = response.colleagues;
-          this.vaccination = response.vaccination;
+          this.vaccination = response.gameObjects.Vaccination;
+          this.workItem = response.gameObjects.WorkItem;
           this.boardName = response.name;
-          this.workItem = response.workItem;
-          this.last_work_items = this.player.workItems;
+          this.last_work_items = this.player.statistics.WorkItem;
           if (this.plan == null) {
             this.plan = response.plan;
           }

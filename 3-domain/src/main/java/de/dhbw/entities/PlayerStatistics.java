@@ -3,10 +3,7 @@ package de.dhbw.entities;
 import de.dhbw.valueobjects.GameObjectCountVO;
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,11 +13,15 @@ public class PlayerStatistics {
     @Id
     @GeneratedValue
     private Long id;
-    @OneToMany
-    private final Map<Class<? extends GameObject>, GameObjectCountVO> statisticsPerItems = new HashMap<>();
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Map<Class<? extends GameObject>, GameObjectCountVO> statisticsPerItems = new HashMap<>();
 
     @SuppressWarnings("unused")
     public PlayerStatistics() {
+    }
+
+    public PlayerStatistics(Map<Class<? extends GameObject>, GameObjectCountVO> statisticsPerItems){
+        this.statisticsPerItems = statisticsPerItems;
     }
 
     public GameObjectCountVO getStatistic(Class<? extends GameObject> gameObject) {

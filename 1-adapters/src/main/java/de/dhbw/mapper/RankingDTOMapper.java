@@ -25,7 +25,7 @@ public class RankingDTOMapper implements Function<RankingEntity, RankingDTO> {
     private Map<String, Integer> getStatistics(PlayerStatistics playerStatistics){
         Map<String, Integer> statistics = new HashMap<>();
         playerStatistics.getStatisticsPerItems().forEach((key, value) -> {
-            statistics.put(key.getName(), value.getCount());
+            statistics.put(key.getSimpleName(), value.getCount());
         });
         return statistics;
     }

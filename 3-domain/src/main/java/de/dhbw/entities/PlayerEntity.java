@@ -13,6 +13,9 @@ import org.hibernate.annotations.LazyCollectionOption;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 @Getter
@@ -33,6 +36,16 @@ public class PlayerEntity {
     @OneToOne
     private PlayerStatistics playerStatistics;
 
+    public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObject> gameObjectList){
+        this.nameAsEntityID = nameAsEntityID;
+        this.position = position;
+        Map<Class<? extends GameObject>, GameObjectCountVO> statisticsPerItems = new HashMap<>();
+        for (GameObject gameObject : gameObjectList) {
+            statisticsPerItems.put(gameObject.getClass(), new GameObjectCountVO(gameObject.getDefaultNumberOfObjects()));
+        }
+        this.playerStatistics = new PlayerStatistics(statisticsPerItems);
+    }
+
     /**
      * the new position is only allowed to differ in one coordinate and by one step!
      *
@@ -49,10 +62,6 @@ public class PlayerEntity {
             return position.getY() == (newPosition.getY() + 1) || position.getY() == (newPosition.getY() - 1);
         }
         return false;
-    }
-
-    public void updateStatistics(Class<? extends GameObject> gameObject, GameObjectCountVO gameObjectCountVO) {
-
     }
 
     public void setPosition(CoordinatesVO newPosition) {
