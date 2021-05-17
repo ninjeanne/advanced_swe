@@ -13,7 +13,7 @@
           v-bind:board-name="this.boardName" />
         <hr>
       </div>
-      <div class="main">
+      <div class="main" ref="mainGame">
         <br v-if="started">
         <canvas v-if="started" id="c"></canvas>
         <game-over v-if="game_over && !started" v-bind:player="player" v-bind:ranking-points="last_ranking_points" v-bind:work-item="last_work_items" />
@@ -21,6 +21,7 @@
       <div class="ranking">
         <hr>
         <highscore-component v-bind:headline="true" v-bind:highscore="highscore" />
+        <b-button v-on:click="getHighscore">Refresh</b-button>
         <hr>
       </div>
     </div>
@@ -48,7 +49,7 @@ export default {
     Logo,
     GameOver,
     StartStopController,
-    PlayerBoard,
+    PlayerBoard
   },
   data() {
     return {
@@ -86,9 +87,16 @@ export default {
       this.last_ranking_points = this.ranking_points;
       this.stompClient.send("/frontend/stop", this.player.name, {});
       this.game_over = true;
+      this.player.statistics = {
+        "WorkItem": 0,
+        "Vaccination": 0,
+        "Infection": 0
+      };
       this.disconnect();
+      this.getHighscore();
     },
     async start() {
+      this.getHighscore();
       if (!this.connected) {
         await this.connect();
       }
@@ -101,15 +109,19 @@ export default {
         this.stompClient.subscribe("/backend/ranking", tick => {
           this.ranking_points = JSON.parse(tick.body);
         });
-        this.stompClient.subscribe("/backend/highscore", tick => {
-          this.highscore = JSON.parse(tick.body);
-        });
         if (this.player.name === null) {
           this.player.name = "NOOB";
         }
         this.stompClient.send("/frontend/start", this.player.name, {});
         this.stompClient.subscribe("/backend/board", tick => {
           let response = JSON.parse(tick.body);
+          if (this.player.statistics == null) {
+            this.player.statistics = {
+              "WorkItem": 0,
+              "Vaccination": 0,
+              "Infection": 0
+            };
+          }
           this.colleagues = response.colleagues;
           this.vaccination = response.gameObjects.Vaccination;
           this.workItem = response.gameObjects.WorkItem;

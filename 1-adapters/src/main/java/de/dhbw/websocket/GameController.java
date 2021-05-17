@@ -96,12 +96,13 @@ public class GameController {
                     }
                     return playerDTO;
                 }
+            } else {
+                stopGame();
             }
         } catch (Exception e) {
             log.warn(e.getMessage());
             return null;
         }
-
         return null;
     }
 

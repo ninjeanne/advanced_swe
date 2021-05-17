@@ -9,8 +9,6 @@
 </template>
 
 <script>
-import SockJS from "sockjs-client";
-import Stomp from "webstomp-client";
 import {api} from "../services/api";
 import HighscoreComponent from "../components/HighscoreComponent";
 import Logo from "../components/Logo";
@@ -30,27 +28,6 @@ export default {
     };
   },
   methods: {
-    async start() {
-      if (!this.connected) {
-        await this.connect();
-      }
-      if (this.stompClient != null && this.connected) {
-        this.stompClient.subscribe("/backend/topranking", tick => {
-          this.highscore = JSON.parse(tick.body);
-        });
-      }
-    },
-    async connect() {
-      this.socket = new SockJS("http://localhost:8080/socket");
-      this.stompClient = Stomp.over(this.socket);
-      this.stompClient.debug = () => {
-      };
-      await this.stompClient.connect({}, frame => {
-        this.connected = true;
-      }, error => {
-        //console.log(error);
-      });
-    },
     defaultRankingForBoard() {
       api("/highscore", {
         method: "GET"
@@ -58,14 +35,12 @@ export default {
     }
   },
   mounted() {
-    this.connect();
     this.defaultRankingForBoard();
     Vue.filter("formatDate", function(date) {
       if (date) {
         return moment(date).format("DD. MMMM YYYY HH:mm");
       }
     });
-    this.start();
   }
 };
 </script>
