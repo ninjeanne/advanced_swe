@@ -36,7 +36,7 @@ public class HighscoreService implements HighscoreDomainService {
     @Override
     public boolean isInHighscore(RankingEntity ranking) {
         List<RankingEntity> rankingEntities = getHighscore();
-        if (rankingEntities.size() < NUMBER_OF_RANKINGS) {
+        if (rankingEntities.size() <= NUMBER_OF_RANKINGS) {
             return true;
         }
 

@@ -7,12 +7,14 @@ import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.helper.GameAction;
 import de.dhbw.valueobjects.CoordinatesVO;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@Slf4j
 public class GameService implements GameDomainService {
 
     private final BoardService boardService;
@@ -56,7 +58,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public boolean isRunning() {
-        return running && playerService.isAlive();
+        return running;
     }
 
     private GameObject get(CoordinatesVO coordinate) {
@@ -80,6 +82,10 @@ public class GameService implements GameDomainService {
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (isRunning()) {
+            if(!playerService.isAlive()){
+                stopGame();
+                return false;
+            }
             if (boardService.isCoordinateEmpty(newCoordinates)) {
                 playerService.setNewPositionForPlayer(newCoordinates);
                 doAction(newCoordinates);
@@ -131,6 +137,7 @@ public class GameService implements GameDomainService {
                 boardService.reset();
                 playerService.reset();
                 running = false;
+                log.info("Ranking has been saved");
                 return;
             }
             throw new RuntimeException("Ranking couldn't be saved");
