@@ -70,10 +70,6 @@ public class PlayerEntity {
         }
     }
 
-    public boolean isAlive() {
-        return !playerStatistics.getStatisticsPerItems().get(Vaccination.class).equals(new GameObjectCountVO(0));
-    }
-
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof PlayerEntity) {

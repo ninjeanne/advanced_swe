@@ -72,7 +72,7 @@ public class GameController {
             updateRanking();
             return true;
         }
-        log.info("Game is already stopped.");
+        log.info("Game has already been stopped.");
         return false;
     }
 

@@ -11,7 +11,7 @@ public abstract class GameObject {
         playerEntity.getPlayerStatistics().increaseStatistics(this.getClass());
     }
 
-    public abstract int getValue();
+    public abstract int getRankingValue();
 
     public int getDefaultNumberOfObjects(){
         return 0;

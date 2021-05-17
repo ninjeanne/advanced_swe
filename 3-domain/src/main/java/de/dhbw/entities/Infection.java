@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 public class Infection extends GameObject {
-    private final BoardConfigurationEntity boardConfigurationEntity; //todo woher kommt diese? wie init?
+    private final BoardConfigurationEntity boardConfigurationEntity;
 
     public Infection(BoardConfigurationEntity boardConfigurationEntity, CoordinatesVO coordinatesVO) {
         super();
@@ -25,7 +25,7 @@ public class Infection extends GameObject {
     }
 
     @Override
-    public int getValue() {
+    public int getRankingValue() {
         return 0;
     }
 

@@ -2,9 +2,7 @@ package de.dhbw.services;
 
 import de.dhbw.domainservice.CountRankingDomainService;
 import de.dhbw.domainservice.PlayerDomainService;
-import de.dhbw.entities.GameObject;
-import de.dhbw.entities.PlayerEntity;
-import de.dhbw.entities.RankingEntity;
+import de.dhbw.entities.*;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +31,7 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
     }
 
     public boolean isAlive() {
-        return player.isAlive();
+        return player.getPlayerStatistics().getStatistic(Vaccination.class).getCount() >= player.getPlayerStatistics().getStatistic(Infection.class).getCount();
     }
 
     public boolean isInitialized() {

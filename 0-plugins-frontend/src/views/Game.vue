@@ -61,7 +61,9 @@ export default {
           y: 0
         },
         statistics: {
-
+          "WorkItem": 0,
+          "Vaccination": 0,
+          "Infection": 0
         }
       },
       ranking_points: 0,

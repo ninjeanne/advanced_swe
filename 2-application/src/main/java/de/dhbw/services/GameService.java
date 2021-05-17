@@ -56,7 +56,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public boolean isRunning() {
-        return running && getCurrentPlayer().isAlive();
+        return running && playerService.isAlive();
     }
 
     private GameObject get(CoordinatesVO coordinate) {
