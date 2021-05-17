@@ -16,13 +16,13 @@ import java.util.List;
 public class GameService implements GameDomainService {
 
     private final BoardService boardService;
-    private final RankingService rankingService;
+    private final HighscoreService rankingService;
     private final PlayerService playerService;
     private final List<GameAction> gameActions;
     private boolean running = false;
 
     @Autowired
-    public GameService(BoardService boardService, RankingService rankingService, PlayerService playerService, List<GameObject> gameObjects,
+    public GameService(BoardService boardService, HighscoreService rankingService, PlayerService playerService, List<GameObject> gameObjects,
             List<GameAction> gameActions) {
         this.boardService = boardService;
         this.rankingService = rankingService;

@@ -5,5 +5,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SpringDataRankingRepository extends JpaRepository<RankingEntity, String> {
+public interface SpringDataHighscoreRepository extends JpaRepository<RankingEntity, String> {
 }

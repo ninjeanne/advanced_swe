@@ -1,7 +1,7 @@
 import Vue from "vue";
 import Router from "vue-router";
 import Game from "../views/Game";
-import TopRanking from "../views/TopRanking";
+import HighscoreView from "../views/HighscoreView";
 
 Vue.use(Router);
 
@@ -9,8 +9,8 @@ export default new Router({
   routes: [
     {
       path: "/",
-      name: "TopRanking",
-      component: TopRanking
+      name: "HighscoreView",
+      component: HighscoreView
     },
     {
       path: "/game",

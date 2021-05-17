@@ -2,7 +2,7 @@
   <div>
     <logo />
     <div class="content">
-      <ranking-board v-bind:top-ranking="top_ranking" />
+      <highscore-component v-bind:highscore="highscore" />
     </div>
     <router-link to="game" pill size="lg" variant="dark">GAME</router-link>
   </div>
@@ -12,20 +12,20 @@
 import SockJS from "sockjs-client";
 import Stomp from "webstomp-client";
 import {api} from "../services/api";
-import RankingBoard from "../components/RankingBoard";
+import HighscoreComponent from "../components/HighscoreComponent";
 import Logo from "../components/Logo";
 import Vue from "vue";
 import moment from "moment";
 
 export default {
-  name: "TopRanking",
+  name: "Highscore",
   components: {
-    RankingBoard,
+    HighscoreComponent,
     Logo
   },
   data() {
     return {
-      top_ranking: [],
+      highscore: [],
       connected: false
     };
   },
@@ -36,7 +36,7 @@ export default {
       }
       if (this.stompClient != null && this.connected) {
         this.stompClient.subscribe("/backend/topranking", tick => {
-          this.top_ranking = JSON.parse(tick.body);
+          this.highscore = JSON.parse(tick.body);
         });
       }
     },
@@ -52,9 +52,9 @@ export default {
       });
     },
     defaultRankingForBoard() {
-      api("/ranking?boardName=default", {
+      api("/highscore", {
         method: "GET"
-      }).then(value => this.top_ranking = value);
+      }).then(value => this.highscore = value);
     }
   },
   mounted() {

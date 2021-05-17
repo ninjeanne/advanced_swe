@@ -87,19 +87,28 @@ public class BoardService implements BoardDomainService, MoveColleaguesDomainSer
         boardEntity.getColleagues().forEach(value -> {
             this.forwardAndBackMovements.add(value.createColleagueIterator());
         });
+        
         TimerTask rankingPointTask = new TimerTask() {
-            List<Infection> infections = new ArrayList<>();
+            List<Infection> currentInfections = new ArrayList<>();
 
             public void run() {
-                getGameObjects().removeAll(infections);
-                infections = new ArrayList<>();
+                clearLastInfectionPositions();
                 forwardAndBackMovements.forEach(movement -> {
-                    movement.nextPosition();
-                    Infection newInfection = new Infection(boardEntity.getBoardConfiguration(), movement.getCurrentPosition());
-                    infections.add(newInfection);
-                    getGameObjects().add(newInfection);
+                    addNewInfectionFor(movement.nextPosition());
                 });
+            }
 
+            private void clearLastInfectionPositions(){
+                getGameObjects().removeAll(currentInfections);
+                currentInfections = new ArrayList<>();
+            }
+
+            private void addNewInfectionFor(CoordinatesVO colleaguesNextPosition) {
+                Infection newInfection = new Infection();
+                newInfection.setBoardConfigurationEntity(boardEntity.getBoardConfiguration());
+                newInfection.setNewCoordinate(colleaguesNextPosition);
+                currentInfections.add(newInfection);
+                getGameObjects().add(newInfection);
             }
         };
         colleagueMovementTimer = new Timer("Colleague Movement Timer");

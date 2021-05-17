@@ -2,7 +2,7 @@ package de.dhbw.rest;
 
 import de.dhbw.dtos.RankingDTO;
 import de.dhbw.mapper.RankingDTOMapper;
-import de.dhbw.services.RankingService;
+import de.dhbw.services.HighscoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,20 +12,20 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/ranking")
-public class RankingController {
+@RequestMapping("/highscore")
+public class HighscoreController {
 
-    private final RankingService rankingService;
+    private final HighscoreService rankingService;
     private final RankingDTOMapper rankingDTOMapper;
 
     @Autowired
-    public RankingController(RankingService rankingService, RankingDTOMapper rankingDTOMapper) {
+    public HighscoreController(HighscoreService rankingService, RankingDTOMapper rankingDTOMapper) {
         this.rankingService = rankingService;
         this.rankingDTOMapper = rankingDTOMapper;
     }
 
     @GetMapping
-    public List<RankingDTO> getRankingsForBoardName() {
-        return rankingService.getTopRankings().stream().map(rankingDTOMapper).collect(Collectors.toList());
+    public List<RankingDTO> getHighscore() {
+        return rankingService.getHighscore().stream().map(rankingDTOMapper).collect(Collectors.toList());
     }
 }

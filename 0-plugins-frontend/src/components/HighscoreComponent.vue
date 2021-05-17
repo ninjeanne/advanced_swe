@@ -1,9 +1,9 @@
 <template>
   <div>
-    <h3 v-if="headline">Top Ranking</h3>
+    <h3 v-if="headline">Highscore</h3>
     <br v-else>
     <table>
-      <tr v-for="(ranking, index) in topRanking" :key="index">
+      <tr v-for="(ranking, index) in highscore" :key="index">
         <th>{{ (index + 1) }}. <b>{{ ranking.name }}</b></th>
         <th style="color:green;text-align:right;font-weight:bold">{{ ranking.total }}</th>
         <th>[{{ new Date(ranking.date) | formatDate }}]</th>
@@ -14,9 +14,9 @@
 
 <script>
 export default {
-  name: "RankingBoard",
+  name: "HighscoreComponent",
   props: [
-    "topRanking",
+    "highscore",
     "headline"
   ]
 };

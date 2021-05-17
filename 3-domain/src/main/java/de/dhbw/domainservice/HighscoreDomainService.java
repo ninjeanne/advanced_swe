@@ -4,8 +4,8 @@ import de.dhbw.entities.RankingEntity;
 
 import java.util.List;
 
-public interface RankingDomainService {
+public interface HighscoreDomainService {
     boolean saveNewRanking(RankingEntity ranking);
-    boolean isTopRanking(RankingEntity ranking);
-    List<RankingEntity> getTopRankings();
+    boolean isInHighscore(RankingEntity ranking);
+    List<RankingEntity> getHighscore();
 }

@@ -7,7 +7,7 @@ import de.dhbw.mapper.CoordinatesVOMapper;
 import de.dhbw.mapper.PlayerDTOMapper;
 import de.dhbw.mapper.RankingDTOMapper;
 import de.dhbw.services.GameService;
-import de.dhbw.services.RankingService;
+import de.dhbw.services.HighscoreService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -29,12 +29,12 @@ public class GameController {
     private final PlayerDTOMapper playerDTOMapper;
     private final BoardDTOMapper boardDTOMapper;
     private final CoordinatesVOMapper coordinatesVOMapper;
-    private final RankingService rankingService;
+    private final HighscoreService rankingService;
     private final RankingDTOMapper rankingDTOMapper;
 
     @Autowired
     public GameController(SimpMessagingTemplate template, GameService gameService, PlayerDTOMapper playerDTOMapper, BoardDTOMapper boardDTOMapper,
-            CoordinatesVOMapper coordinatesVOMapper, RankingService rankingService, RankingDTOMapper rankingDTOMapper) {
+            CoordinatesVOMapper coordinatesVOMapper, HighscoreService rankingService, RankingDTOMapper rankingDTOMapper) {
         this.template = template;
         this.gameService = gameService;
         this.playerDTOMapper = playerDTOMapper;
@@ -69,7 +69,7 @@ public class GameController {
             String playerName = gameService.getCurrentPlayer().getNameAsEntityID();
             gameService.stopGame();
             log.info("Game stopped for player {}", playerName);
-            updateRanking();
+            updateHighscore();
             return true;
         }
         log.info("Game has already been stopped.");
@@ -113,11 +113,10 @@ public class GameController {
     }
 
     @Scheduled(fixedRate = 1000)
-    public void updateRanking() {
-        String boardName = "default";
-        this.template.convertAndSend("/backend/topranking",
-                rankingService.getTopRankings().stream().map(rankingDTOMapper).collect(Collectors.toList()));
-        log.debug("Top Rankings updated for board {}", boardName);
+    public void updateHighscore() {
+        this.template.convertAndSend("/backend/highscore",
+                rankingService.getHighscore().stream().map(rankingDTOMapper).collect(Collectors.toList()));
+        log.debug("Highscore updated");
     }
 
 }

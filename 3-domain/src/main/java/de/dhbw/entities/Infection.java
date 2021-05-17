@@ -2,16 +2,12 @@ package de.dhbw.entities;
 
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
+import lombok.Setter;
 
 @Getter
+@Setter
 public class Infection extends GameObject {
-    private final BoardConfigurationEntity boardConfigurationEntity;
-
-    public Infection(BoardConfigurationEntity boardConfigurationEntity, CoordinatesVO coordinatesVO) {
-        super();
-        this.boardConfigurationEntity = boardConfigurationEntity;
-        this.setNewCoordinate(coordinatesVO);
-    }
+    private BoardConfigurationEntity boardConfigurationEntity;
 
     private boolean infectByProbability() {
         return Math.random() >= boardConfigurationEntity.getInfectProbability().getProbability();

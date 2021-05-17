@@ -20,7 +20,7 @@
       </div>
       <div class="ranking">
         <hr>
-        <ranking-board v-bind:headline="true" v-bind:top-ranking="top_ranking" />
+        <highscore-component v-bind:headline="true" v-bind:highscore="highscore" />
         <hr>
       </div>
     </div>
@@ -33,7 +33,7 @@ import Stomp from "webstomp-client";
 import {api} from "../services/api";
 import Vue from "vue";
 import moment from "moment";
-import RankingBoard from "../components/RankingBoard";
+import HighscoreComponent from "../components/HighscoreComponent";
 import PlayerBoard from "../components/PlayerBoard";
 import StartStopController from "../components/StartStopController";
 import GameOver from "../components/GameOver";
@@ -43,17 +43,17 @@ import GameStatus from "../components/GameStatus";
 export default {
   name: "Game",
   components: {
+    HighscoreComponent,
     GameStatus,
     Logo,
     GameOver,
     StartStopController,
     PlayerBoard,
-    RankingBoard
   },
   data() {
     return {
       boardName: "default",
-      top_ranking: [],
+      highscore: [],
       player: {
         name: null,
         position: {
@@ -101,8 +101,8 @@ export default {
         this.stompClient.subscribe("/backend/ranking", tick => {
           this.ranking_points = JSON.parse(tick.body);
         });
-        this.stompClient.subscribe("/backend/topranking", tick => {
-          this.top_ranking = JSON.parse(tick.body);
+        this.stompClient.subscribe("/backend/highscore", tick => {
+          this.highscore = JSON.parse(tick.body);
         });
         if (this.player.name === null) {
           this.player.name = "NOOB";
@@ -276,15 +276,15 @@ export default {
 
       this.vueCanvas.stroke();
     },
-    rankingForBoard() {
-      api("/ranking?boardName=" + this.boardName, {
+    getHighscore() {
+      api("/highscore", {
         method: "GET"
-      }).then(value => this.top_ranking = value);
+      }).then(value => this.highscore = value);
     }
   },
   mounted() {
     this.connect();
-    this.rankingForBoard();
+    this.getHighscore();
     Vue.filter("formatDate", function(date) {
       if (date) {
         return moment(date).format("DD. MMMM YYYY HH:mm");

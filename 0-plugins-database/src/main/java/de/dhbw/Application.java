@@ -2,7 +2,7 @@ package de.dhbw;
 
 import de.dhbw.entities.*;
 import de.dhbw.repositories.BoardRepository;
-import de.dhbw.services.RankingService;
+import de.dhbw.services.HighscoreService;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;
 import de.dhbw.valueobjects.ProbabilityVO;
@@ -30,7 +30,7 @@ public class Application {
     }
 
     @Bean
-    public CommandLineRunner demo(BoardRepository boardRepository, RankingService rankingService) {
+    public CommandLineRunner demo(BoardRepository boardRepository, HighscoreService rankingService) {
         PlanVO plan = new PlanVO(50, 80);
         ProbabilityVO probabilityVO = new ProbabilityVO(0.5);
         RadiusVO radiusVO = new RadiusVO(3);

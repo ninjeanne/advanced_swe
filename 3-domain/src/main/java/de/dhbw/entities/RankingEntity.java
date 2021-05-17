@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -14,6 +15,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@Slf4j
 public class RankingEntity {
 
     @NonNull
@@ -37,8 +39,12 @@ public class RankingEntity {
 
     public int getTotal() {
         AtomicInteger total = new AtomicInteger();
-        playerStatistics.getStatisticsPerItems().forEach((key,value) -> {
-            total.addAndGet(value.getCount() * 50); //todo andere bewertung als 50.. nicht jedes game object sollte einen wert haben
+        playerStatistics.getStatisticsPerItems().forEach((gameObject,numberOfItems) -> {
+            try {
+                total.addAndGet(numberOfItems.getCount() * gameObject.newInstance().getRankingValue());
+            } catch (InstantiationException | IllegalAccessException e) {
+                log.error(e.getMessage());
+            }
         });
         return earned_points + total.get();
     }
