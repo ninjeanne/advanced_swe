@@ -1,6 +1,8 @@
-package de.dhbw.domainservice;
+package de.dhbw.domainservice.gameaction;
 
-import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.domainservice.BoardDomainService;
+import de.dhbw.domainservice.PlayerDomainService;
+import de.dhbw.entities.gameobject.GameObjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

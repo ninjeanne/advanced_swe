@@ -1,7 +1,7 @@
 package de.dhbw.entities;
 
-import de.dhbw.entities.gameobjects.GameObjectEntity;
-import de.dhbw.entities.gameobjects.VaccinationEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
+import de.dhbw.entities.gameobject.VaccinationEntity;
 import de.dhbw.valueobjects.GameObjectCountVO;
 import lombok.Getter;
 

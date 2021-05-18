@@ -1,7 +1,7 @@
-package de.dhbw.actions;
+package de.dhbw.gameaction;
 
-import de.dhbw.domainservice.GameAction;
-import de.dhbw.gameobjects.WorkItemEntity;
+import de.dhbw.domainservice.gameaction.GameAction;
+import de.dhbw.gameobject.WorkItemEntity;
 import org.springframework.stereotype.Component;
 
 @Component

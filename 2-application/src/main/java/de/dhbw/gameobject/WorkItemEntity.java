@@ -1,6 +1,6 @@
-package de.dhbw.gameobjects;
+package de.dhbw.gameobject;
 
-import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
 import org.springframework.stereotype.Component;
 
 @Component

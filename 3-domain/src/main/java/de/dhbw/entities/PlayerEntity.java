@@ -1,6 +1,6 @@
 package de.dhbw.entities;
 
-import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.GameObjectCountVO;
 import lombok.AllArgsConstructor;

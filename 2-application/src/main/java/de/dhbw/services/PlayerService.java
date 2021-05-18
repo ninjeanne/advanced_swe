@@ -3,9 +3,9 @@ package de.dhbw.services;
 import de.dhbw.domainservice.PlayerDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
-import de.dhbw.entities.gameobjects.GameObjectEntity;
-import de.dhbw.entities.gameobjects.InfectionEntity;
-import de.dhbw.entities.gameobjects.VaccinationEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
+import de.dhbw.entities.gameobject.InfectionEntity;
+import de.dhbw.entities.gameobject.VaccinationEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.stereotype.Component;
 

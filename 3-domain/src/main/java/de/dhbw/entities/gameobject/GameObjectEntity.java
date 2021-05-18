@@ -1,4 +1,4 @@
-package de.dhbw.entities.gameobjects;
+package de.dhbw.entities.gameobject;
 
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.valueobjects.CoordinatesVO;

@@ -1,11 +1,11 @@
 package de.dhbw.services;
 
-import de.dhbw.domainservice.GameAction;
 import de.dhbw.domainservice.GameDomainService;
+import de.dhbw.domainservice.gameaction.GameAction;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.entities.board.BoardEntity;
-import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

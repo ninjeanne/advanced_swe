@@ -1,4 +1,4 @@
-package de.dhbw.entities.gameobjects;
+package de.dhbw.entities.gameobject;
 
 import org.springframework.stereotype.Component;
 

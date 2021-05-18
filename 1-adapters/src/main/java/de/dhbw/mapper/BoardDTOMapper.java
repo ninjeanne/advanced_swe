@@ -4,7 +4,7 @@ import de.dhbw.dtos.BoardDTO;
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlanDTO;
 import de.dhbw.entities.board.BoardEntity;
-import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.services.BoardService;
 import de.dhbw.valueobjects.CoordinatesVO;

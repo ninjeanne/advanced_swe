@@ -1,7 +1,7 @@
 package de.dhbw.domainservice;
 
 import de.dhbw.entities.board.BoardEntity;
-import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
 import java.util.List;

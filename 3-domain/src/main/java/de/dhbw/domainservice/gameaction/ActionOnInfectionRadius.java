@@ -1,7 +1,6 @@
-package de.dhbw.actions;
+package de.dhbw.domainservice.gameaction;
 
-import de.dhbw.domainservice.GameAction;
-import de.dhbw.entities.gameobjects.InfectionEntity;
+import de.dhbw.entities.gameobject.InfectionEntity;
 import org.springframework.stereotype.Component;
 
 @Component
