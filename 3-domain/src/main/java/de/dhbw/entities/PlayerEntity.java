@@ -8,12 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.annotations.LazyCollection;
-import org.hibernate.annotations.LazyCollectionOption;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToOne;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,18 +18,13 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-@Entity
 public class PlayerEntity {
 
     @NonNull
-    @Id
     private String nameAsEntityID;
     @NonNull
-    @OneToOne
-    @LazyCollection(LazyCollectionOption.FALSE)
     private CoordinatesVO position;
 
-    @OneToOne
     private PlayerStatisticsEntity playerStatistics;
 
     public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObjectEntity> gameObjectEntityList){
