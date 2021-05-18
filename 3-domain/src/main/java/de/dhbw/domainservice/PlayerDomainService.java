@@ -2,13 +2,18 @@ package de.dhbw.domainservice;
 
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
+import de.dhbw.entities.gameobjects.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
-public interface PlayerDomainService {
+import java.util.List;
+
+public interface PlayerDomainService extends CountRankingDomainService, ResetService, InitializerService{
+    void initialize(String playerName, List<GameObjectEntity> gameObjectEntities);
+
     RankingEntity getRankingEntityForPlayer();
 
     void setNewPositionForPlayer(CoordinatesVO coordinatesVO);
     PlayerEntity getCurrentPlayer();
 
-    void reset();
+    boolean isAlive();
 }

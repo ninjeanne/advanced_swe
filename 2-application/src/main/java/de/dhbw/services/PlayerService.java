@@ -1,6 +1,5 @@
 package de.dhbw.services;
 
-import de.dhbw.domainservice.CountRankingDomainService;
 import de.dhbw.domainservice.PlayerDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
@@ -13,12 +12,13 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-public class PlayerService implements PlayerDomainService, CountRankingDomainService {
+public class PlayerService implements PlayerDomainService {
 
     private PlayerEntity player;
     private RankingEntity rankingEntity;
     private Timer rankingPointTimer;
 
+    @Override
     public void initialize(String playerName, List<GameObjectEntity> gameObjectEntities) {
         this.player = new PlayerEntity(playerName, new CoordinatesVO(0, 0), gameObjectEntities);
         this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getPlayerStatistics(), new Date());
@@ -34,10 +34,13 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
         return this.player;
     }
 
+    @Override
     public boolean isAlive() {
-        return player.getPlayerStatistics().getStatistic(VaccinationEntity.class).getCount() >= player.getPlayerStatistics().getStatistic(InfectionEntity.class).getCount();
+        return player.getPlayerStatistics().getStatistic(VaccinationEntity.class).getCount() > player.getPlayerStatistics().getStatistic(InfectionEntity.class)
+                .getCount();
     }
 
+    @Override
     public boolean isInitialized() {
         return player != null && rankingEntity != null;
     }

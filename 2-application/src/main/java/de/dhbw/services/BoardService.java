@@ -1,7 +1,6 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.BoardDomainService;
-import de.dhbw.domainservice.MoveColleaguesDomainService;
 import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.entities.board.BoardEntity;
 import de.dhbw.entities.gameobjects.GameObjectEntity;
@@ -18,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 @Service
-public class BoardService implements BoardDomainService, MoveColleaguesDomainService {
+public class BoardService implements BoardDomainService {
     private final BoardRepository boardRepository;
     private BoardEntity boardEntity;
     private List<ColleagueMovement> forwardAndBackMovements;
@@ -31,20 +30,24 @@ public class BoardService implements BoardDomainService, MoveColleaguesDomainSer
         this.gameObjectEntities = gameObjectEntities;
     }
 
+    @Override
     public boolean isInitialized() {
         return boardEntity != null && forwardAndBackMovements != null;
     }
 
+    @Override
     public void reset() {
         stopMovingColleagues();
         boardEntity = null;
         forwardAndBackMovements = null;
     }
 
+    @Override
     public List<GameObjectEntity> getGameObjects(){
         return gameObjectEntities;
     }
 
+    @Override
     public void initializeBoard(String boardName) {
         this.boardEntity = boardRepository.getBoardByName(boardName);
         this.forwardAndBackMovements = new ArrayList<>();

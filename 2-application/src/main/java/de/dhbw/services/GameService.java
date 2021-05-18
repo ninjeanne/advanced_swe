@@ -32,6 +32,7 @@ public class GameService implements GameDomainService {
         this.gameActions = gameActions;
     }
 
+    @Override
     public void initialize(String boardName, String playerName) {
         if (!isRunning()) {
             boardService.initializeBoard(boardName);
@@ -47,13 +48,9 @@ public class GameService implements GameDomainService {
         return !playerService.isAlive();
     }
 
+    @Override
     public boolean isInitialized() {
         return boardService.isInitialized() && playerService.isInitialized();
-    }
-
-    @Override
-    public List<GameAction> getGameActions() {
-        return gameActions;
     }
 
     @Override
