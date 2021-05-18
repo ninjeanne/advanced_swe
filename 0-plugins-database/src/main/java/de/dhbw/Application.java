@@ -1,7 +1,7 @@
 package de.dhbw;
 
 import de.dhbw.entities.ColleagueEntity;
-import de.dhbw.entities.PlayerStatistics;
+import de.dhbw.entities.PlayerStatisticsEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.entities.board.BoardConfigurationEntity;
 import de.dhbw.entities.board.BoardEntity;
@@ -69,7 +69,7 @@ public class Application {
         }
 
         board.addColleague(fred);
-        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new PlayerStatistics(), new Date());
+        RankingEntity rankingEntity = new RankingEntity(UUID.randomUUID().toString(), "Ninjeanne", 123456, new PlayerStatisticsEntity(), new Date());
         return (args) -> {
             boardRepository.save(board);
             rankingService.saveNewRanking(rankingEntity);

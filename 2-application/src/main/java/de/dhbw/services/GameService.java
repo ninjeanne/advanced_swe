@@ -45,7 +45,7 @@ public class GameService implements GameDomainService {
 
     @Override
     public boolean isGameOver() {
-        return !playerService.isAlive();
+        return !playerService.getCurrentPlayer().isAlive();
     }
 
     @Override
@@ -79,7 +79,7 @@ public class GameService implements GameDomainService {
     @Override
     public boolean movePlayer(CoordinatesVO newCoordinates) {
         if (isRunning()) {
-            if(!playerService.isAlive()){
+            if(!playerService.getCurrentPlayer().isAlive()){
                 stopGame();
                 return false;
             }

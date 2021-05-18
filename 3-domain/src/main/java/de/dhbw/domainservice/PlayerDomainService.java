@@ -14,6 +14,4 @@ public interface PlayerDomainService extends CountRankingDomainService, ResetSer
 
     void setNewPositionForPlayer(CoordinatesVO coordinatesVO);
     PlayerEntity getCurrentPlayer();
-
-    boolean isAlive();
 }

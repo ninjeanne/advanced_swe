@@ -4,8 +4,6 @@ import de.dhbw.domainservice.PlayerDomainService;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
 import de.dhbw.entities.gameobject.GameObjectEntity;
-import de.dhbw.entities.gameobject.InfectionEntity;
-import de.dhbw.entities.gameobject.VaccinationEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.stereotype.Component;
 
@@ -32,12 +30,6 @@ public class PlayerService implements PlayerDomainService {
     @Override
     public PlayerEntity getCurrentPlayer() {
         return this.player;
-    }
-
-    @Override
-    public boolean isAlive() {
-        return player.getPlayerStatistics().getStatistic(VaccinationEntity.class).getCount() > player.getPlayerStatistics().getStatistic(InfectionEntity.class)
-                .getCount();
     }
 
     @Override

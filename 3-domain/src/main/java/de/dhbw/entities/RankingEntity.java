@@ -28,7 +28,7 @@ public class RankingEntity {
     private int earned_points;
     @NonNull
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private PlayerStatistics playerStatistics;
+    private PlayerStatisticsEntity playerStatistics;
     @NonNull
     @Column
     private Date date;

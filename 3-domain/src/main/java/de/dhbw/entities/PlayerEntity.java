@@ -35,7 +35,7 @@ public class PlayerEntity {
     private CoordinatesVO position;
 
     @OneToOne
-    private PlayerStatistics playerStatistics;
+    private PlayerStatisticsEntity playerStatistics;
 
     public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObjectEntity> gameObjectEntityList){
         this.nameAsEntityID = nameAsEntityID;
@@ -44,7 +44,11 @@ public class PlayerEntity {
         for (GameObjectEntity gameObjectEntity : gameObjectEntityList) {
             statisticsPerItems.put(gameObjectEntity.getClass(), new GameObjectCountVO(gameObjectEntity.getDefaultNumberOfObjects()));
         }
-        this.playerStatistics = new PlayerStatistics(statisticsPerItems);
+        this.playerStatistics = new PlayerStatisticsEntity(statisticsPerItems);
+    }
+
+    public boolean isAlive(){
+        return playerStatistics.isAlive();
     }
 
     /**

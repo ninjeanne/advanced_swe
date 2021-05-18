@@ -8,7 +8,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class InfectionEntity extends GameObjectEntity {
+public class Infection extends GameObjectEntity {
     private BoardConfigurationEntity boardConfigurationEntity;
 
     private boolean infectByProbability() {

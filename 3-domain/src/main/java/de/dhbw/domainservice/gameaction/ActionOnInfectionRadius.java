@@ -1,11 +1,11 @@
 package de.dhbw.domainservice.gameaction;
 
-import de.dhbw.entities.gameobject.InfectionEntity;
+import de.dhbw.entities.gameobject.Infection;
 import org.springframework.stereotype.Component;
 
 @Component
-public class ActionOnInfectionRadius extends GameAction<InfectionEntity> {
+public class ActionOnInfectionRadius extends GameAction<Infection> {
     public ActionOnInfectionRadius() {
-        super(InfectionEntity.class);
+        super(Infection.class);
     }
 }

@@ -1,29 +1,43 @@
 package de.dhbw.entities;
 
 import de.dhbw.entities.gameobject.GameObjectEntity;
-import de.dhbw.entities.gameobject.VaccinationEntity;
+import de.dhbw.entities.gameobject.Infection;
+import de.dhbw.entities.gameobject.Vaccination;
 import de.dhbw.valueobjects.GameObjectCountVO;
 import lombok.Getter;
 
 import javax.persistence.*;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.UUID;
 
 @Getter
 @Entity
-public class PlayerStatistics {
+public class PlayerStatisticsEntity {
     @Id
-    @GeneratedValue
-    private Long id;
+    private final String entityId;
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems = new HashMap<>();
 
     @SuppressWarnings("unused")
-    public PlayerStatistics() {
+    public PlayerStatisticsEntity() {
+        this.entityId = UUID.randomUUID().toString();
+    }
+    public PlayerStatisticsEntity(Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems){
+        this();
+        init(statisticsPerItems);
     }
 
-    public PlayerStatistics(Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems){
+    public PlayerStatisticsEntity(String entityId, Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems){
+        this.entityId = entityId;
+        init(statisticsPerItems);
+    }
+
+    private void init(Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems){
         this.statisticsPerItems = statisticsPerItems;
+        initGameObjectIfNotExists(Infection.class);
+        initGameObjectIfNotExists(Vaccination.class);
     }
 
     public GameObjectCountVO getStatistic(Class<? extends GameObjectEntity> gameObject) {
@@ -50,7 +64,21 @@ public class PlayerStatistics {
     }
 
     public boolean isAlive() {
-        return statisticsPerItems.get(VaccinationEntity.class).equals(new GameObjectCountVO(0));
+        return statisticsPerItems.get(Vaccination.class).getCount() > statisticsPerItems.get(Infection.class).getCount();
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof PlayerStatisticsEntity) {
+            PlayerStatisticsEntity playerStatisticsEntity = (PlayerStatisticsEntity) obj;
+            return this.getEntityId().equals(playerStatisticsEntity.getEntityId());
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(entityId);
     }
 
 }

@@ -4,7 +4,7 @@ import de.dhbw.domainservice.BoardDomainService;
 import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.entities.board.BoardEntity;
 import de.dhbw.entities.gameobject.GameObjectEntity;
-import de.dhbw.entities.gameobject.InfectionEntity;
+import de.dhbw.entities.gameobject.Infection;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -92,7 +92,7 @@ public class BoardService implements BoardDomainService {
         });
 
         TimerTask rankingPointTask = new TimerTask() {
-            List<InfectionEntity> currentInfections = new ArrayList<>();
+            List<Infection> currentInfections = new ArrayList<>();
 
             public void run() {
                 clearLastInfectionPositions();
@@ -107,11 +107,11 @@ public class BoardService implements BoardDomainService {
             }
 
             private void addNewInfectionFor(CoordinatesVO colleaguesNextPosition) {
-                InfectionEntity newInfectionEntity = new InfectionEntity();
-                newInfectionEntity.setBoardConfigurationEntity(boardEntity.getBoardConfiguration());
-                newInfectionEntity.setNewCoordinate(colleaguesNextPosition);
-                currentInfections.add(newInfectionEntity);
-                getGameObjects().add(newInfectionEntity);
+                Infection newInfection = new Infection();
+                newInfection.setBoardConfigurationEntity(boardEntity.getBoardConfiguration());
+                newInfection.setNewCoordinate(colleaguesNextPosition);
+                currentInfections.add(newInfection);
+                getGameObjects().add(newInfection);
             }
         };
         colleagueMovementTimer = new Timer("Colleague Movement Timer");

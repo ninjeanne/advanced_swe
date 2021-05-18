@@ -3,7 +3,7 @@ package de.dhbw.entities.gameobject;
 import org.springframework.stereotype.Component;
 
 @Component
-public class VaccinationEntity extends GameObjectEntity {
+public class Vaccination extends GameObjectEntity {
 
     @Override
     public int getRankingValue() {
