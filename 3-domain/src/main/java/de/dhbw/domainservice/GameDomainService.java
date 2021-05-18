@@ -5,10 +5,8 @@ import de.dhbw.entities.RankingEntity;
 import de.dhbw.entities.board.BoardEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
-import java.util.List;
-
-public interface GameDomainService {
-    List<GameAction> getGameActions();
+public interface GameDomainService extends InitializerService {
+    void initialize(String boardName, String playerName);
 
     void startGame();
     boolean isRunning();
