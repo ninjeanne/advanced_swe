@@ -24,8 +24,7 @@ public class GameService implements GameDomainService {
     private boolean running = false;
 
     @Autowired
-    public GameService(BoardService boardService, HighscoreService highscoreService, PlayerService playerService, List<GameObjectEntity> gameObjectEntities,
-            List<GameAction> gameActions) {
+    public GameService(BoardService boardService, HighscoreService highscoreService, PlayerService playerService, List<GameAction> gameActions) {
         this.boardService = boardService;
         this.highscoreService = highscoreService;
         this.playerService = playerService;
