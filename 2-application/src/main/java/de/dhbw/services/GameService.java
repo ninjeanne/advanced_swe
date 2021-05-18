@@ -1,11 +1,11 @@
 package de.dhbw.services;
 
+import de.dhbw.domainservice.GameAction;
 import de.dhbw.domainservice.GameDomainService;
-import de.dhbw.entities.BoardEntity;
-import de.dhbw.entities.GameObject;
 import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.RankingEntity;
-import de.dhbw.helper.GameAction;
+import de.dhbw.entities.board.BoardEntity;
+import de.dhbw.entities.gameobjects.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,16 +18,16 @@ import java.util.List;
 public class GameService implements GameDomainService {
 
     private final BoardService boardService;
-    private final HighscoreService rankingService;
+    private final HighscoreService highscoreService;
     private final PlayerService playerService;
     private final List<GameAction> gameActions;
     private boolean running = false;
 
     @Autowired
-    public GameService(BoardService boardService, HighscoreService rankingService, PlayerService playerService, List<GameObject> gameObjects,
+    public GameService(BoardService boardService, HighscoreService highscoreService, PlayerService playerService, List<GameObjectEntity> gameObjectEntities,
             List<GameAction> gameActions) {
         this.boardService = boardService;
-        this.rankingService = rankingService;
+        this.highscoreService = highscoreService;
         this.playerService = playerService;
         this.gameActions = gameActions;
     }
@@ -61,18 +61,18 @@ public class GameService implements GameDomainService {
         return running;
     }
 
-    private GameObject get(CoordinatesVO coordinate) {
-        for (GameObject gameObject : boardService.getGameObjects()) {
-            if (gameObject.isInRangeOfGameObject(coordinate)) {
-                return gameObject;
+    private GameObjectEntity get(CoordinatesVO coordinate) {
+        for (GameObjectEntity gameObjectEntity : boardService.getGameObjects()) {
+            if (gameObjectEntity.isInRangeOfGameObject(coordinate)) {
+                return gameObjectEntity;
             }
         }
         return null;
     }
 
-    private GameAction<GameObject> getActionFor(GameObject gameObject) {
-        for (GameAction<GameObject> gameAction : gameActions) {
-            if (gameAction.getType().equals(gameObject.getClass())) {
+    private GameAction<GameObjectEntity> getActionFor(GameObjectEntity gameObjectEntity) {
+        for (GameAction<GameObjectEntity> gameAction : gameActions) {
+            if (gameAction.getType().equals(gameObjectEntity.getClass())) {
                 return gameAction;
             }
         }
@@ -97,11 +97,11 @@ public class GameService implements GameDomainService {
     }
 
     private void doAction(CoordinatesVO newCoordinates) {
-        GameObject gameObject = get(newCoordinates);
-        if (gameObject != null) {
-            GameAction<GameObject> gameAction = getActionFor(gameObject);
+        GameObjectEntity gameObjectEntity = get(newCoordinates);
+        if (gameObjectEntity != null) {
+            GameAction<GameObjectEntity> gameAction = getActionFor(gameObjectEntity);
             if (gameAction != null) {
-                gameAction.doActionOn(gameObject);
+                gameAction.doActionOn(gameObjectEntity);
             }
         }
     }
@@ -133,7 +133,7 @@ public class GameService implements GameDomainService {
     @Override
     public void stopGame() {
         if (isRunning()) {
-            if (rankingService.saveNewRanking(playerService.getRankingEntityForPlayer())) {
+            if (highscoreService.saveNewRanking(playerService.getRankingEntityForPlayer())) {
                 boardService.reset();
                 playerService.reset();
                 running = false;

@@ -123,8 +123,8 @@ export default {
             };
           }
           this.colleagues = response.colleagues;
-          this.vaccination = response.gameObjects.Vaccination;
-          this.workItem = response.gameObjects.WorkItem;
+          this.vaccination = response.gameObjectEntities.Vaccination;
+          this.workItem = response.gameObjectEntities.WorkItem;
           this.boardName = response.name;
           this.last_work_items = this.player.statistics.WorkItem;
           if (this.plan == null) {

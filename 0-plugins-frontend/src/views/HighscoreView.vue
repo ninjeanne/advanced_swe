@@ -1,6 +1,7 @@
 <template>
   <div>
     <logo />
+    <h2>Your Highscore</h2>
     <div class="content">
       <highscore-component v-bind:highscore="highscore" />
     </div>

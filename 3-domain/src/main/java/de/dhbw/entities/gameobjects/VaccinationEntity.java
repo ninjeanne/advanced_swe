@@ -1,9 +1,9 @@
-package de.dhbw.entities;
+package de.dhbw.entities.gameobjects;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class Vaccination extends GameObject {
+public class VaccinationEntity extends GameObjectEntity {
 
     @Override
     public int getRankingValue() {

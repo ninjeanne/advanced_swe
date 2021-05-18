@@ -1,9 +1,10 @@
-package de.dhbw.entities;
+package de.dhbw.gameobjects;
 
+import de.dhbw.entities.gameobjects.GameObjectEntity;
 import org.springframework.stereotype.Component;
 
 @Component
-public class WorkItem extends GameObject {
+public class WorkItemEntity extends GameObjectEntity {
     @Override
     public int getRankingValue() {
         return 50;

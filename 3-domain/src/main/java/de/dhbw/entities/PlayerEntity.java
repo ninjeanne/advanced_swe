@@ -1,5 +1,6 @@
 package de.dhbw.entities;
 
+import de.dhbw.entities.gameobjects.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.GameObjectCountVO;
 import lombok.AllArgsConstructor;
@@ -36,12 +37,12 @@ public class PlayerEntity {
     @OneToOne
     private PlayerStatistics playerStatistics;
 
-    public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObject> gameObjectList){
+    public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObjectEntity> gameObjectEntityList){
         this.nameAsEntityID = nameAsEntityID;
         this.position = position;
-        Map<Class<? extends GameObject>, GameObjectCountVO> statisticsPerItems = new HashMap<>();
-        for (GameObject gameObject : gameObjectList) {
-            statisticsPerItems.put(gameObject.getClass(), new GameObjectCountVO(gameObject.getDefaultNumberOfObjects()));
+        Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems = new HashMap<>();
+        for (GameObjectEntity gameObjectEntity : gameObjectEntityList) {
+            statisticsPerItems.put(gameObjectEntity.getClass(), new GameObjectCountVO(gameObjectEntity.getDefaultNumberOfObjects()));
         }
         this.playerStatistics = new PlayerStatistics(statisticsPerItems);
     }

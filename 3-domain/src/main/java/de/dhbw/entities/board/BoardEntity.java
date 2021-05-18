@@ -1,6 +1,7 @@
-package de.dhbw.entities;
+package de.dhbw.entities.board;
 
 import de.dhbw.aggregates.AggregateRoot;
+import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
 import lombok.NonNull;

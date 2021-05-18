@@ -1,6 +1,6 @@
 package de.dhbw.repository;
 
-import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.board.BoardEntity;
 import de.dhbw.repositories.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

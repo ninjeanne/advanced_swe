@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h3 v-if="headline">Highscore</h3>
+    <h3 v-if="headline">Your Highscore</h3>
     <br v-else>
     <table>
       <tr v-for="(ranking, index) in highscore" :key="index">

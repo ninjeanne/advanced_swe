@@ -1,12 +1,14 @@
-package de.dhbw.entities;
+package de.dhbw.entities.gameobjects;
 
+import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.board.BoardConfigurationEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class Infection extends GameObject {
+public class InfectionEntity extends GameObjectEntity {
     private BoardConfigurationEntity boardConfigurationEntity;
 
     private boolean infectByProbability() {

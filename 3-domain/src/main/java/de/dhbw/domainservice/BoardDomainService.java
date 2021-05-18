@@ -1,6 +1,6 @@
 package de.dhbw.domainservice;
 
-import de.dhbw.entities.BoardEntity;
+import de.dhbw.entities.board.BoardEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 
 

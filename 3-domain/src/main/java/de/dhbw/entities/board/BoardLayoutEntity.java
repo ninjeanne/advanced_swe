@@ -1,4 +1,4 @@
-package de.dhbw.entities;
+package de.dhbw.entities.board;
 
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.PlanVO;

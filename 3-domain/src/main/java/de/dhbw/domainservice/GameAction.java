@@ -1,13 +1,16 @@
-package de.dhbw.helper;
+package de.dhbw.domainservice;
 
-import de.dhbw.domainservice.BoardDomainService;
-import de.dhbw.domainservice.PlayerDomainService;
-import de.dhbw.entities.GameObject;
+import de.dhbw.entities.gameobjects.GameObjectEntity;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
-public abstract class GameAction<T extends GameObject> {
+/***
+ * This is meant to be a Domain Service as it's implementing the logic between entities and multiple
+ * services.
+ * @param <T>
+ */
+@Service
+public abstract class GameAction<T extends GameObjectEntity> {
     private final Class<T> type;
     @Autowired
     private PlayerDomainService playerService;

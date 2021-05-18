@@ -3,8 +3,8 @@ package de.dhbw.mapper;
 import de.dhbw.dtos.BoardDTO;
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlanDTO;
-import de.dhbw.entities.BoardEntity;
-import de.dhbw.entities.GameObject;
+import de.dhbw.entities.board.BoardEntity;
+import de.dhbw.entities.gameobjects.GameObjectEntity;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.services.BoardService;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -43,11 +43,11 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
                     .build());
         }
         Map<String, CoordinatesDTO> gameObjects = new HashMap<>();
-        for (GameObject gameObject : boardService.getGameObjects()) {
-            gameObjects.put(gameObject.getClass().getSimpleName(),
+        for (GameObjectEntity gameObjectEntity : boardService.getGameObjects()) {
+            gameObjects.put(gameObjectEntity.getClass().getSimpleName(),
                     CoordinatesDTO.builder()
-                            .y(gameObject.getCoordinatesVO().getY())
-                            .x(gameObject.getCoordinatesVO().getX())
+                            .y(gameObjectEntity.getCoordinatesVO().getY())
+                            .x(gameObjectEntity.getCoordinatesVO().getX())
                             .build());
         }
 

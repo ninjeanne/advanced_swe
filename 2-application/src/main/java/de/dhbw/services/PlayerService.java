@@ -2,7 +2,11 @@ package de.dhbw.services;
 
 import de.dhbw.domainservice.CountRankingDomainService;
 import de.dhbw.domainservice.PlayerDomainService;
-import de.dhbw.entities.*;
+import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.RankingEntity;
+import de.dhbw.entities.gameobjects.GameObjectEntity;
+import de.dhbw.entities.gameobjects.InfectionEntity;
+import de.dhbw.entities.gameobjects.VaccinationEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.stereotype.Component;
 
@@ -15,8 +19,8 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
     private RankingEntity rankingEntity;
     private Timer rankingPointTimer;
 
-    public void initialize(String playerName, List<GameObject> gameObjects) {
-        this.player = new PlayerEntity(playerName, new CoordinatesVO(0, 0), gameObjects);
+    public void initialize(String playerName, List<GameObjectEntity> gameObjectEntities) {
+        this.player = new PlayerEntity(playerName, new CoordinatesVO(0, 0), gameObjectEntities);
         this.rankingEntity = new RankingEntity(UUID.randomUUID().toString(), player.getNameAsEntityID(), 0, player.getPlayerStatistics(), new Date());
     }
 
@@ -31,7 +35,7 @@ public class PlayerService implements PlayerDomainService, CountRankingDomainSer
     }
 
     public boolean isAlive() {
-        return player.getPlayerStatistics().getStatistic(Vaccination.class).getCount() >= player.getPlayerStatistics().getStatistic(Infection.class).getCount();
+        return player.getPlayerStatistics().getStatistic(VaccinationEntity.class).getCount() >= player.getPlayerStatistics().getStatistic(InfectionEntity.class).getCount();
     }
 
     public boolean isInitialized() {
