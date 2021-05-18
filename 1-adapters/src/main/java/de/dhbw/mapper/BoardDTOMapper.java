@@ -51,8 +51,7 @@ public class BoardDTOMapper implements Function<BoardEntity, BoardDTO> {
                             .build());
         }
 
-       return BoardDTO.builder()
-               .name(boardEntity.getName())
+       return BoardDTO.builder().name(boardEntity.getNameAsEntityId())
                .obstacles(obstacles)
                .colleagues(colleaguePosition)
                .infectProbability(boardEntity.getBoardConfiguration().getInfectProbability().getProbability())

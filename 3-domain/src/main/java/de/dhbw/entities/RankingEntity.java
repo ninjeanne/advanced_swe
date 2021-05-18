@@ -1,5 +1,6 @@
 package de.dhbw.entities;
 
+import de.dhbw.aggregates.AggregateRoot;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 @NoArgsConstructor
 @Entity
 @Slf4j
-public class RankingEntity {
+public class RankingEntity implements AggregateRoot {
 
     @NonNull
     @Id

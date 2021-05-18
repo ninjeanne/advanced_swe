@@ -41,7 +41,7 @@ public class Application {
         RadiusVO radiusVO = new RadiusVO(3);
         BoardLayoutEntity boardLayoutEntity = new BoardLayoutEntity(plan);
         BoardConfigurationEntity boardConfigurationEntity = new BoardConfigurationEntity(radiusVO, probabilityVO);
-        BoardEntity board = new BoardEntity(UUID.randomUUID().toString(), "default", boardLayoutEntity, boardConfigurationEntity);
+        BoardEntity board = new BoardEntity("default", boardLayoutEntity, boardConfigurationEntity);
         for (int y = 1; y < 5; y++) {
             for (int i = 0; i <= 12; i++) {
                 for (int j = i * 5; j < (i * 5) + 10 && i % 4 == 0; j++) {

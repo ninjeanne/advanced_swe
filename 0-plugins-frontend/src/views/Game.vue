@@ -125,7 +125,7 @@ export default {
           this.colleagues = response.colleagues;
           this.vaccination = response.gameObjects.Vaccination;
           this.workItem = response.gameObjects.WorkItem;
-          this.boardName = response.name;
+          this.boardName = response.nameAsEntityId;
           this.last_work_items = this.player.statistics.WorkItem;
           if (this.plan == null) {
             this.plan = response.plan;

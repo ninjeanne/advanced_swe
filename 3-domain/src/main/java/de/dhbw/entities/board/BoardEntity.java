@@ -21,10 +21,7 @@ public class BoardEntity implements AggregateRoot {
 
     @NonNull
     @Id
-    private String entityID;
-    @NonNull
-    @Column
-    private String name;
+    private String nameAsEntityId;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     private BoardLayoutEntity boardLayout;
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
@@ -33,9 +30,8 @@ public class BoardEntity implements AggregateRoot {
     @LazyCollection(LazyCollectionOption.FALSE)
     private final List<ColleagueEntity> colleagues = new ArrayList<>();
 
-    public BoardEntity(@NonNull String entityID, @NonNull String name, @NonNull BoardLayoutEntity boardLayout, @NonNull BoardConfigurationEntity boardConfiguration) {
-        this.entityID = entityID;
-        this.name = name;
+    public BoardEntity(@NonNull String nameAsEntityId, @NonNull BoardLayoutEntity boardLayout, @NonNull BoardConfigurationEntity boardConfiguration) {
+        this.nameAsEntityId = nameAsEntityId;
         this.boardLayout = boardLayout;
         this.boardConfiguration = boardConfiguration;
     }
@@ -63,13 +59,13 @@ public class BoardEntity implements AggregateRoot {
     public boolean equals(Object obj) {
         if (obj instanceof BoardEntity) {
             BoardEntity game = (BoardEntity) obj;
-            return this.entityID.equals(game.entityID);
+            return this.nameAsEntityId.equals(game.nameAsEntityId);
         }
         return false;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(entityID);
+        return Objects.hash(nameAsEntityId);
     }
 }

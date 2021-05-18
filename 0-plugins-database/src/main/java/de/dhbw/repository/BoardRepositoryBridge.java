@@ -17,7 +17,7 @@ public class BoardRepositoryBridge implements BoardRepository {
 
     @Override
     public BoardEntity getBoardByName(String name) {
-        return springDataBoardRepository.getBoardAggregateByName(name);
+        return springDataBoardRepository.getBoardAggregateByNameAsEntityId(name);
     }
 
     @Override

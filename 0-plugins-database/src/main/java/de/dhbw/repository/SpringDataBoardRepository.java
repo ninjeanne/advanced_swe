@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SpringDataBoardRepository extends JpaRepository<BoardEntity, String> {
-    BoardEntity getBoardAggregateByName(String name);
+    BoardEntity getBoardAggregateByNameAsEntityId(String name);
 }
