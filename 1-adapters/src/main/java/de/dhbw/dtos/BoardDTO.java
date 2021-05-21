@@ -1,7 +1,7 @@
 package de.dhbw.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
@@ -9,16 +9,16 @@ import java.util.Map;
 /**
  * Design Pattern: Builder
  */
-@Data
+@Getter
 @AllArgsConstructor
 public class BoardDTO {
-    private String name;
-    private Map<String, CoordinatesDTO> gameObjects;
-    private List<CoordinatesDTO> obstacles;
-    private List<CoordinatesDTO> colleagues;
-    private PlanDTO plan;
-    private double infectProbability;
-    private int colleagueRadius;
+    private final String name;
+    private final Map<String, CoordinatesDTO> gameObjects;
+    private final List<CoordinatesDTO> obstacles;
+    private final List<CoordinatesDTO> colleagues;
+    private final PlanDTO plan;
+    private final double infectProbability;
+    private final int colleagueRadius;
 
     public static BoardDTO.BoardDTOBuilder builder() {
         return new BoardDTO.BoardDTOBuilder();

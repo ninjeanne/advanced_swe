@@ -1,18 +1,20 @@
 package de.dhbw.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.Getter;
 
 /**
  * Design Pattern: Builder
  */
-@NoArgsConstructor
 @AllArgsConstructor
-@Data
+@Getter
 public class GameObjectDTO {
-    private String id;
-    private CoordinatesDTO coordinatesDTO;
+    private final String id;
+    private final CoordinatesDTO coordinatesDTO;
+
+    public static GameObjectDTO.GameObjectDTOBuilder builder() {
+        return new GameObjectDTO.GameObjectDTOBuilder();
+    }
 
     public static class GameObjectDTOBuilder {
         private String id;

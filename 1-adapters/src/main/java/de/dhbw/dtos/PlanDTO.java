@@ -1,13 +1,13 @@
 package de.dhbw.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
-@Data
+@Getter
 @AllArgsConstructor
 public class PlanDTO {
-    private int width;
-    private int height;
+    private final int width;
+    private final int height;
 
     public static PlanDTO.PlanDTOBuilder builder() {
         return new PlanDTO.PlanDTOBuilder();

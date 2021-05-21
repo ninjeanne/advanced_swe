@@ -1,19 +1,19 @@
 package de.dhbw.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.Map;
 
 /**
  * Design Pattern: Builder
  */
-@Data
+@Getter
 @AllArgsConstructor
 public class PlayerDTO {
-    private String name;
-    private CoordinatesDTO position;
-    private Map<String, Integer> statistics;
+    private final String name;
+    private final CoordinatesDTO position;
+    private final Map<String, Integer> statistics;
 
     public static PlayerDTO.PlayerDTOBuilder builder() {
         return new PlayerDTO.PlayerDTOBuilder();

@@ -1,7 +1,7 @@
 package de.dhbw.dtos;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.Date;
 import java.util.Map;
@@ -9,15 +9,15 @@ import java.util.Map;
 /**
  * Design Pattern: Builder
  */
-@Data
+@Getter
 @AllArgsConstructor
 public class RankingDTO {
 
-    private String name;
-    private int earned_points;
-    private Map<String, Integer> statistics;
-    private int total;
-    private Date date;
+    private final String name;
+    private final int earned_points;
+    private final Map<String, Integer> statistics;
+    private final int total;
+    private final Date date;
 
     public static RankingDTO.RankingDTOBuilder builder() {
         return new RankingDTO.RankingDTOBuilder();
