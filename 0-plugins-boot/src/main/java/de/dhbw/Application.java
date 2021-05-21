@@ -1,11 +1,11 @@
 package de.dhbw;
 
-import de.dhbw.entities.ColleagueEntity;
-import de.dhbw.entities.PlayerStatisticsEntity;
-import de.dhbw.entities.RankingEntity;
 import de.dhbw.entities.board.BoardConfigurationEntity;
 import de.dhbw.entities.board.BoardEntity;
 import de.dhbw.entities.board.BoardLayoutEntity;
+import de.dhbw.entities.board.ColleagueEntity;
+import de.dhbw.entities.player.PlayerStatisticsEntity;
+import de.dhbw.entities.ranking.RankingEntity;
 import de.dhbw.repositories.BoardRepository;
 import de.dhbw.services.HighscoreService;
 import de.dhbw.valueobjects.CoordinatesVO;

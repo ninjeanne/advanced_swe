@@ -2,7 +2,7 @@ package de.dhbw.mapper;
 
 import de.dhbw.dtos.CoordinatesDTO;
 import de.dhbw.dtos.PlayerDTO;
-import de.dhbw.entities.PlayerEntity;
+import de.dhbw.entities.player.PlayerEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

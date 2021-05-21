@@ -1,6 +1,6 @@
 package de.dhbw.repository;
 
-import de.dhbw.entities.RankingEntity;
+import de.dhbw.entities.ranking.RankingEntity;
 import de.dhbw.repositories.RankingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;

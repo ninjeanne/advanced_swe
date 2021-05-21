@@ -1,5 +1,6 @@
-package de.dhbw.entities;
+package de.dhbw.entities.player;
 
+import de.dhbw.aggregates.AggregateRoot;
 import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import de.dhbw.valueobjects.GameObjectCountVO;
@@ -18,7 +19,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Slf4j
-public class PlayerEntity {
+public class PlayerEntity implements AggregateRoot {
 
     @NonNull
     private String nameAsEntityID;
@@ -27,7 +28,7 @@ public class PlayerEntity {
 
     private PlayerStatisticsEntity playerStatistics;
 
-    public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObjectEntity> gameObjectEntityList){
+    public PlayerEntity(String nameAsEntityID, CoordinatesVO position, List<GameObjectEntity> gameObjectEntityList) {
         this.nameAsEntityID = nameAsEntityID;
         this.position = position;
         Map<Class<? extends GameObjectEntity>, GameObjectCountVO> statisticsPerItems = new HashMap<>();

@@ -1,6 +1,6 @@
 package de.dhbw.mapper;
 
-import de.dhbw.entities.PlayerStatisticsEntity;
+import de.dhbw.entities.player.PlayerStatisticsEntity;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

@@ -1,4 +1,4 @@
-package de.dhbw.entities;
+package de.dhbw.entities.player;
 
 import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.entities.gameobject.Infection;

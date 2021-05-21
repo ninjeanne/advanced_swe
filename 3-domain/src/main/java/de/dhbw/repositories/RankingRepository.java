@@ -1,6 +1,6 @@
 package de.dhbw.repositories;
 
-import de.dhbw.entities.RankingEntity;
+import de.dhbw.entities.ranking.RankingEntity;
 
 import java.util.List;
 

@@ -1,7 +1,7 @@
 package de.dhbw.mapper;
 
 import de.dhbw.dtos.RankingDTO;
-import de.dhbw.entities.RankingEntity;
+import de.dhbw.entities.ranking.RankingEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

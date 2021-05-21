@@ -1,6 +1,7 @@
-package de.dhbw.entities;
+package de.dhbw.entities.ranking;
 
 import de.dhbw.aggregates.AggregateRoot;
+import de.dhbw.entities.player.PlayerStatisticsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

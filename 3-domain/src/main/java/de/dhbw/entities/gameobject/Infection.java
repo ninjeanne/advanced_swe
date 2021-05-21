@@ -1,7 +1,7 @@
 package de.dhbw.entities.gameobject;
 
-import de.dhbw.entities.PlayerEntity;
 import de.dhbw.entities.board.BoardConfigurationEntity;
+import de.dhbw.entities.player.PlayerEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,9 +1,9 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.PlayerDomainService;
-import de.dhbw.entities.PlayerEntity;
-import de.dhbw.entities.RankingEntity;
 import de.dhbw.entities.gameobject.GameObjectEntity;
+import de.dhbw.entities.player.PlayerEntity;
+import de.dhbw.entities.ranking.RankingEntity;
 import de.dhbw.valueobjects.CoordinatesVO;
 import org.springframework.stereotype.Component;
 

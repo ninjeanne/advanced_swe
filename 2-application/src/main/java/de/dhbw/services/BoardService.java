@@ -1,8 +1,8 @@
 package de.dhbw.services;
 
 import de.dhbw.domainservice.BoardDomainService;
-import de.dhbw.entities.ColleagueEntity;
 import de.dhbw.entities.board.BoardEntity;
+import de.dhbw.entities.board.ColleagueEntity;
 import de.dhbw.entities.gameobject.GameObjectEntity;
 import de.dhbw.entities.gameobject.Infection;
 import de.dhbw.helper.ColleagueMovement;

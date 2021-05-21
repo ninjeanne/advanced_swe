@@ -1,5 +1,6 @@
-package de.dhbw.entities;
+package de.dhbw.entities.board;
 
+import de.dhbw.aggregates.AggregateRoot;
 import de.dhbw.helper.ColleagueMovement;
 import de.dhbw.helper.ForwardAndBackMovement;
 import de.dhbw.valueobjects.CoordinatesVO;
@@ -18,7 +19,7 @@ import java.util.Objects;
 
 @Getter
 @Entity
-public class ColleagueEntity {
+public class ColleagueEntity implements AggregateRoot {
 
     @NonNull
     @Id
