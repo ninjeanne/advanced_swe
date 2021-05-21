@@ -14,8 +14,8 @@
         <module>3-domain</module>
         <module>2-application</module>
         <module>1-adapters</module>
-        <module>0-plugins-frontend</module>
-        <module>0-plugins-database</module>
+        <module>0-plugins-boot</module>
+        <module>vuejs-frontend</module>
     </modules>
 
 </project>
