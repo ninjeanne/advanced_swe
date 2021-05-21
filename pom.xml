@@ -15,7 +15,6 @@
         <module>2-application</module>
         <module>1-adapters</module>
         <module>0-plugins-boot</module>
-        <module>vuejs-frontend</module>
     </modules>
 
 </project>
