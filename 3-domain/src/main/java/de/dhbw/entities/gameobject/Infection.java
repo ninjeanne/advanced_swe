@@ -11,7 +11,7 @@ import lombok.Setter;
 public class Infection extends GameObjectEntity {
     private BoardConfigurationEntity boardConfigurationEntity;
 
-    private boolean infectByProbability() {
+    protected boolean infectByProbability() {
         return Math.random() >= boardConfigurationEntity.getInfectProbability().getProbability();
     }
 
@@ -38,9 +38,7 @@ public class Infection extends GameObjectEntity {
         return false;
     }
 
-    private double calculateDistanceBetweenPointsWithHypot(
-            CoordinatesVO coord1,
-            CoordinatesVO coord2) {
+    protected double calculateDistanceBetweenPointsWithHypot(CoordinatesVO coord1, CoordinatesVO coord2) {
 
         double ac = Math.abs(coord2.getY() - coord1.getY());
         double cb = Math.abs(coord2.getX() - coord1.getX());

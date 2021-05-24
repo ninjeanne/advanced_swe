@@ -8,16 +8,41 @@ principles, testing, refactoring and design patterns.
 The goal was to implement a simple Pacman game, with all course content implemented. The backend is based on Spring Boot, the frontend on VueJs. The
 communication of both takes place via REST as well as via websockets (RSocket).
 
-## Run the backend
+## Setup
+
+### What you need
+
+- Java 8
+- Maven
+- NPM
+
+### FIRST: Run the backend
 
 ```bash
+mvn clean install -DskipTests=true
 cd 0-plugins-boot
-mvn compile -DskipTests=true
+mvn org.springframework.boot:spring-boot-maven-plugin:run
 ```
 
-## Run the frontend
+runs in background on port 8080
 
-```
+### SECOND: Run the frontend
+
+further details for the first initialization see [vuejs-frontend](vuejs-frontend/README.md)
+
+```bash
+cd .. #go back to the root of this project
 cd vuejs-frontend
 npm run dev
+```
+
+access the frontend within the browser on port 8081
+
+## Running the tests
+
+Go to the root directory of this project and run the following command.
+(This can also be executed for each module individually)
+
+```bash
+mvn test
 ```

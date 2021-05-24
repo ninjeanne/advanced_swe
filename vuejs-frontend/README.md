@@ -1,6 +1,6 @@
 # 0-plugins-frontend
 
-> frontend for awese
+> frontend for awse
 
 ## Build Setup
 
@@ -8,7 +8,7 @@
 # install dependencies
 npm install
 
-# serve with hot reload at localhost:8080
+# serve with hot reload at localhost:8081
 npm run dev
 
 # build for production with minification
