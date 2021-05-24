@@ -72,11 +72,5 @@ public class BoardDTO {
             return new BoardDTO(this.name, this.gameObjects, this.obstacles, this.colleagues, this.plan, this.infectProbability,
                     this.colleagueRadius);
         }
-
-        public String toString() {
-            return "BoardDTO.BoardDTOBuilder(name=" + this.name + ", gameObjects=" + this.gameObjects + ", obstacles="
-                    + this.obstacles + ", colleagues=" + this.colleagues + ", plan=" + this.plan + ", infectProbability=" + this.infectProbability
-                    + ", colleagueRadius=" + this.colleagueRadius + ")";
-        }
     }
 }

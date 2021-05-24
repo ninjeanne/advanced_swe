@@ -36,9 +36,5 @@ public class CoordinatesDTO {
         public CoordinatesDTO build() {
             return new CoordinatesDTO(this.x, this.y);
         }
-
-        public String toString() {
-            return "CoordinatesDTO.CoordinatesDTOBuilder(x=" + this.x + ", y=" + this.y + ")";
-        }
     }
 }

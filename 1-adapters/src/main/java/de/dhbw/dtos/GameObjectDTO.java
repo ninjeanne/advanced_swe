@@ -33,9 +33,5 @@ public class GameObjectDTO {
         public GameObjectDTO build() {
             return new GameObjectDTO(this.id, this.coordinatesDTO);
         }
-
-        public String toString() {
-            return "GameObjectDTO.GameObjectDTOBuilder(id=" + this.id + ", coordinatesDTO=" + this.coordinatesDTO + ")";
-        }
     }
 }

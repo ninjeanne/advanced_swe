@@ -61,9 +61,5 @@ public class RankingDTO {
         public RankingDTO build() {
             return new RankingDTO(this.name, this.earned_points, this.statistics, this.total, this.date);
         }
-
-        public String toString() {
-            return "RankingDTO.RankingDTOBuilder(name=" + this.name + ", earned_points=" + this.earned_points + ", statistics=" + this.statistics + ", total=" + this.total + ", date=" + this.date + ")";
-        }
     }
 }

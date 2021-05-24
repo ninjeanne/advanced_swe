@@ -16,6 +16,7 @@ public class ForwardAndBackMovement implements ColleagueMovement {
         this.aggregate = aggregate;
     }
 
+    @Override
     public CoordinatesVO getCurrentPosition() {
         return aggregate.getPath().get(position);
     }
@@ -31,6 +32,7 @@ public class ForwardAndBackMovement implements ColleagueMovement {
                         + ", old position: " + this.position);
     }
 
+    @Override
     public CoordinatesVO nextPosition() {
         if (moveForward) {
             if (position + 1 == aggregate.getPath().size()) {

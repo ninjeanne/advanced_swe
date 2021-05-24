@@ -45,10 +45,5 @@ public class PlayerDTO {
         public PlayerDTO build() {
             return new PlayerDTO(this.name, this.position, this.statistics);
         }
-
-        public String toString() {
-            return "PlayerDTO.PlayerDTOBuilder(name=" + this.name + ", position=" + this.position +  ", statistics="
-                    + this.statistics + ")";
-        }
     }
 }

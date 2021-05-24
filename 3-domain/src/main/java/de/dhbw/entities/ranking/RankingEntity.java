@@ -37,10 +37,6 @@ public class RankingEntity implements AggregateRoot {
     public RankingEntity() {
     }
 
-    public int getEarned_points() {
-        return earned_points;
-    }
-
     public int getTotal() {
         AtomicInteger total = new AtomicInteger();
         playerStatistics.getStatisticsPerItems().forEach((gameObject, numberOfItems) -> {

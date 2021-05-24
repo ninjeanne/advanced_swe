@@ -3,7 +3,6 @@ package de.dhbw.services;
 import de.dhbw.entities.player.PlayerStatisticsEntity;
 import de.dhbw.entities.ranking.RankingEntity;
 import de.dhbw.repositories.RankingRepository;
-import org.assertj.core.util.Lists;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,9 +12,7 @@ import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.runners.MockitoJUnitRunner;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.times;
@@ -37,8 +34,8 @@ public class HighscoreServiceTest {
 
     @Test
     public void testGetHighscore() {
-        List<RankingEntity> expectedHighscore = Lists
-                .newArrayList(new RankingEntity("id1", "playerName", 1234, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24)));
+        List<RankingEntity> expectedHighscore = Collections
+                .singletonList(new RankingEntity("id1", "playerName", 1234, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24)));
         Mockito.when(rankingRepository.getHighscore()).thenReturn(expectedHighscore);
 
         Assert.assertEquals(expectedHighscore.size(), highscoreService.getHighscore().size());
@@ -51,7 +48,7 @@ public class HighscoreServiceTest {
         RankingEntity first = new RankingEntity("id1", "playerName", 1234, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
         RankingEntity second = new RankingEntity("id2", "playerName2", 3456, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
         RankingEntity third = new RankingEntity("id3", "playerName3", 6789, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
-        List<RankingEntity> expectedHighscore = Lists.newArrayList(first, second, third);
+        List<RankingEntity> expectedHighscore = Arrays.asList(first, second, third);
         Mockito.when(rankingRepository.getHighscore()).thenReturn(expectedHighscore);
 
         Assert.assertEquals(expectedHighscore.size(), highscoreService.getHighscore().size());
@@ -67,7 +64,7 @@ public class HighscoreServiceTest {
         RankingEntity first = new RankingEntity("id1", "playerName", 1234, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
         RankingEntity second = new RankingEntity("id2", "playerName2", 3456, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
         RankingEntity third = new RankingEntity("id3", "playerName3", 6789, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
-        List<RankingEntity> expectedHighscore = Lists.newArrayList(first, second, third);
+        List<RankingEntity> expectedHighscore = Arrays.asList(first, second, third);
         Mockito.when(rankingRepository.getHighscore()).thenReturn(expectedHighscore);
 
         RankingEntity newRanking = new RankingEntity("id4", "playerName4", 9999, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
@@ -77,7 +74,7 @@ public class HighscoreServiceTest {
 
     @Test
     public void testIsInHighscoreHighEarnedPoints() {
-        List<RankingEntity> expectedHighscore = Lists.newArrayList();
+        List<RankingEntity> expectedHighscore = new ArrayList<>();
         for (int i = 0; i < HighscoreService.NUMBER_OF_RANKINGS; i++) {
             RankingEntity newRanking = new RankingEntity("id" + i, "playerName" + i, i, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
             expectedHighscore.add(newRanking);
@@ -90,7 +87,7 @@ public class HighscoreServiceTest {
 
     @Test
     public void testIsNotInHighscoreLessEarnedPoints() {
-        List<RankingEntity> expectedHighscore = Lists.newArrayList();
+        List<RankingEntity> expectedHighscore = new ArrayList<>();
         for (int i = 0; i < HighscoreService.NUMBER_OF_RANKINGS; i++) {
             RankingEntity newRanking = new RankingEntity("id" + i, "playerName" + i, 1 + i, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
             expectedHighscore.add(newRanking);
@@ -103,7 +100,7 @@ public class HighscoreServiceTest {
 
     @Test
     public void testIsNotInHighscoreAlreadyHighscoreSizeReached() {
-        List<RankingEntity> expectedHighscore = Lists.newArrayList();
+        List<RankingEntity> expectedHighscore = new ArrayList<>();
         for (int i = 0; i < HighscoreService.NUMBER_OF_RANKINGS; i++) {
             RankingEntity newRanking = new RankingEntity("id" + i, "playerName" + i, i, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
             expectedHighscore.add(newRanking);
@@ -116,7 +113,7 @@ public class HighscoreServiceTest {
 
     @Test
     public void saveNewRanking() {
-        List<RankingEntity> expectedHighscore = Lists.newArrayList();
+        List<RankingEntity> expectedHighscore = new ArrayList<>();
         Mockito.when(rankingRepository.getHighscore()).thenReturn(expectedHighscore);
 
         RankingEntity newRanking = new RankingEntity("idNew", "playerNameNew", 30, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
@@ -128,7 +125,7 @@ public class HighscoreServiceTest {
 
     @Test
     public void saveNewRankingAndDeleteLast() {
-        List<RankingEntity> expectedHighscore = Lists.newArrayList();
+        List<RankingEntity> expectedHighscore = new ArrayList<>();
         for (int i = 0; i < HighscoreService.NUMBER_OF_RANKINGS; i++) {
             RankingEntity newRanking = new RankingEntity("id" + i, "playerName" + i, i, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
             expectedHighscore.add(newRanking);
@@ -144,7 +141,7 @@ public class HighscoreServiceTest {
 
     @Test
     public void saveNotBecauseOfTooManyEntries() {
-        List<RankingEntity> expectedHighscore = Lists.newArrayList();
+        List<RankingEntity> expectedHighscore = new ArrayList<>();
         for (int i = 0; i < HighscoreService.NUMBER_OF_RANKINGS; i++) {
             RankingEntity newRanking = new RankingEntity("id" + i, "playerName" + i, 1 + i, new PlayerStatisticsEntity(), new Date(2021, Calendar.MAY, 24));
             expectedHighscore.add(newRanking);

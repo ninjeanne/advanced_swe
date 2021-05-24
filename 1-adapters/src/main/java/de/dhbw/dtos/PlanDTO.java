@@ -33,9 +33,5 @@ public class PlanDTO {
         public PlanDTO build() {
             return new PlanDTO(this.width, this.height);
         }
-
-        public String toString() {
-            return "PlanDTO.PlanDTOBuilder(width=" + this.width + ", height=" + this.height + ")";
-        }
     }
 }

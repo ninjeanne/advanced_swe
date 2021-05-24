@@ -31,7 +31,7 @@ public final class PlanVO {
     }
 
     private boolean isValid(int value) {
-        return value >= 0;
+        return value > 0;
     }
 
     @Override
