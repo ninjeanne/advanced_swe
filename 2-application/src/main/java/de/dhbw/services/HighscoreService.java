@@ -13,7 +13,7 @@ import java.util.List;
 public class HighscoreService implements HighscoreDomainService {
 
     private final RankingRepository rankingRepository;
-    private final int NUMBER_OF_RANKINGS = 10;
+    public final static int NUMBER_OF_RANKINGS = 10;
 
     @Autowired
     public HighscoreService(RankingRepository rankingRepository) {
@@ -36,7 +36,7 @@ public class HighscoreService implements HighscoreDomainService {
     @Override
     public boolean isInHighscore(RankingEntity ranking) {
         List<RankingEntity> rankingEntities = getHighscore();
-        if (rankingEntities.size() <= NUMBER_OF_RANKINGS) {
+        if (rankingEntities.size() < NUMBER_OF_RANKINGS) {
             return true;
         }
 

@@ -4,7 +4,6 @@ import de.dhbw.aggregates.AggregateRoot;
 import de.dhbw.entities.player.PlayerStatisticsEntity;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
@@ -15,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 @Getter
 @AllArgsConstructor
-@NoArgsConstructor
 @Entity
 @Slf4j
 public class RankingEntity implements AggregateRoot {
@@ -35,13 +33,17 @@ public class RankingEntity implements AggregateRoot {
     @Column
     private Date date;
 
+    @SuppressWarnings("unused")
+    public RankingEntity() {
+    }
+
     public int getEarned_points() {
         return earned_points;
     }
 
     public int getTotal() {
         AtomicInteger total = new AtomicInteger();
-        playerStatistics.getStatisticsPerItems().forEach((gameObject,numberOfItems) -> {
+        playerStatistics.getStatisticsPerItems().forEach((gameObject, numberOfItems) -> {
             try {
                 total.addAndGet(numberOfItems.getCount() * gameObject.newInstance().getRankingValue());
             } catch (InstantiationException | IllegalAccessException e) {
