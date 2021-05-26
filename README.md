@@ -6,7 +6,7 @@ principles, testing, refactoring and design patterns.
 ## Topic
 
 The goal was to implement a simple Pacman game, with all course content implemented. The backend is based on Spring Boot, the frontend on VueJs. The
-communication of both takes place via REST as well as via websockets (RSocket).
+communication of both takes place via REST as well as via websockets.
 
 ## Setup
 
