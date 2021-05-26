@@ -2,15 +2,17 @@ package de.dhbw.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 /**
  * Design Pattern: Builder
  */
 @Getter
 @AllArgsConstructor
+@NoArgsConstructor
 public class CoordinatesDTO {
-    private final int x;
-    private final int y;
+    private int x;
+    private int y;
 
     public static CoordinatesDTO.CoordinatesDTOBuilder builder() {
         return new CoordinatesDTO.CoordinatesDTOBuilder();

@@ -18,6 +18,15 @@
         <canvas v-if="started" id="c"></canvas>
         <game-over v-if="game_over && !started" v-bind:player="player" v-bind:ranking-points="last_ranking_points" v-bind:work-item="last_work_items" />
       </div>
+      <div v-if="started" class="sorry">
+        Dear Player, sorry for my bad frontend skills! :D
+        <br>
+        <br>
+        Use the arrow keys to move the figure (to focus the board you need to click inside the canvas sometimes).<br>
+        The goal is to collect as many points as possible.<br>
+        Work items will increase the score faster. Vaccinations are the lives of a player.<br>
+        A colleague can infect you and take your lives! Watch out.<br>
+      </div>
       <div class="ranking">
         <hr>
         <highscore-component v-bind:headline="true" v-bind:highscore="highscore" />
@@ -117,7 +126,7 @@ export default {
           this.ranking_points = JSON.parse(tick.body);
         });
         if (this.player.name === null) {
-          this.player.name = "NOOB";
+          this.player.name = "anonymous";
         }
         this.stompClient.send("/frontend/start", this.player.name, {});
         this.stompClient.subscribe("/backend/board", tick => {
@@ -312,7 +321,8 @@ export default {
   grid-template-areas:
     'header header header header header header'
     'menu main main main main ranking'
-    'menu footer footer footer footer ranking';
+    'menu main main main main ranking'
+    'menu sorry sorry sorry sorry ranking';
   grid-gap: 10px;
   padding: 10px;
 }
@@ -327,14 +337,23 @@ export default {
   text-align: justify;
 }
 
+#c {
+  display: inline;
+}
+
 .main {
   grid-area: main;
-  width: 800px;
-  height: 500px;
+  width: 100%;
+  height: 550px;
+  text-align: center;
 }
 
 .ranking {
   grid-area: ranking;
+}
+
+.sorry {
+  grid-area: sorry;
 }
 
 </style>

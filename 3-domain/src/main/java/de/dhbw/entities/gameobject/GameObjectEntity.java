@@ -37,10 +37,7 @@ public abstract class GameObjectEntity {
     }
 
     public void setNewCoordinate(CoordinatesVO coordinatesVO) {
-        if (needsNewCoordinateAfterAction()) {
-            this.coordinatesVO = coordinatesVO;
-        }
-        log.warn("New coordinate couldn't be set for this type of game object");
+        this.coordinatesVO = coordinatesVO;
     }
 
     public boolean isInRangeOfGameObject(CoordinatesVO coordinatesVO) {
